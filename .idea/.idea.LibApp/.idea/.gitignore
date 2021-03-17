@@ -7,7 +7,17 @@
 /.idea.LibApp.iml
 /projectSettingsUpdater.xml
 # Datasource local storage ignored files
-/../../../../../../../../:\Users\Dawid\Documents\LibApp\.idea\.idea.LibApp\.idea/dataSources/
+dataSources/
+dataSources.ids
+dataSources.local.xml
+sqlDataSources.xml
+dynamic.xml
+uiDesigner.xml
+dbnavigator.xml
+
+
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+
+
