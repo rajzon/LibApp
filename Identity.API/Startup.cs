@@ -31,14 +31,26 @@ namespace Identity.API
                 config.UseSqlServer(connectionString);
             });
             
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<IdentityUser<int>, IdentityRole<int>>(config =>
+                {
+                    config.Password.RequiredLength = 8;
+                    config.Password.RequireDigit = false;
+                    config.Password.RequireNonAlphanumeric = true;
+                    config.Password.RequireUppercase = true;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(config =>
+            {
+                config.Cookie.Name = "Identity.Cookie";
+                config.LoginPath = "/Auth/Login";
+            });
             
             
             
             services.AddIdentityServer()
-                .AddAspNetIdentity<IdentityUser>()
+                .AddAspNetIdentity<IdentityUser<int>>()
                 // this adds the config data from DB (clients, resources)
                 .AddConfigurationStore(options =>
                 {
