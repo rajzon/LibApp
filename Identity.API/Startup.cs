@@ -38,6 +38,7 @@ namespace Identity.API
                     config.Password.RequireDigit = false;
                     config.Password.RequireNonAlphanumeric = true;
                     config.Password.RequireUppercase = true;
+                    config.User.RequireUniqueEmail = true;
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();

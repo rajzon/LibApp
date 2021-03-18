@@ -47,15 +47,15 @@ namespace Identity.API
         
         private static void CreateAdmin(UserManager<AppUser> userManager)
         {
-            if (!userManager.Users.Any(u => u.Email.Equals("admin@example.com")))
+            if (userManager.Users.Any(u => u.Email.Equals("admin@example.com"))) 
+                return;
+            
+            var user = new AppUser
             {
-                var user = new AppUser
-                {
-                    UserName = "admin",
-                    Email = "admin@example.com"
-                };
-                userManager.CreateAsync(user, "Password1!").GetAwaiter().GetResult();
-            }
+                UserName = "admin",
+                Email = "admin@example.com"
+            };
+            userManager.CreateAsync(user, "Password1!").GetAwaiter().GetResult();
         }
         
         private static void SeedDbContexts(IServiceProvider services)
