@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
 using Identity.API.Data;
+using Identity.API.Models;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,17 +24,9 @@ namespace Identity.API
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var configDbContext = services.GetRequiredService<ConfigurationDbContext>();
-                    configDbContext.Database.Migrate();
-                    configDbContext.Database.EnsureCreated();
-                
-                    var appDbContext = services.GetRequiredService<ApplicationDbContext>();
-                    appDbContext.Database.Migrate();
-                    appDbContext.Database.EnsureCreated();
-                
-                    var persistedGrantDbContext = services.GetRequiredService<PersistedGrantDbContext>();
-                    persistedGrantDbContext.Database.Migrate();
-                    persistedGrantDbContext.Database.EnsureCreated();
+                    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                    SeedDbContexts(services);
+                    CreateAdmin(userManager);
 
                 }
                 catch (Exception e)
@@ -44,9 +39,38 @@ namespace Identity.API
                 
             host.Run();
         }
-
+        
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+        
+        
+        private static void CreateAdmin(UserManager<AppUser> userManager)
+        {
+            if (!userManager.Users.Any(u => u.Email.Equals("admin@example.com")))
+            {
+                var user = new AppUser
+                {
+                    UserName = "admin",
+                    Email = "admin@example.com"
+                };
+                userManager.CreateAsync(user, "Password1!").GetAwaiter().GetResult();
+            }
+        }
+        
+        private static void SeedDbContexts(IServiceProvider services)
+        {
+            var configDbContext = services.GetRequiredService<ConfigurationDbContext>();
+            configDbContext.Database.Migrate();
+            configDbContext.Database.EnsureCreated();
+
+            var appDbContext = services.GetRequiredService<ApplicationDbContext>();
+            appDbContext.Database.Migrate();
+            appDbContext.Database.EnsureCreated();
+
+            var persistedGrantDbContext = services.GetRequiredService<PersistedGrantDbContext>();
+            persistedGrantDbContext.Database.Migrate();
+            persistedGrantDbContext.Database.EnsureCreated();
+        }
     }
 }
