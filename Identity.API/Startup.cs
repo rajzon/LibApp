@@ -1,4 +1,5 @@
 using Identity.API.Data;
+using Identity.API.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,14 +32,26 @@ namespace Identity.API
                 config.UseSqlServer(connectionString);
             });
             
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<AppUser, IdentityRole<int>>(config =>
+                {
+                    config.Password.RequiredLength = 8;
+                    config.Password.RequireDigit = false;
+                    config.Password.RequireNonAlphanumeric = true;
+                    config.Password.RequireUppercase = true;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(config =>
+            {
+                config.Cookie.Name = "Identity.Cookie";
+                config.LoginPath = "/Auth/Login";
+            });
             
             
             
             services.AddIdentityServer()
-                .AddAspNetIdentity<IdentityUser>()
+                .AddAspNetIdentity<AppUser>()
                 // this adds the config data from DB (clients, resources)
                 .AddConfigurationStore(options =>
                 {
@@ -54,6 +67,8 @@ namespace Identity.API
                             sql => sql.MigrationsAssembly(migrationAssembly));
                 })
                 .AddDeveloperSigningCredential();
+
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,14 +78,16 @@ namespace Identity.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseStaticFiles();
             app.UseIdentityServer();
             
+            
             app.UseRouting();
+            
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Hello World!"); });
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
