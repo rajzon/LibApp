@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  logoImg: 'assets/img/Logo-placeholder.png'
 };
