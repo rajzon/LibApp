@@ -1,20 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Book.API.Data;
 using Book.API.Installers;
+using Book.API.Mappings;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
 
 namespace Book.API
 {
@@ -31,6 +25,9 @@ namespace Book.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddBookDbContextInitializer();
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+            services.AddMediatR(typeof(Startup));
             services.AddApiVersioningInitializer();
             services.AddSwaggerInitializer();
         }
