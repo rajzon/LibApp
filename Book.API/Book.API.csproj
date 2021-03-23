@@ -19,11 +19,8 @@
     <ItemGroup>
       <Folder Include="Application" />
       <Folder Include="Behaviors" />
-      <Folder Include="Commands\V1" />
       <Folder Include="Controllers\V2" />
-      <Folder Include="Handlers\V1" />
       <Folder Include="Infrastructure" />
-      <Folder Include="Responses\V1" />
     </ItemGroup>
 
 </Project>

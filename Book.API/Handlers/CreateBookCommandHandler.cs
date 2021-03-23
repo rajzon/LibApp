@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Book.API.Commands;
+using Book.API.Commands.V1;
 using Book.API.Data;
 using Book.API.Domain;
 using Book.API.Repositories;
-using Book.API.Responses;
+using Book.API.Responses.V1;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Book.API.Commands;
+using Book.API.Commands.V1;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Book.API.Responses;
+using Book.API.Responses.V1;
 
 namespace Book.API.Mappings
 {
