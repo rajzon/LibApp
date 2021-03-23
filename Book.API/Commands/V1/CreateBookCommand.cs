@@ -1,7 +1,7 @@
-﻿using Book.API.Responses;
+﻿using Book.API.Responses.V1;
 using MediatR;
 
-namespace Book.API.Commands
+namespace Book.API.Commands.V1
 {
     public class CreateBookCommand : IRequest<BookResponse>
     {

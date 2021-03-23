@@ -1,4 +1,4 @@
-﻿namespace Book.API.Responses
+﻿namespace Book.API.Responses.V1
 {
     public class BookResponse
     {
