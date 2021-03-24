@@ -2,16 +2,12 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Book.API.Commands.V1;
-using Book.API.Data;
 using Book.API.Domain;
-using Book.API.Repositories;
-using Book.API.Responses.V1;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Book.API.Handlers
 {
-    public class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, BookResponse>
+    public class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, CreateBookCommandResult>
     {
         private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;
@@ -23,12 +19,17 @@ namespace Book.API.Handlers
             _mapper = mapper;
         }
         
-        public async Task<BookResponse> Handle(CreateBookCommand request, CancellationToken cancellationToken)
+        public async Task<CreateBookCommandResult> Handle(CreateBookCommand request, CancellationToken cancellationToken)
         {
-            var book = new Domain.Book(request.Title);
+            var ean13 = new BookEan13(request.Ean13);
+            var isbn10 = new BookIsbn10(request.Isbn10);
+            var isbn13 = new BookIsbn13(request.Isbn13);
+            var book = new Domain.Book(request.Title, ean13, request.Description, isbn10, isbn13);
 
             var result = _bookRepository.Add(book);
-            return _mapper.Map<BookResponse>(result);
+            await _bookRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            
+            return _mapper.Map<CreateBookCommandResult>(result);
         }
     }
 }

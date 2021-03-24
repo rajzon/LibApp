@@ -1,6 +1,6 @@
 ﻿using Book.API.Data;
+using Book.API.Data.Repositories;
 using Book.API.Domain;
-using Book.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
