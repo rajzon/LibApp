@@ -9,7 +9,7 @@ namespace Book.API.Queries.V1.Dtos
         public string Ean13 { get; set; }
         public string Isbn10 { get; set; }
         public string Isbn13 { get; set; }
-        public ushort PageCount { get; set; }
+        public ushort? PageCount { get; set; }
         public bool Visibility { get; set; }
         
         public DateTime PublishedDate { get; set; }

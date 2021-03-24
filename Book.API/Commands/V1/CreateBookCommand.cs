@@ -10,7 +10,7 @@ namespace Book.API.Commands.V1
         public string Ean13 { get; init; }
         public string Isbn10 { get; init; }
         public string Isbn13 { get; init; }
-        public ushort PageCount { get; init; }
+        public ushort? PageCount { get; init; }
         public bool Visibility { get; init; }
         public DateTime PublishedDate { get; init; }
         

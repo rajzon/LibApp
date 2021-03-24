@@ -12,7 +12,7 @@ namespace Book.API.Domain
         public BookEan13 Ean13 { get; private set; }
         public BookIsbn10 Isbn10 { get; private set; }
         public BookIsbn13 Isbn13 { get; private set; }
-        public ushort PageCount { get; private set; }
+        public ushort? PageCount { get; private set; }
         public bool Visibility { get; private set; }
         // public List<string> Images { get; private set; }
         
@@ -28,7 +28,7 @@ namespace Book.API.Domain
         protected Book() { }
         
         
-        public Book(string title, BookEan13 ean13, string description = default, BookIsbn10 isbn10 = default, BookIsbn13 isbn13 = default, ushort pageCount = default, bool visibility = default, DateTime publishedDate = default)
+        public Book(string title, BookEan13 ean13, string description = default, BookIsbn10 isbn10 = default, BookIsbn13 isbn13 = default, ushort? pageCount = default, bool visibility = default, DateTime publishedDate = default)
         {
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("Title cannot be empty or whitespace");
