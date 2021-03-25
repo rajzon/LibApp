@@ -14,12 +14,24 @@ namespace Book.API.Domain
         public BookIsbn13 Isbn13 { get; private set; }
         public ushort? PageCount { get; private set; }
         public bool Visibility { get; private set; }
+        
+        
+        
         // public List<string> Images { get; private set; }
         
-        // public Language Language { get; private set; }
-        // public Author Author { get; private set; }
-        // public Publisher Publisher { get; private set; }
-        // public List<string> Categories { get; private set; }
+        private int? _languageId;
+        public int? LanguageId => _languageId;
+        
+        private int _authorId;
+        public int AuthorId => _authorId;
+        
+        private int? _publisherId;
+        public int? PublisherId => _publisherId;
+        
+        //DDD violation: Navigation property to outside aggregate in order to create many-to-many relationship
+        public IReadOnlyCollection<Category> Categories { get; private set; }
+
+        
         
         public DateTime PublishedDate { get; private set; }
         public DateTime ModificationDate { get; private set; }
@@ -28,7 +40,19 @@ namespace Book.API.Domain
         protected Book() { }
         
         
-        public Book(string title, BookEan13 ean13, string description = default, BookIsbn10 isbn10 = default, BookIsbn13 isbn13 = default, ushort? pageCount = default, bool visibility = default, DateTime publishedDate = default)
+        
+        public Book(string title,
+            BookEan13 ean13,
+            int authorId,
+            string description = default,
+            BookIsbn10 isbn10 = default,
+            BookIsbn13 isbn13 = default,
+            int? languageId = default,
+            int? publisherId = default,
+            ushort? pageCount = default,
+            bool visibility = default,
+            DateTime publishedDate = default,
+            int? bookCategoryId = default)
         {
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("Title cannot be empty or whitespace");
@@ -43,23 +67,51 @@ namespace Book.API.Domain
             PageCount = pageCount;
             Visibility = visibility;
             PublishedDate = publishedDate;
-            
+            _languageId = languageId;
+            _authorId = authorId;
+            _publisherId = publisherId;
+            // _bookCategoryId = bookCategoryId;
+
             ModificationDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;
         }
         
-
+        //TODO consider return type
+        public Book AddCategory(Category category)
+        {
+            // this.Categories.Add(category);
+            return this;
+        }
+        
+        
         public void GenerateEANCode()
         {
             //validate input
         }
     }
 
+    public class Category : Entity, IAggregateRoot
+    {
+        public string Name { get; private set; }
+        
+        //DDD violation: Navigation property to outside aggregate in order to create many-to-many relationship
+        public IReadOnlyCollection<Book> Books { get; private set; }
+        
+        public Category(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Category name cannot be empty or whitespace");
+            
+            Name = name;
+        }
+        
+        protected Category() { }
+    }
+
     public class BookIsbn13 : ValueObject
     {
         public string Code { get; private set; }
         
-        protected BookIsbn13() { }
         public BookIsbn13(string code)
         {
             if (code?.Length < 10)
@@ -69,7 +121,13 @@ namespace Book.API.Domain
             
             Code = code;
         }
+        
+        protected BookIsbn13() { }
 
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Code;
+        }
     }
 
 
@@ -79,7 +137,7 @@ namespace Book.API.Domain
         
         public DateTime ModificationDate { get; private set; }
         public DateTime CreationDate { get; private set; }
-
+        
         public Language(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -87,11 +145,13 @@ namespace Book.API.Domain
             
             if (! name.All(char.IsLetter))
                 throw new ArgumentException("Language name must contain only letters");
-            
+
             Name = name;
             ModificationDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;
         }
+        
+        protected Language() { }
     }
 
     public class BookIsbn10 : ValueObject
@@ -108,6 +168,11 @@ namespace Book.API.Domain
 
 
             Code = code;
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Code;
         }
     }
 }

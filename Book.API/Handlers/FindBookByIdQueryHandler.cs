@@ -23,6 +23,7 @@ namespace Book.API.Handlers
         public async Task<BookDto> Handle(FindBookByIdQuery request, CancellationToken cancellationToken)
         {
             var book = await _bookRepository.FindByIdAsync(request.Id);
+            
 
             return book is null ? null : _mapper.Map<BookDto>(book);
         }

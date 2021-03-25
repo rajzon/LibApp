@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Book.API.Domain.Common;
 
@@ -22,5 +23,9 @@ namespace Book.API.Domain
             Code = code;
         }
 
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Code;
+        }
     }
 }

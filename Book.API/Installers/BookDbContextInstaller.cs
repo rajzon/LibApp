@@ -11,6 +11,10 @@ namespace Book.API.Installers
         public static IServiceCollection AddBookDbContextInitializer(this IServiceCollection services)
         {
             services.AddDbContext<BookDbContext>(config => config.UseInMemoryDatabase("BookService"));
+            services.AddScoped<ILanguageRepository, LanguageRepository>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IPublisherRepository, PublisherRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
             return services.AddScoped<IBookRepository, BookRepository>();
         }
     }

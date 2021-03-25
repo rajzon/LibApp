@@ -11,6 +11,9 @@ namespace Book.API.Queries.V1.Dtos
         public string Isbn13 { get; set; }
         public ushort? PageCount { get; set; }
         public bool Visibility { get; set; }
+        public int? LanguageId { get; set; }
+        public int? AuthorId { get; set; }
+        
         
         public DateTime PublishedDate { get; set; }
         public DateTime ModificationDate { get; set; }

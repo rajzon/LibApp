@@ -11,9 +11,9 @@ namespace Book.API.Domain
         public DateTime CreationDate { get; private set; }
         
         
-        public Publisher(string name, DateTime creationDate)
+        public Publisher(string name)
         {
-            if (!string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Publisher name cannot be empty or whitespace");
             
             Name = name;

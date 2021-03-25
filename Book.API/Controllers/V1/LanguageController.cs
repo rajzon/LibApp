@@ -1,42 +1,46 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
-using Book.API.Commands.V1;
 using Book.API.Queries.V1;
 using Book.API.Queries.V1.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Book.API.Controllers.V1
 {
-    
     [ApiVersion("1.0")]
     [ApiController]
     [Route("v{version:apiVersion}/[controller]")]
-    public class BookController : ControllerBase
+    public class LanguageController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public BookController(IMediator mediator, ILogger<BookController> logger)
+        public LanguageController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpPost("add")]
-        [ProducesResponseType(typeof(CreateBookCommandResult), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Create(CreateBookCommand command)
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<LanguageDto>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType( (int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetAll()
         {
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new GetAllLanguagesQuery());
+
+            if (!result.Any())
+                return NotFound();
             
             return Ok(result);
         }
         
+        
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(BookDto), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LanguageDto), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         public async Task<IActionResult> Get(int id)
         {
-            var result = await _mediator.Send(new FindBookByIdQuery {Id = id});
+            var result = await _mediator.Send(new FindLanguageByIdQuery {Id = id});
 
             if (result is null)
                 return NotFound();
