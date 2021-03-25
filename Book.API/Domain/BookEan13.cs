@@ -8,19 +8,21 @@ namespace Book.API.Domain
     public class BookEan13 : ValueObject
     {
         public string Code { get; private set; }
-
-        protected BookEan13() { }
-            
         
-        public BookEan13(string code)
+        
+        public BookEan13()
         {
-            if (string.IsNullOrWhiteSpace(code))
-                throw new ArgumentException("EAN13 must not be empty or whitespace");
-            if (code.Length < 10)
-                throw new ArgumentException("EAN13 must not exceed 13 digits");
-            if (! code.All(char.IsDigit))
-                throw new ArgumentException("EAN13 must contain only digits");
-            Code = code;
+            Code = GenerateEan13Code();
+        }
+        
+        //TODO: consider different way for generating EAN13
+        private string GenerateEan13Code()
+        {
+            var rnd = new Random();
+            const string digits = "1234567890";
+            const int length = 13;
+            return new string(Enumerable.Repeat(digits, length)
+                .Select(s => s[rnd.Next(s.Length)]).ToArray());
         }
 
         protected override IEnumerable<object> GetEqualityComponents()

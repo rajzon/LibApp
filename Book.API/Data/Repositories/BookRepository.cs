@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Book.API.Domain;
 using Book.API.Domain.Common;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +22,20 @@ namespace Book.API.Data.Repositories
             return _bookContext.Books.Add(book).Entity;
         }
 
+        //TODO: Consider some sort of builder for building Book with related tables instead of explicitly including tables
         public async Task<Domain.Book> FindByIdAsync(int id)
         {
-            return await _bookContext.Books.FindAsync(id);
+            return await _bookContext.Books
+                .Include(b => b.Categories)
+                .SingleOrDefaultAsync(b => b.Id.Equals(id));
+        }
+
+        //TODO: Consider some sort of builder for building Book with related tables
+        public async Task<IEnumerable<Domain.Book>> GetAllAsync()
+        {
+            return await _bookContext.Books
+                .Include(b => b.Categories)
+                .ToListAsync();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Book.API.Data.Repositories
 
         public async Task<IEnumerable<Category>> GetAllByNamesAsync(IList<string> names)
         {
-            return await _bookDbContext.Categories.Where(c => names.Contains(c.Name)).ToListAsync();
+            return await _bookDbContext.Categories.Where(c => names.Distinct().Contains(c.Name)).ToListAsync();
         }
 
         public async Task<IEnumerable<Category>> GetAllAsync()

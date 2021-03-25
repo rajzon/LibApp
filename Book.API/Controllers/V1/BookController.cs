@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Book.API.Commands.V1;
 using Book.API.Queries.V1;
@@ -43,6 +45,23 @@ namespace Book.API.Controllers.V1
 
             return Ok(result);
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<BookDto>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType( (int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _mediator.Send(new GetAllBooksQuery());
+
+            if (!result.Any())
+                return NotFound();
+
+            return Ok(result);
+        }
         
+    }
+
+    public class GetAllBooksQuery : IRequest<IEnumerable<BookDto>>
+    {
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Book.API.Domain.Common;
 
 namespace Book.API.Domain
@@ -7,5 +8,7 @@ namespace Book.API.Domain
     {
         Book Add(Book book);
         Task<Book> FindByIdAsync(int id);
+        Task<IEnumerable<Book>> GetAllAsync();
+
     }
 }

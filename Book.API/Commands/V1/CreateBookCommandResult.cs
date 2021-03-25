@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Book.API.Domain;
+using Book.API.Queries.V1.Dtos;
 
 namespace Book.API.Commands.V1
 {
@@ -16,6 +19,7 @@ namespace Book.API.Commands.V1
         public int? LanguageId { get; set; }
         public int? AuthorId { get; set; }
         public int? PublisherId { get; set; }
+        public IReadOnlyCollection<CategoryDto> Categories { get; set; }
         
         public DateTime PublishedDate { get; set; }
         public DateTime ModificationDate { get; set; }
