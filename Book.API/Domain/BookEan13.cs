@@ -7,12 +7,14 @@ namespace Book.API.Domain
 {
     public class BookEan13 : ValueObject
     {
-        public string Code { get; private set; }
+
+        private readonly string _code;
+        public string Code => _code;
         
         
         public BookEan13()
         {
-            Code = GenerateEan13Code();
+            _code = GenerateEan13Code();
         }
         
         //TODO: consider different way for generating EAN13

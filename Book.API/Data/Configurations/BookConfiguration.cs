@@ -9,12 +9,15 @@ namespace Book.API.Data.Configurations
         public void Configure(EntityTypeBuilder<Domain.Book> builder)
         {
             builder
-                .OwnsOne<BookEan13>(book => book.Ean13);
+                .OwnsOne<BookEan13>(book => book.Ean13)
+                .Property<string>("_code")
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            
             builder
                 .OwnsOne<BookIsbn10>(book => book.Isbn10);
             builder
                 .OwnsOne<BookIsbn13>(book => book.Isbn13);
-            
+
             builder
                 .Property<int?>("_languageId")
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
@@ -46,17 +49,7 @@ namespace Book.API.Data.Configurations
                 .WithMany()
                 .IsRequired(false)
                 .HasForeignKey("_publisherId");
-
-            // builder
-            //     .Property("CategoriesIds")
-            //     .UsePropertyAccessMode(PropertyAccessMode.Field)
-            //     .IsRequired(false);
-            //
-            // builder
-            //     .HasMany<Category>("CategoriesIds")
-            //     .WithMany("BooksIds")
-            //     .UsingEntity(j => j.ToTable("BookCategories"));
-
+            
         }
     }
 }
