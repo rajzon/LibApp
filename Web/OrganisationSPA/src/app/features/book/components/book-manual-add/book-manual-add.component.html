@@ -1,0 +1,26 @@
+<div class="container">
+  <form [formGroup]="manualBookAddForm"
+        (ngSubmit)="add()"
+        class="m-5">
+    <app-text-input [formControl]='manualBookAddForm.controls["title"]'
+                    [label]='"Title"'></app-text-input>
+    <app-text-input [formControl]='manualBookAddForm.controls["authorFirstName"]'
+                    [label]='"Author FirstName"'></app-text-input>
+    <app-text-input [formControl]='manualBookAddForm.controls["authorLastName"]'
+                    [label]='"Author LastName"'></app-text-input>
+    <app-number-input [formControl]='manualBookAddForm.controls["pageCount"]'
+                    [label]='"Page Count"'></app-number-input>
+    <app-text-input [formControl]='manualBookAddForm.controls["languageName"]'
+                    [label]='"Language"'></app-text-input>
+    <app-text-input [formControl]='manualBookAddForm.controls["isbn10"]'
+                    [label]='"ISBN10"'></app-text-input>
+    <app-text-input [formControl]='manualBookAddForm.controls["isbn13"]'
+                    [label]='"ISBN13"'></app-text-input>
+    <app-text-input [formControl]='manualBookAddForm.controls["publisherName"]'
+                    [label]='"Publisher Name"'></app-text-input>
+    <app-text-input [formControl]='manualBookAddForm.controls["publishedDate"]'
+                    [label]='"Published Date"'></app-text-input>
+    <app-text-input [formControl]='manualBookAddForm.controls["publicSiteLink"]'
+                    [label]='"Public Site Link"'></app-text-input>
+  </form>
+</div>

@@ -29,6 +29,7 @@ namespace Book.API.Domain
 
         public string LastName { get; private set; }
         
+        //TODO: consider name as not only letters
         public AuthorName(string firstName, string lastName)
         {
             if (string.IsNullOrWhiteSpace(firstName))

@@ -4,7 +4,7 @@ import { BookCreationComponent } from "./containers/book-creation/book-creation.
 import { ModuleWithProviders } from "@angular/core";
 
 export const routes: Routes = [
-  { path: '', component: BookManagementComponent},
+  { path: 'book', component: BookManagementComponent},
   { path: 'create', component: BookCreationComponent}
 ]
 

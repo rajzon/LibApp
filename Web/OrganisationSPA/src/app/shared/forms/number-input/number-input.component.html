@@ -1,0 +1,25 @@
+<div class="form-group">
+  <label class="text-capitalize font-weight-bold">{{label}}</label>
+  <input
+    [class.is-invalid]="ngControl.touched && ngControl.invalid"
+    appDigitsOnly
+    type="{{type}}"
+    class="form-control"
+    [formControl]="ngControl.control"
+    placeholder="{{label}}">
+
+  <div *ngIf="ngControl.control.errors?.required"
+       class="invalid-feedback">
+    <span class="text-capitalize">{{label}}</span> field cannot be empty
+  </div>
+
+  <div *ngIf="ngControl.control.errors?.min"
+       class="invalid-feedback">
+    <span class="text-capitalize">{{label}}</span> cannot be less then {{ngControl.control.errors.min['min']}} number
+  </div>
+  <div *ngIf="ngControl.control.errors?.max"
+       class="invalid-feedback">
+    <span class="text-capitalize">{{label}}</span> cannot be more then {{ngControl.control.errors.max['max']}} number
+  </div>
+
+</div>
