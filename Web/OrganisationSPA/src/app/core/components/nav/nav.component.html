@@ -3,8 +3,8 @@
 
   <!-- Logo-->
   <div class="text-white text-center sidebar-heading mb-4">
-    <a href="#">
-      <img class="img-fluid" src="{{logoImgSrc}}" href="#" alt="Logo Image">
+    <a [routerLink]="['/home']">
+      <img class="img-fluid" src="{{logoImgSrc}}" alt="Logo Image">
     </a>
   </div>
   <!-- /#Logo-->
@@ -33,7 +33,7 @@
   <div class="mb-3">
     <div class="text-white sidebar-section-header m-2 p-1 pl-3">Manage Library</div>
     <div class="list-group list-group-flush">
-      <a href="#" class="list-group-item list-group-item-action "><i class="fa fa-users mr-1"></i> Manage Books</a>
+      <a class="list-group-item list-group-item-action " [routerLink]="['/book']" ><i class="fa fa-users mr-1"></i> Manage Books</a>
       <a href="#" class="list-group-item list-group-item-action "><i class="fa fa-ruler-vertical ml-1 mr-2"></i> Manage Bookshelfs</a>
       <a href="#" class="list-group-item list-group-item-action "><i class="fa fa-paperclip mr-2"></i> Manage Book Relations</a>
       <a href="#" class="list-group-item list-group-item-action "><i class="fa fa-box-open mr-2"></i> Delivery</a>
