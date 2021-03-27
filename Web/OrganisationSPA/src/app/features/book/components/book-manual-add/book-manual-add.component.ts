@@ -4,7 +4,9 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {environment} from "@env";
 import {Book} from "../../models/book";
 import {Category} from "../../models/category";
-import {BookCategoryApiService} from "../../api/book-category-api.service";
+import {Language} from "../../models/language";
+import {Author} from "../../models/author";
+import {Publisher} from "../../models/publisher";
 
 @Component({
   selector: 'app-book-manual-add',
@@ -15,6 +17,9 @@ import {BookCategoryApiService} from "../../api/book-category-api.service";
 export class BookManualAddComponent {
 
   @Input() categories: Category[]
+  @Input() languages: Language[]
+  @Input() authors: Author[]
+  @Input() publishers: Publisher[]
   book: Book = new Book()
   bookFieldsSettings = environment.book;
 

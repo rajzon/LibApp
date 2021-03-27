@@ -1,20 +1,19 @@
 import {Injectable} from '@angular/core';
-// @ts-ignore
 import {environment} from "@env";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Category} from "../models/category";
+import {Publisher} from "../models/publisher";
 
 @Injectable({
   providedIn: 'root'
 })
-export class BookCategoryApiService {
+export class PublishersApiService {
 
-  readonly API = environment.bookApiUrl + 'v1/Category'
+  readonly API: string = environment.bookApiUrl + 'v1/publisher';
 
   constructor(private http: HttpClient) { }
 
-  getBookCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(this.API);
+  getPublishers$(): Observable<Publisher[]> {
+    return this.http.get<Publisher[]>(this.API);
   }
 }

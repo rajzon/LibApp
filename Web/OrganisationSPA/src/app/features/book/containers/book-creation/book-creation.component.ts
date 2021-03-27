@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {Observable} from "rxjs";
 import { BookFacade } from '../../book.facade';
 import {Category} from "../../models/category";
+import {Language} from "../../models/language";
+import {Author} from "../../models/author";
+import {Publisher} from "../../models/publisher";
 
 @Component({
   selector: 'app-book-creation',
@@ -10,14 +13,23 @@ import {Category} from "../../models/category";
 })
 export class BookCreationComponent implements OnInit {
 
-  bookCategories$: Observable<Category[]>;
+  categories$: Observable<Category[]>;
+  languages$: Observable<Language[]>;
+  authors$: Observable<Author[]>;
+  publishers$: Observable<Publisher[]>;
 
   constructor(private bookFacade: BookFacade) {
-    this.bookCategories$ = bookFacade.getBookCategories$();
+    this.categories$ = bookFacade.getCategories$();
+    this.languages$ = bookFacade.getLanguages$();
+    this.authors$ = bookFacade.getAuthors$();
+    this.publishers$ = bookFacade.getPublisher$();
   }
 
   ngOnInit(): void {
-    this.bookFacade.loadBookCategories().subscribe();
+    this.bookFacade.loadCategories$().subscribe();
+    this.bookFacade.loadLanguages$().subscribe();
+    this.bookFacade.loadAuthors$().subscribe();
+    this.bookFacade.loadPublishers$().subscribe();
   }
 
 
