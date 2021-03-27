@@ -1,13 +1,22 @@
-﻿export class Book {
+﻿import {Author} from "./author";
+import {Language} from "./language";
+import {Publisher} from "./publisher";
+
+export class Book {
   title: string;
-  authorFirstName: string;
-  authorLastName: string;
+  author: Author
   pageCount: number;
-  languageName: string;
+  language: Language
   isbn10: string;
   isbn13: string;
-  publisherName: string;
+  publisher: Publisher;
   publishedDate: Date;
   publicSiteLink: string;
   description: string;
+
+  constructor() {
+    this.author = new Author();
+    this.language = new Language();
+    this.publisher = new Publisher();
+  }
 }

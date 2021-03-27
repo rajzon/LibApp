@@ -1,13 +1,21 @@
 <div class="container">
   <form [formGroup]="manualBookAddForm"
-        (ngSubmit)="add()"
+        (ngSubmit)="onSubmitBook()"
         class="m-5">
+
     <app-text-input [formControl]='manualBookAddForm.controls["title"]'
                     [label]='"Title"'></app-text-input>
-    <app-text-input [formControl]='manualBookAddForm.controls["authorFirstName"]'
-                    [label]='"Author FirstName"'></app-text-input>
-    <app-text-input [formControl]='manualBookAddForm.controls["authorLastName"]'
-                    [label]='"Author LastName"'></app-text-input>
+    <div class="form-group">
+      <label class="text-capitalize font-weight-bold">author</label>
+      <ng-select
+        formControlName="author"
+        [items]="authors"
+        bindLabel="fullName"
+        bindValue="id"
+        placeholder="Select Author"
+      ></ng-select>
+    </div>
+
     <app-number-input [formControl]='manualBookAddForm.controls["pageCount"]'
                     [label]='"Page Count"'></app-number-input>
     <app-text-input [formControl]='manualBookAddForm.controls["languageName"]'
@@ -30,4 +38,6 @@
   {{authors | json}}
   <br><br>
   {{publishers | json}}
+
+
 </div>

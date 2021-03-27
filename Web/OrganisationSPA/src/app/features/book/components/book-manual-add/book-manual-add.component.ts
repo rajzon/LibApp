@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 // @ts-ignore
 import {environment} from "@env";
@@ -20,24 +20,25 @@ export class BookManualAddComponent {
   @Input() languages: Language[]
   @Input() authors: Author[]
   @Input() publishers: Publisher[]
+  @Output() createBookEvent = new EventEmitter<Book>()
   book: Book = new Book()
   bookFieldsSettings = environment.book;
 
   manualBookAddForm: FormGroup
   constructor() {
     this.createFormGroup();
+
   }
 
   private createFormGroup() {
     this.manualBookAddForm = new FormGroup({
       title: BookManualAddComponent.createFormControl(this.book.title, this.bookFieldsSettings.title),
-      authorFirstName: BookManualAddComponent.createFormControl(this.book.authorFirstName, this.bookFieldsSettings.authorFirstName),
-      authorLastName: BookManualAddComponent.createFormControl(this.book.authorLastName, this.bookFieldsSettings.authorLastName),
+      author: new FormControl(null, Validators.required),
       pageCount: BookManualAddComponent.createFormControl(this.book.pageCount, this.bookFieldsSettings.pageCount),
-      languageName: BookManualAddComponent.createFormControl(this.book.languageName, this.bookFieldsSettings.languageName),
+      languageName: BookManualAddComponent.createFormControl(this.book.language.name, this.bookFieldsSettings.languageName),
       isbn10: BookManualAddComponent.createFormControl(this.book.isbn10, this.bookFieldsSettings.isbn10),
       isbn13: BookManualAddComponent.createFormControl(this.book.isbn13, this.bookFieldsSettings.isbn13),
-      publisherName: BookManualAddComponent.createFormControl(this.book.publisherName, this.bookFieldsSettings.publisherName),
+      publisherName: BookManualAddComponent.createFormControl(this.book.publisher.name, this.bookFieldsSettings.publisherName),
       publishedDate: BookManualAddComponent.createFormControl(this.book.publishedDate, this.bookFieldsSettings.publishedDate),
       publicSiteLink: BookManualAddComponent.createFormControl(this.book.publicSiteLink, this.bookFieldsSettings.publicSiteLink),
     })
@@ -56,7 +57,8 @@ export class BookManualAddComponent {
   }
 
 
-  add() {
+  onSubmitBook() {
+    this.createBookEvent.emit(this.book)
 
   }
 }
