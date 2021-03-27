@@ -6,6 +6,7 @@
 export const environment = {
   production: false,
   logoImg: 'assets/img/Logo-placeholder.png',
+  bookApiUrl: 'https://localhost:5001/',
   book: {
     title: {
       required: true,

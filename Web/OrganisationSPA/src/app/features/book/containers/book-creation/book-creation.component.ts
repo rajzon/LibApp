@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {Observable} from "rxjs";
+import { BookFacade } from '../../book.facade';
+import {Category} from "../../models/category";
 
 @Component({
   selector: 'app-book-creation',
@@ -7,9 +10,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BookCreationComponent implements OnInit {
 
-  constructor() { }
+  bookCategories$: Observable<Category[]>;
+
+  constructor(private bookFacade: BookFacade) {
+    this.bookCategories$ = bookFacade.getBookCategories$();
+  }
 
   ngOnInit(): void {
+    this.bookFacade.loadBookCategories().subscribe();
   }
+
 
 }

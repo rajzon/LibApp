@@ -3,9 +3,11 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CoreModule } from "./core/core.module";
+// @ts-ignore
+import { CoreModule } from "@core/core.module";
 import { routing } from "./app.routing";
 import {BookModule} from "./features/book/book.module";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -16,7 +18,8 @@ import {BookModule} from "./features/book/book.module";
     BrowserAnimationsModule,
     CoreModule,
     routing,
-    BookModule
+    BookModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

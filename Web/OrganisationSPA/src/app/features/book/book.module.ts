@@ -5,8 +5,13 @@ import { BookCreationComponent } from './containers/book-creation/book-creation.
 import { routing } from "./book.routing";
 import {TabsModule} from "ngx-bootstrap/tabs";
 import { BookManualAddComponent } from './components/book-manual-add/book-manual-add.component';
-import {SharedModule} from "../../shared/shared.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+// @ts-ignore
+import {SharedModule} from '@shared/shared.module';
+import {BookCategoryApiService} from "./api/book-category-api.service";
+import {BookFacade} from "./book.facade";
+import {BookState} from "./state/book.state";
+
 
 
 
