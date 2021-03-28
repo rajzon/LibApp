@@ -13,26 +13,40 @@ export const environment = {
       minLength: 3,
       maxLength: 50,
     },
-    authorFirstName: {
+    author: {
       required: true,
-      minLength: 3,
-      maxLength: 30,
+      authorFirstName: {
+        required: true,
+        minLength: 3,
+        maxLength: 30,
+      },
+      authorLastName: {
+        required: true,
+        minLength: 3,
+        maxLength: 30,
+      }
     },
-    authorLastName: {
-      required: true,
-      minLength: 3,
-      maxLength: 30,
+    categories: {
+      required: false,
+      name: {
+        required: false,
+        minLength: 3,
+        maxLength: 30,
+      }
     },
     pageCount: {
       required: false,
       min: 10,
       max: 65535
     },
-    languageName: {
+    language: {
       required: false,
-      minLength: 2,
-      maxLength: 20,
-      pattern: '[a-zA-Z]*'
+      languageName: {
+        required: false,
+        minLength: 2,
+        maxLength: 20,
+        pattern: '[a-zA-Z]*'
+      },
     },
     isbn10 : {
       required: false,
@@ -46,13 +60,17 @@ export const environment = {
       maxLength: 13,
       pattern: '^[0-9]+$'
     },
-    publisherName: {
+    publisher: {
       required: false,
-      minLength: 2,
-      maxLength: 40,
+      publisherName: {
+        required: false,
+        minLength: 2,
+        maxLength: 40,
+      }
     },
     publishedDate: {
       required: false
+
     },
     publicSiteLink: {
       required: false,
@@ -60,8 +78,8 @@ export const environment = {
     },
     description: {
       required: false,
-      minValue: 3,
-      maxValue: 10000
+      minLength: 3,
+      maxLength: 10000
     }
 
 

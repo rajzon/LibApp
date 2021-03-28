@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import {ControlValueAccessor, NgControl, ValidationErrors} from "@angular/forms";
+import {AbstractControl, ControlValueAccessor, NgControl, ValidationErrors} from "@angular/forms";
+import {isRequiredField} from "@shared/helpers/forms/is-required-field.function";
 
 @Component({
   selector: 'app-text-input',
@@ -21,6 +22,10 @@ export class TextInputComponent implements ControlValueAccessor {
   }
 
   writeValue(obj: any): void {
+  }
+
+  isRequiredField(abstractControl: AbstractControl): boolean {
+    return isRequiredField(abstractControl);
   }
 
 }

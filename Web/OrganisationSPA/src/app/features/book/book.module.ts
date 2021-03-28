@@ -6,6 +6,7 @@ import { routing } from "./book.routing";
 import { BookManualAddComponent } from './components/book-manual-add/book-manual-add.component';
 // @ts-ignore
 import {SharedModule} from '@shared/shared.module';
+import {QuillModule} from "ngx-quill";
 
 
 @NgModule({
@@ -13,7 +14,7 @@ import {SharedModule} from '@shared/shared.module';
   imports: [
     CommonModule,
     routing,
-    SharedModule,
+    SharedModule
   ]
 })
 export class BookModule { }

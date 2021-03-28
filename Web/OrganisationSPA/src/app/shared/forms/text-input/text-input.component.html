@@ -1,5 +1,7 @@
 <div class="form-group">
-  <label class="text-capitalize font-weight-bold">{{label}}</label>
+  <label
+    [class.font-weight-bold]="isRequiredField(ngControl.control)"
+    class="text-capitalize">{{label}}</label>
   <input
     [class.is-invalid]="ngControl.touched && ngControl.invalid"
     type="{{type}}"

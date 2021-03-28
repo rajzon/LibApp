@@ -1,11 +1,13 @@
 <div class="form-group">
-  <label class="text-capitalize font-weight-bold">{{label}}</label>
+  <label
+    [class.font-weight-bold]="isRequiredField(ngControl.control)"
+    class="text-capitalize">{{label}}</label>
   <input
     [class.is-invalid]="ngControl.touched && ngControl.invalid"
     appDigitsOnly
-    type="{{type}}"
-    class="form-control"
     [formControl]="ngControl.control"
+    [type]="type"
+    class="form-control"
     placeholder="{{label}}">
 
   <div *ngIf="ngControl.control.errors?.required"

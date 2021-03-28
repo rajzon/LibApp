@@ -6,6 +6,8 @@ import { NumberInputComponent } from './forms/number-input/number-input.componen
 import { DigitsOnlyDirective } from './directives/digits-only/digits-only.directive';
 import {TabsModule} from "ngx-bootstrap/tabs";
 import {NgSelectModule} from "@ng-select/ng-select";
+import {BsDatepickerModule} from "ngx-bootstrap/datepicker";
+import {QuillModule} from "ngx-quill";
 
 
 
@@ -17,11 +19,15 @@ import {NgSelectModule} from "@ng-select/ng-select";
     TabsModule,
     FormsModule,
     ReactiveFormsModule,
-    NgSelectModule
+    NgSelectModule,
+    BsDatepickerModule,
+    QuillModule
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    BsDatepickerModule.forRoot(),
+    QuillModule.forRoot()
   ]
 })
 export class SharedModule { }

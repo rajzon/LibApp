@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ChangeDetectionStrategy, Component, Input, Output, EventEmitter, AfterViewInit} from '@angular/core';
+import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 // @ts-ignore
 import {environment} from "@env";
 import {Book} from "../../models/book";
@@ -7,6 +7,8 @@ import {Category} from "../../models/category";
 import {Language} from "../../models/language";
 import {Author} from "../../models/author";
 import {Publisher} from "../../models/publisher";
+import {isRequiredField} from "@shared/helpers/forms/is-required-field.function";
+import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
 
 @Component({
   selector: 'app-book-manual-add',
@@ -32,32 +34,28 @@ export class BookManualAddComponent {
 
   private createFormGroup() {
     this.manualBookAddForm = new FormGroup({
-      title: BookManualAddComponent.createFormControl(this.book.title, this.bookFieldsSettings.title),
-      author: new FormControl(null, Validators.required),
-      pageCount: BookManualAddComponent.createFormControl(this.book.pageCount, this.bookFieldsSettings.pageCount),
-      languageName: BookManualAddComponent.createFormControl(this.book.language.name, this.bookFieldsSettings.languageName),
-      isbn10: BookManualAddComponent.createFormControl(this.book.isbn10, this.bookFieldsSettings.isbn10),
-      isbn13: BookManualAddComponent.createFormControl(this.book.isbn13, this.bookFieldsSettings.isbn13),
-      publisherName: BookManualAddComponent.createFormControl(this.book.publisher.name, this.bookFieldsSettings.publisherName),
-      publishedDate: BookManualAddComponent.createFormControl(this.book.publishedDate, this.bookFieldsSettings.publishedDate),
-      publicSiteLink: BookManualAddComponent.createFormControl(this.book.publicSiteLink, this.bookFieldsSettings.publicSiteLink),
+      title: createFormControl(this.book.title, this.bookFieldsSettings.title),
+      author: createFormControl(null, this.bookFieldsSettings.author),
+      categories: createFormControl(null, this.bookFieldsSettings.categories),
+      pageCount: createFormControl(null, this.bookFieldsSettings.pageCount),
+      language: createFormControl(null, this.bookFieldsSettings.language),
+      isbn10: createFormControl(this.book.isbn10, this.bookFieldsSettings.isbn10),
+      isbn13: createFormControl(this.book.isbn13, this.bookFieldsSettings.isbn13),
+      publisher: createFormControl(null, this.bookFieldsSettings.publisher),
+      publishedDate: createFormControl(this.book.publishedDate, this.bookFieldsSettings.publishedDate),
+      publicSiteLink: createFormControl(this.book.publicSiteLink, this.bookFieldsSettings.publicSiteLink),
+      description: new FormControl(null)
     })
   }
 
 
-  private static createFormControl<T>(field: T, opts: any) {
-    return new FormControl(field, [
-      opts.required ? Validators.required : Validators.nullValidator,
-      opts.minLength ? Validators.minLength(opts.minLength) : Validators.nullValidator,
-      opts.maxLength ? Validators.maxLength(opts.maxLength) : Validators.nullValidator,
-      opts.min ? Validators.min(opts.min) : Validators.nullValidator,
-      opts.max ? Validators.max(opts.max) : Validators.nullValidator,
-      opts.pattern ? Validators.pattern(opts.pattern) : Validators.nullValidator,
-    ]);
+  isRequiredField(abstractControl: AbstractControl): boolean {
+    return isRequiredField(abstractControl);
   }
 
 
   onSubmitBook() {
+    console.log(this.manualBookAddForm.value);
     this.createBookEvent.emit(this.book)
 
   }

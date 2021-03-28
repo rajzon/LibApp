@@ -1,5 +1,6 @@
 import {Component, Input, } from '@angular/core';
-import {ControlValueAccessor, NgControl} from "@angular/forms";
+import {AbstractControl, ControlValueAccessor, FormGroup, NgControl} from "@angular/forms";
+import {isRequiredField} from "@shared/helpers/forms/is-required-field.function";
 
 @Component({
   selector: 'app-number-input',
@@ -22,6 +23,10 @@ export class NumberInputComponent implements ControlValueAccessor {
   }
 
   writeValue(obj: any): void {
+  }
+
+  isRequiredField(abstractControl: AbstractControl): boolean {
+    return isRequiredField(abstractControl);
   }
 
 }

@@ -6,7 +6,9 @@
     <app-text-input [formControl]='manualBookAddForm.controls["title"]'
                     [label]='"Title"'></app-text-input>
     <div class="form-group">
-      <label class="text-capitalize font-weight-bold">author</label>
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['author'])"
+        class="text-capitalize">author</label>
       <ng-select
         formControlName="author"
         [items]="authors"
@@ -16,20 +18,87 @@
       ></ng-select>
     </div>
 
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['categories'])"
+        class="text-capitalize">categories</label>
+      <ng-select
+        formControlName="categories"
+        [items]="categories"
+        [multiple]= true
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Select Categories"
+      ></ng-select>
+    </div>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['language'])"
+        class="text-capitalize">language</label>
+      <ng-select
+        formControlName="language"
+        [items]="languages"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Select Language"
+      ></ng-select>
+    </div>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['publisher'])"
+        class="text-capitalize">publisher</label>
+      <ng-select
+        formControlName="publisher"
+        [items]="publishers"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Select Publisher"
+      ></ng-select>
+    </div>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['publishedDate'])"
+        class="text-capitalize">published date</label>
+      <input type="text"
+             formControlName="publishedDate"
+             placeholder="Published Date"
+             class="form-control"
+             bsDatepicker [bsConfig]="{containerClass: 'theme-dark-blue'}">
+    </div>
+
     <app-number-input [formControl]='manualBookAddForm.controls["pageCount"]'
                     [label]='"Page Count"'></app-number-input>
-    <app-text-input [formControl]='manualBookAddForm.controls["languageName"]'
-                    [label]='"Language"'></app-text-input>
+
     <app-text-input [formControl]='manualBookAddForm.controls["isbn10"]'
                     [label]='"ISBN10"'></app-text-input>
     <app-text-input [formControl]='manualBookAddForm.controls["isbn13"]'
                     [label]='"ISBN13"'></app-text-input>
-    <app-text-input [formControl]='manualBookAddForm.controls["publisherName"]'
-                    [label]='"Publisher Name"'></app-text-input>
-    <app-text-input [formControl]='manualBookAddForm.controls["publishedDate"]'
-                    [label]='"Published Date"'></app-text-input>
+
     <app-text-input [formControl]='manualBookAddForm.controls["publicSiteLink"]'
                     [label]='"Public Site Link"'></app-text-input>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['description'])"
+        class="text-capitalize">description
+      </label>
+
+      <quill-editor
+        [formControl]="manualBookAddForm.controls['description']"
+        [minLength]="bookFieldsSettings.description.minLength"
+        [maxLength]="bookFieldsSettings.description.maxLength"
+        [required]="true"
+        (onEditorChanged)="$event"></quill-editor>
+    </div>
+
+    <div class="form-group text-center">
+      <button [disabled]="manualBookAddForm.invalid" class="btn btn-primary" type="submit">Create book</button>
+      <button class="btn btn-default" type="button">Cancel</button>
+    </div>
+
   </form>
   {{categories | json}}
   <br><br>
