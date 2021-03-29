@@ -22,8 +22,8 @@ namespace Book.API.Domain
         private int? _languageId;
         public int? LanguageId => _languageId;
         
-        private int _authorId;
-        public int AuthorId => _authorId;
+        private int? _authorId;
+        public int? AuthorId => _authorId;
         
         private int? _publisherId;
         public int? PublisherId => _publisherId;
@@ -45,7 +45,7 @@ namespace Book.API.Domain
         }
         
         private Book(string title,
-            int authorId,
+            int? authorId,
             BookEan13 bookEan13,
             string description = default,
             BookIsbn10 isbn10 = default,
@@ -80,7 +80,7 @@ namespace Book.API.Domain
             CreationDate = DateTime.UtcNow;
         }
 
-        public Book(string title, int authorId, string description = default, BookIsbn10 isbn10 = default, BookIsbn13 isbn13 = default,
+        public Book(string title, int? authorId, string description = default, BookIsbn10 isbn10 = default, BookIsbn13 isbn13 = default,
             int? languageId = default, int? publisherId = default, ushort? pageCount = default, 
             bool visibility = default, DateTime publishedDate = default
             ) : this(title, authorId, new BookEan13(), 

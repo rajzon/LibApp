@@ -31,7 +31,7 @@ namespace Book.API.Data.Configurations
 
 
             builder
-                .Property<int>("_authorId")
+                .Property<int?>("_authorId")
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
 
             builder

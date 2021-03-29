@@ -61,7 +61,10 @@ namespace Book.API.Handlers
                 isbn10,
                 isbn13,
                 language.Id,
-                publisher.Id);
+                publisher.Id,
+                request.PageCount,
+                request.Visibility,
+                request.PublishedDate);
             
             await AddCategoriesToBookAsync(book, request.CategoriesNames.Distinct());
 

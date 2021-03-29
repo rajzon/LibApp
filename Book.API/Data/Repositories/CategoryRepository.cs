@@ -33,6 +33,11 @@ namespace Book.API.Data.Repositories
             return await _bookDbContext.Categories.Where(c => names.Distinct().Contains(c.Name)).ToListAsync();
         }
 
+        public async Task<IEnumerable<Category>> GetAllByIdAsync(IList<int> categoriesIds)
+        {
+            return await _bookDbContext.Categories.Where(c => categoriesIds.Distinct().Contains(c.Id)).ToListAsync();
+        }
+
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _bookDbContext.Categories.ToListAsync();

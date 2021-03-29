@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Book.API.Controllers.V1;
 using Book.API.Domain;
+using Book.API.Queries.V1;
 using Book.API.Queries.V1.Dtos;
 using MediatR;
 

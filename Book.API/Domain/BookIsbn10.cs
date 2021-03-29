@@ -12,8 +12,8 @@ namespace Book.API.Domain
         protected BookIsbn10() { }
         public BookIsbn10(string code = null)
         {
-            if (code?.Length < 10)
-                throw new ArgumentException("ISBN10 must not exceed 10 digits");
+            if (code?.Length != 10)
+                throw new ArgumentException("ISBN10 must contain exactly 10 digits");
             if (! (code ?? string.Empty).All(char.IsDigit))
                 throw new ArgumentException("ISBN10 must contain only digits");
 

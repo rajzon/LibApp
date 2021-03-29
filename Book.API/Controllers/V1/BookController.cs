@@ -24,12 +24,16 @@ namespace Book.API.Controllers.V1
             _mediator = mediator;
         }
 
-        [HttpPost("add")]
-        [ProducesResponseType(typeof(CreateBookCommandResult), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Create(CreateBookCommand command)
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<BookDto>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType( (int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetAll()
         {
-            var result = await _mediator.Send(command);
-            
+            var result = await _mediator.Send(new GetAllBooksQuery());
+
+            if (!result.Any())
+                return NotFound();
+
             return Ok(result);
         }
         
@@ -46,22 +50,24 @@ namespace Book.API.Controllers.V1
             return Ok(result);
         }
 
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<BookDto>), (int) HttpStatusCode.OK)]
-        [ProducesResponseType( (int) HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetAll()
+        
+        [HttpPost("add")]
+        [ProducesResponseType(typeof(CreateBookCommandResult), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> Create(CreateBookCommand command)
         {
-            var result = await _mediator.Send(new GetAllBooksQuery());
+            var result = await _mediator.Send(command);
+            
+            return Ok(result);
+        }
 
-            if (!result.Any())
-                return NotFound();
+        [HttpPost("add-manual")]
+        [ProducesResponseType(typeof(CreateBookCommandResult), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> CreateManual(CreateBookManualCommand command)
+        {
+            var result = await _mediator.Send(command);
 
             return Ok(result);
         }
-        
-    }
 
-    public class GetAllBooksQuery : IRequest<IEnumerable<BookDto>>
-    {
     }
 }

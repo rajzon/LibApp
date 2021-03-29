@@ -9,6 +9,7 @@ namespace Book.API.Domain
         Category Add(Category category);
         Task<Category> FindByIdAsync(int id);
         Task<IEnumerable<Category>> GetAllByNamesAsync(IList<string> names);
+        Task<IEnumerable<Category>> GetAllByIdAsync(IList<int> categoriesIds);
         Task<IEnumerable<Category>> GetAllAsync();
     }
 }
