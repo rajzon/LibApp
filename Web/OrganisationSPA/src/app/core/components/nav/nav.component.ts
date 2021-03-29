@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {environment} from "src/environments/environment";
+// @ts-ignore
+import { environment } from '@env';
+
 
 @Component({
   selector: 'app-nav',

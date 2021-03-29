@@ -1,0 +1,13 @@
+<div>
+  <tabset>
+    <tab heading="Adding Using Different Source" id="tab1">Content</tab>
+    <tab heading="Manual Adding"><app-book-manual-add
+      [categories]="categories$ | async"
+      [languages]="languages$ | async"
+      [authors]="authors$ | async"
+      [publishers]="publishers$ | async"
+      [uploaderOptions]="uploaderOptions"
+      [uploaderStyle]="uploaderStyle"></app-book-manual-add>
+    </tab>
+  </tabset>
+</div>

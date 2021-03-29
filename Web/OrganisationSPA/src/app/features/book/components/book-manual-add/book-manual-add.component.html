@@ -1,0 +1,137 @@
+<div class="container">
+  <form [formGroup]="manualBookAddForm"
+        (ngSubmit)="onSubmitBook()"
+        class="m-5">
+
+    <app-text-input [formControl]='manualBookAddForm.controls["title"]'
+                    [label]='"Title"'></app-text-input>
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['author'])"
+        class="text-capitalize">author</label>
+      <ng-select
+        formControlName="author"
+        [items]="authors"
+        bindLabel="fullName"
+        bindValue="id"
+        placeholder="Select Author"
+      ></ng-select>
+    </div>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['categories'])"
+        class="text-capitalize">categories</label>
+      <ng-select
+        formControlName="categories"
+        [items]="categories"
+        [multiple]= true
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Select Categories"
+      ></ng-select>
+    </div>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['language'])"
+        class="text-capitalize">language</label>
+      <ng-select
+        formControlName="language"
+        [items]="languages"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Select Language"
+      ></ng-select>
+    </div>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['publisher'])"
+        class="text-capitalize">publisher</label>
+      <ng-select
+        formControlName="publisher"
+        [items]="publishers"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Select Publisher"
+      ></ng-select>
+    </div>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['publishedDate'])"
+        class="text-capitalize">published date</label>
+      <input type="text"
+             formControlName="publishedDate"
+             placeholder="Published Date"
+             class="form-control"
+             bsDatepicker [bsConfig]="{containerClass: 'theme-dark-blue'}">
+    </div>
+
+    <app-number-input [formControl]='manualBookAddForm.controls["pageCount"]'
+                    [label]='"Page Count"'></app-number-input>
+
+    <app-text-input [formControl]='manualBookAddForm.controls["isbn10"]'
+                    [label]='"ISBN10"'></app-text-input>
+    <app-text-input [formControl]='manualBookAddForm.controls["isbn13"]'
+                    [label]='"ISBN13"'></app-text-input>
+
+    <app-text-input [formControl]='manualBookAddForm.controls["publicSiteLink"]'
+                    [label]='"Public Site Link"'></app-text-input>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['description'])"
+        class="text-capitalize">description
+      </label>
+
+    <!-- Description-->
+      <quill-editor
+        [formControl]="manualBookAddForm.controls['description']"
+        [minLength]="bookFieldsSettings.description.minLength"
+        [maxLength]="bookFieldsSettings.description.maxLength"
+        [required]="bookFieldsSettings.description.required"
+        (onEditorChanged)="$event"></quill-editor>
+
+      <div *ngIf="manualBookAddForm.controls['description'].errors?.requiredError"
+           class="invalid-feedback d-block">
+        <span class="text-capitalize">Description</span> field is required
+      </div>
+      <div *ngIf="manualBookAddForm.controls['description'].errors?.minLengthError"
+           class="invalid-feedback d-block">
+        <span class="text-capitalize">Description</span> must be at least {{manualBookAddForm.controls['description'].errors?.minLengthError['minLength']}} characters
+      </div>
+      <div *ngIf="manualBookAddForm.controls['description'].errors?.maxLengthError"
+           class="invalid-feedback d-block">
+        <span class="text-capitalize">Description</span> must be at most {{manualBookAddForm.controls['description'].errors?.maxLengthError['maxLength']}} characters
+      </div>
+    </div>
+    <!--# Description-->
+
+    <!-- uploader-->
+    <app-file-uploader
+      [uploaderStyle]="uploaderStyle"
+      [uploaderOptions]="uploaderOptions"></app-file-uploader>
+    <!-- #uploader-->
+
+    <div class="form-group row">
+      <div class="col-6">
+        <button [disabled]="manualBookAddForm.invalid" class="btn btn-primary w-100" type="submit">Create book</button>
+      </div>
+
+      <div class="col-6">
+        <button class="btn btn-default w-100" type="button">Cancel</button>
+      </div>
+    </div>
+  </form>
+  {{categories | json}}
+  <br><br>
+  {{languages | json}}
+  <br><br>
+  {{authors | json}}
+  <br><br>
+  {{publishers | json}}
+
+
+</div>
