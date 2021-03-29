@@ -81,9 +81,6 @@ export const environment = {
       minLength: 3,
       maxLength: 10000
     }
-
-
-
   }
 };
 
