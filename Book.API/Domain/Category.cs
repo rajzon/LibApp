@@ -8,6 +8,11 @@ namespace Book.API.Domain
     {
         public string Name { get; private set; }
         
+        
+        public DateTime ModificationDate { get; private set; }
+        public DateTime CreationDate { get; private set; }
+        
+        
         //DDD violation: Navigation property to outside aggregate in order to create many-to-many relationship
         public IReadOnlyCollection<Book> Books { get; private set; }
         
@@ -17,6 +22,8 @@ namespace Book.API.Domain
                 throw new ArgumentException("Category name cannot be empty or whitespace");
             
             Name = name;
+            ModificationDate = DateTime.UtcNow;
+            CreationDate = DateTime.UtcNow;
         }
         
         protected Category() { }

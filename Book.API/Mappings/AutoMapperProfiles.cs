@@ -13,6 +13,7 @@ namespace Book.API.Mappings
             CreateMap<Language, LanguageDto>();
             CreateMap<Publisher, PublisherDto>();
             CreateMap<Category, CategoryDto>();
+            CreateMap<Image, AddPhotoCommandResult>();
             
             CreateMap<Domain.Book, CreateBookCommandResult>()
                 .ForMember(dest => dest.Title,

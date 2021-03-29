@@ -16,8 +16,9 @@ namespace Book.API.Domain
         public bool Visibility { get; private set; }
         
         
-        //TODO: Images!!!
-        // public List<string> Images { get; private set; }
+        
+        private readonly List<Image> _images;
+        public IReadOnlyCollection<Image> Images => _images;
         
         private int? _languageId;
         public int? LanguageId => _languageId;
@@ -41,7 +42,7 @@ namespace Book.API.Domain
         
         protected Book()
         {
-            
+            // _images = new List<Image>();
         }
         
         private Book(string title,
@@ -71,9 +72,9 @@ namespace Book.API.Domain
             _languageId = languageId;
             _authorId = authorId;
             _publisherId = publisherId;
+            
+            
             _categories = new List<Category>();
-            
-            
             Ean13 = bookEan13;
             
             ModificationDate = DateTime.UtcNow;
@@ -98,6 +99,12 @@ namespace Book.API.Domain
                 return;
             
             this._categories.Add(category);
+        }
+
+
+        public void AddImage(string url, string publicId, bool isMain)
+        {
+            this._images.Add(new Image(url, publicId, _images.Any()? isMain : true));
         }
         
     }

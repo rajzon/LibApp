@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Book.API.Commands.V1;
 using Book.API.Queries.V1;
@@ -11,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Book.API.Controllers.V1
 {
-    
+    //TODO consider define cancellation token in controller methods
     [ApiVersion("1.0")]
     [ApiController]
     [Route("v{version:apiVersion}/[controller]")]
@@ -65,6 +67,19 @@ namespace Book.API.Controllers.V1
         public async Task<IActionResult> CreateManual(CreateBookManualCommand command)
         {
             var result = await _mediator.Send(command);
+
+            return Ok(result);
+        }
+
+        [HttpPost("{id}/add-photo")]
+        [ProducesResponseType(typeof(AddPhotoCommandResult), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> AddPhotoToBook([FromForm]AddPhotoCommand command)
+        {
+            
+            var result = await _mediator.Send(command);
+
+            if (result is null)
+                return BadRequest();
 
             return Ok(result);
         }
