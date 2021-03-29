@@ -86,19 +86,44 @@
         class="text-capitalize">description
       </label>
 
+    <!-- Description-->
       <quill-editor
         [formControl]="manualBookAddForm.controls['description']"
         [minLength]="bookFieldsSettings.description.minLength"
         [maxLength]="bookFieldsSettings.description.maxLength"
-        [required]="true"
+        [required]="bookFieldsSettings.description.required"
         (onEditorChanged)="$event"></quill-editor>
-    </div>
 
-    <div class="form-group text-center">
-      <button [disabled]="manualBookAddForm.invalid" class="btn btn-primary" type="submit">Create book</button>
-      <button class="btn btn-default" type="button">Cancel</button>
+      <div *ngIf="manualBookAddForm.controls['description'].errors?.requiredError"
+           class="invalid-feedback d-block">
+        <span class="text-capitalize">Description</span> field is required
+      </div>
+      <div *ngIf="manualBookAddForm.controls['description'].errors?.minLengthError"
+           class="invalid-feedback d-block">
+        <span class="text-capitalize">Description</span> must be at least {{manualBookAddForm.controls['description'].errors?.minLengthError['minLength']}} characters
+      </div>
+      <div *ngIf="manualBookAddForm.controls['description'].errors?.maxLengthError"
+           class="invalid-feedback d-block">
+        <span class="text-capitalize">Description</span> must be at most {{manualBookAddForm.controls['description'].errors?.maxLengthError['maxLength']}} characters
+      </div>
     </div>
+    <!--# Description-->
 
+    <!-- uploader-->
+    <app-file-uploader
+      [uploaderStyle]="uploaderStyle"
+      [uploaderOptions]="uploaderOptions"></app-file-uploader>
+    <!-- #uploader-->
+
+    <div class="form-group row">
+      <div class="col-6">
+        <button [disabled]="manualBookAddForm.invalid" class="btn btn-primary w-100" type="submit">Create book</button>
+      </div>
+
+      <div class="col-6">
+        <button class="btn btn-default w-100" type="button">Cancel</button>
+      </div>
+    </div>
   </form>
   {{categories | json}}
   <br><br>

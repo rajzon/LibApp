@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, Output, EventEmitter, AfterViewInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, Output, EventEmitter} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 // @ts-ignore
 import {environment} from "@env";
@@ -9,6 +9,8 @@ import {Author} from "../../models/author";
 import {Publisher} from "../../models/publisher";
 import {isRequiredField} from "@shared/helpers/forms/is-required-field.function";
 import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
+import {FileUploaderOptions} from "ng2-file-upload";
+import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
 
 @Component({
   selector: 'app-book-manual-add',
@@ -22,28 +24,32 @@ export class BookManualAddComponent {
   @Input() languages: Language[]
   @Input() authors: Author[]
   @Input() publishers: Publisher[]
+  @Input() uploaderOptions: FileUploaderOptions
+  @Input() uploaderStyle: IFileUploaderStyle
   @Output() createBookEvent = new EventEmitter<Book>()
-  book: Book = new Book()
   bookFieldsSettings = environment.book;
 
   manualBookAddForm: FormGroup
+
+
+
   constructor() {
     this.createFormGroup();
-
   }
+
 
   private createFormGroup() {
     this.manualBookAddForm = new FormGroup({
-      title: createFormControl(this.book.title, this.bookFieldsSettings.title),
+      title: createFormControl(null, this.bookFieldsSettings.title),
       author: createFormControl(null, this.bookFieldsSettings.author),
       categories: createFormControl(null, this.bookFieldsSettings.categories),
       pageCount: createFormControl(null, this.bookFieldsSettings.pageCount),
       language: createFormControl(null, this.bookFieldsSettings.language),
-      isbn10: createFormControl(this.book.isbn10, this.bookFieldsSettings.isbn10),
-      isbn13: createFormControl(this.book.isbn13, this.bookFieldsSettings.isbn13),
+      isbn10: createFormControl(null, this.bookFieldsSettings.isbn10),
+      isbn13: createFormControl(null, this.bookFieldsSettings.isbn13),
       publisher: createFormControl(null, this.bookFieldsSettings.publisher),
-      publishedDate: createFormControl(this.book.publishedDate, this.bookFieldsSettings.publishedDate),
-      publicSiteLink: createFormControl(this.book.publicSiteLink, this.bookFieldsSettings.publicSiteLink),
+      publishedDate: createFormControl(null, this.bookFieldsSettings.publishedDate),
+      publicSiteLink: createFormControl(null, this.bookFieldsSettings.publicSiteLink),
       description: new FormControl(null)
     })
   }
@@ -54,9 +60,11 @@ export class BookManualAddComponent {
   }
 
 
+
   onSubmitBook() {
     console.log(this.manualBookAddForm.value);
-    this.createBookEvent.emit(this.book)
+    const book  = this.manualBookAddForm.value as Book;
+    this.createBookEvent.emit(book)
 
   }
 }

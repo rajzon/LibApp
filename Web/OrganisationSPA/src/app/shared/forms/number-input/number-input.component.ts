@@ -1,11 +1,12 @@
-import {Component, Input, } from '@angular/core';
-import {AbstractControl, ControlValueAccessor, FormGroup, NgControl} from "@angular/forms";
+import {ChangeDetectionStrategy, Component, Input,} from '@angular/core';
+import {AbstractControl, ControlValueAccessor, NgControl} from "@angular/forms";
 import {isRequiredField} from "@shared/helpers/forms/is-required-field.function";
 
 @Component({
   selector: 'app-number-input',
   templateUrl: './number-input.component.html',
-  styleUrls: ['./number-input.component.sass']
+  styleUrls: ['./number-input.component.sass'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NumberInputComponent implements ControlValueAccessor {
   @Input() label: string;

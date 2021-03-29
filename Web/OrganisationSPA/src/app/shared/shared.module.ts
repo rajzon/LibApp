@@ -8,11 +8,13 @@ import {TabsModule} from "ngx-bootstrap/tabs";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {BsDatepickerModule} from "ngx-bootstrap/datepicker";
 import {QuillModule} from "ngx-quill";
+import {FileUploadModule} from "ng2-file-upload";
+import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 
 
 
 @NgModule({
-  declarations: [TextInputComponent, NumberInputComponent, DigitsOnlyDirective],
+  declarations: [TextInputComponent, NumberInputComponent, DigitsOnlyDirective, FileUploaderComponent],
   exports: [
     TextInputComponent,
     NumberInputComponent,
@@ -21,13 +23,16 @@ import {QuillModule} from "ngx-quill";
     ReactiveFormsModule,
     NgSelectModule,
     BsDatepickerModule,
-    QuillModule
+    QuillModule,
+    FileUploadModule,
+    FileUploaderComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
-    QuillModule.forRoot()
+    QuillModule.forRoot(),
+    FileUploadModule
   ]
 })
 export class SharedModule { }
