@@ -8,7 +8,13 @@ namespace Book.API.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Author> builder)
         {
-            builder.OwnsOne<AuthorName>(a => a.Name);
+            builder.OwnsOne<AuthorName>(a => a.Name, name =>
+            {
+                name.Property(n => n.FirstName)
+                    .HasMaxLength(100);
+                name.Property(n => n.LastName)
+                    .HasMaxLength(100);
+            });
         }
     }
 }
