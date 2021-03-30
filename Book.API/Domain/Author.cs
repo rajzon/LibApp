@@ -20,7 +20,6 @@ namespace Book.API.Domain
         }
         
         protected Author() { }
-
     }
 
     public class AuthorName : ValueObject
@@ -29,18 +28,17 @@ namespace Book.API.Domain
 
         public string LastName { get; private set; }
         
-        //TODO: consider name as not only letters
         public AuthorName(string firstName, string lastName)
         {
             if (string.IsNullOrWhiteSpace(firstName))
                 throw new ArgumentException("Firstname cannot be empty or whitespace");
-            if (! firstName.All(char.IsLetter))
-                throw new ArgumentException("Firstname must contain only letters");
+            if (firstName.Any(char.IsDigit))
+                throw new ArgumentException("Firstname cannot contain any digits");
             
             if (string.IsNullOrWhiteSpace(lastName))
                 throw new ArgumentException("Lastname cannot be empty or whitespace");
-            if (! lastName.All(char.IsLetter))
-                throw new ArgumentException("Lastname must contain only letters");
+            if (lastName.Any(char.IsDigit))
+                throw new ArgumentException("Lastname cannot contain any digits");
             
             
             FirstName = firstName;

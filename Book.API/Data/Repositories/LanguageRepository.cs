@@ -31,6 +31,7 @@ namespace Book.API.Data.Repositories
 
         public async Task<Language> FindByNameAsync(string name)
         {
+            var a = _bookContext.Languages;
             return await _bookContext.Languages
                 .SingleOrDefaultAsync(l => l.Name.Equals(name));
         }

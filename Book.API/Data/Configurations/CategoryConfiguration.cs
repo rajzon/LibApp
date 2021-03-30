@@ -9,10 +9,8 @@ namespace Book.API.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-            // builder
-            //     .Property("BooksIds")
-            //     .UsePropertyAccessMode(PropertyAccessMode.Field)
-            //     .IsRequired(false);
+            builder.Property(c => c.Name)
+                .HasMaxLength(100);
             
             builder
                 .HasIndex(c => c.Name)

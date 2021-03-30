@@ -30,6 +30,13 @@ namespace Book.API.Data.Repositories
                 .SingleOrDefaultAsync(b => b.Id.Equals(id));
         }
 
+        public async Task<Domain.Book> FindByIdWithPhotoAsync(int id)
+        {
+            return await _bookContext.Books
+                .Include(i => i.Images)
+                .SingleOrDefaultAsync(b => b.Id.Equals(id));
+        }
+
         //TODO: Consider some sort of builder for building Book with related tables
         public async Task<IEnumerable<Domain.Book>> GetAllAsync()
         {

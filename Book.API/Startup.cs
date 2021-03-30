@@ -1,6 +1,9 @@
 using Book.API.Data;
 using Book.API.Installers;
 using Book.API.Mappings;
+using Book.API.Services;
+using Book.API.Settings;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,13 +27,19 @@ namespace Book.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(mvcConfig => mvcConfig.RegisterValidatorsFromAssemblyContaining<Startup>());
+            
+            
+            
             services.AddBookDbContextInitializer();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             services.AddMediatR(typeof(Startup));
             services.AddApiVersioningInitializer();
             services.AddSwaggerInitializer();
             services.AddCors();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

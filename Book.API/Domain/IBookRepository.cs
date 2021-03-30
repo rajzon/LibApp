@@ -8,6 +8,7 @@ namespace Book.API.Domain
     {
         Book Add(Book book);
         Task<Book> FindByIdAsync(int id);
+        Task<Book> FindByIdWithPhotoAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
 
     }

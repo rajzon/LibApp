@@ -8,6 +8,9 @@ namespace Book.API.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Language> builder)
         {
+            builder.Property(l => l.Name)
+                .HasMaxLength(100);
+            
             builder.HasIndex(l => l.Name)
                 .IsUnique();
         }
