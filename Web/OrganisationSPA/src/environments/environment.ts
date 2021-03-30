@@ -35,7 +35,7 @@ export const environment = {
       }
     },
     pageCount: {
-      required: true,
+      required: false,
       min: 1,
       max: 65535
     },

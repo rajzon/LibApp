@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container border mt-5">
   <form [formGroup]="manualBookAddForm"
         (ngSubmit)="onSubmitBook()"
         class="m-5">
@@ -145,13 +145,5 @@
       </div>
     </div>
   </form>
-  {{categories | json}}
-  <br><br>
-  {{languages | json}}
-  <br><br>
-  {{authors | json}}
-  <br><br>
-  {{publishers | json}}
-
 
 </div>
