@@ -11,11 +11,9 @@ namespace Book.API.Domain
         
         public BookIsbn13(string code)
         {
-            if (code?.Length != 13)
+            if (code?.Length != 13 || ! code.All(char.IsDigit))
                 throw new ArgumentException("ISBN13 must contain exactly 13 digits");
-            if (! (code ?? string.Empty).All(char.IsDigit))
-                throw new ArgumentException("ISBN13 must contain only digits");
-            
+
             Code = code;
         }
         

@@ -36,7 +36,7 @@ export const environment = {
     },
     pageCount: {
       required: false,
-      min: 10,
+      min: 1,
       max: 65535
     },
     language: {
@@ -70,7 +70,6 @@ export const environment = {
     },
     publishedDate: {
       required: false
-
     },
     publicSiteLink: {
       required: false,
@@ -79,7 +78,7 @@ export const environment = {
     description: {
       required: false,
       minLength: 3,
-      maxLength: 10000
+      maxLength: 5000
     }
   }
 };

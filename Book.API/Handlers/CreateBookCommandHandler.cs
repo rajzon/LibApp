@@ -36,37 +36,42 @@ namespace Book.API.Handlers
         
         public async Task<CreateBookCommandResult> Handle(CreateBookCommand request, CancellationToken cancellationToken)
         {
-            var isbn10 = new BookIsbn10(request.Isbn10);
-            var isbn13 = new BookIsbn13(request.Isbn13);
-            
-            var language = await _languageRepository.FindByNameAsync(request.LanguageName) ??
-                           _languageRepository.Add(new Language(request.LanguageName));
+            var language = request.LanguageName is not null
+                ? await _languageRepository.FindByNameAsync(request.LanguageName) ??
+                  _languageRepository.Add(new Language(request.LanguageName))
+                : null;
             
             await _languageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-            
-            var author = await _authorRepository.FindByNameAsync(new AuthorName(request.Author.FirstName, request.Author.LastName)) ??
-                         _authorRepository.Add(new Author(new AuthorName(request.Author.FirstName, request.Author.LastName)));
+
+            var author = request.Author is not null
+                ? await _authorRepository.FindByNameAsync(new AuthorName(request.Author.FirstName,
+                      request.Author.LastName)) ??
+                  _authorRepository.Add(new Author(new AuthorName(request.Author.FirstName, request.Author.LastName)))
+                : null;
 
             await _authorRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-            var publisher = await _publisherRepository.FindByNameAsync(request.PublisherName) ??
-                            _publisherRepository.Add(new Publisher(request.PublisherName));
+            var publisher = request.PublisherName is not null
+                ? await _publisherRepository.FindByNameAsync(request.PublisherName) ??
+                  _publisherRepository.Add(new Publisher(request.PublisherName))
+                : null;
             
             await _publisherRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             
             var book = new 
                 Domain.Book(request.Title, 
-                author.Id,
+                author?.Id,
                 request.Description,
-                isbn10,
-                isbn13,
-                language.Id,
-                publisher.Id,
+                request.Isbn10,
+                request.Isbn13,
+                language?.Id,
+                publisher?.Id,
                 request.PageCount,
                 request.Visibility,
                 request.PublishedDate);
-            
-            await AddCategoriesToBookAsync(book, request.CategoriesNames.Distinct());
+
+            if (request.CategoriesNames is not null && request.CategoriesNames.Any())
+                await AddCategoriesToBookAsync(book, request.CategoriesNames.Distinct());
 
             var result = _bookRepository.Add(book);
             await _bookRepository.UnitOfWork.SaveChangesAsync(cancellationToken);

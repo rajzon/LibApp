@@ -10,12 +10,10 @@ namespace Book.API.Domain
         public string Code { get; private set; }
         
         protected BookIsbn10() { }
-        public BookIsbn10(string code = null)
+        public BookIsbn10(string code)
         {
-            if (code?.Length != 10)
+            if (code?.Length != 10 || ! code.All(char.IsDigit))
                 throw new ArgumentException("ISBN10 must contain exactly 10 digits");
-            if (! (code ?? string.Empty).All(char.IsDigit))
-                throw new ArgumentException("ISBN10 must contain only digits");
 
 
             Code = code;

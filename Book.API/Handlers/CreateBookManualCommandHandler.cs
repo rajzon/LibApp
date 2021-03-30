@@ -26,15 +26,13 @@ namespace Book.API.Handlers
         
         public async Task<CreateBookCommandResult> Handle(CreateBookManualCommand request, CancellationToken cancellationToken)
         {
-            var isbn10 = new BookIsbn10(request.Isbn10);
-            var isbn13 = new BookIsbn13(request.Isbn13);
             var categories = await _categoryRepository.GetAllByIdAsync(request.CategoriesIds);
 
             var book = new Domain.Book(request.Title,
                 request.AuthorId,
                 request.Description,
-                isbn10,
-                isbn13,
+                request.Isbn10,
+                request.Isbn13,
                 request.LanguageId,
                 request.PublisherId,
                 request.PageCount,
