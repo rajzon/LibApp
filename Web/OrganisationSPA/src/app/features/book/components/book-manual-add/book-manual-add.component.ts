@@ -47,9 +47,9 @@ export class BookManualAddComponent {
       language: createFormControl(null, this.bookFieldsSettings.language),
       isbn10: createFormControl(null, this.bookFieldsSettings.isbn10),
       isbn13: createFormControl(null, this.bookFieldsSettings.isbn13),
+      visibility: new FormControl(true),
       publisher: createFormControl(null, this.bookFieldsSettings.publisher),
       publishedDate: createFormControl(null, this.bookFieldsSettings.publishedDate),
-      publicSiteLink: createFormControl(null, this.bookFieldsSettings.publicSiteLink),
       description: new FormControl(null)
     })
   }
