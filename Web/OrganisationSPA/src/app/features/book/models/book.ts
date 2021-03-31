@@ -3,6 +3,7 @@ import {Language} from "./language";
 import {Publisher} from "./publisher";
 
 export class Book {
+  id: number;
   title: string;
   author: Author
   pageCount: number;

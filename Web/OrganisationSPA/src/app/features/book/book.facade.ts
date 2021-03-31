@@ -13,6 +13,8 @@ import {Publisher} from "./models/publisher";
 import {BookApiService} from "./api/book-api.service";
 import {Book} from "./models/book";
 import {CreateManualBookDto} from "./models/create-manual-book-dto";
+import {FileUploader} from "ng2-file-upload";
+import {environment} from "@env";
 
 @Injectable({
   providedIn: 'root'
@@ -31,14 +33,51 @@ export class BookFacade {
   }
 
   //Book
-  addBook(book: CreateManualBookDto): void  {
-    this.bookState.setAdding(true);
+  addBookWithPhotos(book: CreateManualBookDto): void  {
+    this.bookState.setAdding(true)
     this.bookApi.createBook(book)
       .subscribe((res:Book) => {
-        console.log(res);
+        this.bookState.setBook(res);
+        this.bookState.getUploader$().subscribe((upl:FileUploader) => {
+          console.log(upl);
+          this.uploadPhoto(res.id, upl)
+        });
       }, (error: any) => {console.log(error); this.bookState.setAdding(false); },
         () => this.bookState.setAdding(false))
 
+  }
+
+  private uploadPhoto(bookId: number, uploader: FileUploader) {
+
+    if (uploader.queue.length < 1)
+      return
+
+    const imagesCount = uploader.queue.length;
+    uploader.onBuildItemForm = (fileItem: any, form: any) => {
+      form.append('IsMain', 'false')
+      return {fileItem, form};
+    };
+
+    uploader.onBeforeUploadItem = (file) => {
+      file.url = environment.bookApiUrl + `v1/book/${bookId}/add-photo`;
+    }
+
+    uploader.uploadAll();
+    uploader.onCompleteAll = () => {
+      console.log(`Uploaded ${imagesCount} requested Images`)
+    }
+  }
+
+  getNewlyAddedBook$(): Observable<Book> {
+    return this.bookState.getNewlyAddedBook$();
+  }
+
+  getUploader$(): Observable<FileUploader> {
+    return this.bookState.getUploader$();
+  }
+
+  setUploader(uploader: FileUploader) {
+    this.bookState.setUploader(uploader);
   }
 
 

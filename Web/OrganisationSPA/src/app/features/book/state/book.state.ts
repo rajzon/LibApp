@@ -5,6 +5,7 @@ import {Language} from "../models/language";
 import {Author} from "../models/author";
 import {Publisher} from "../models/publisher";
 import {Book} from "../models/book";
+import {FileUploader} from "ng2-file-upload";
 
 @Injectable({
   providedIn: "root"
@@ -18,6 +19,9 @@ export class BookState {
   private languages$ = new BehaviorSubject<Language[]>(null);
   private authors$ = new BehaviorSubject<Author[]>(null);
   private publishers$ = new BehaviorSubject<Publisher[]>(null);
+  private newlyAddedBook$ = new BehaviorSubject<Book>(null);
+
+  private uploader$ = new BehaviorSubject<FileUploader>(null);
 
   isAdding$() {
     return this.adding$.asObservable();
@@ -25,6 +29,23 @@ export class BookState {
 
   setAdding(isAdding: boolean) : void {
     this.adding$.next(isAdding);
+  }
+
+  setUploader(uploader: FileUploader): void {
+    this.uploader$.next(uploader);
+  }
+
+  getUploader$() {
+    return this.uploader$.asObservable();
+  }
+
+  //Book
+  getNewlyAddedBook$() {
+    return this.newlyAddedBook$.asObservable();
+  }
+
+  setBook(book: Book): void {
+    this.newlyAddedBook$.next(book);
   }
 
 
