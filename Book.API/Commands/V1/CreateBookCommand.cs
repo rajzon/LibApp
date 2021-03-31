@@ -20,7 +20,7 @@ namespace Book.API.Commands.V1
         public IEnumerable<string> CategoriesNames { get; init; }
         
         
-        public DateTime PublishedDate { get; init; }
+        public DateTime? PublishedDate { get; init; }
         
         
     }

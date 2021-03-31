@@ -21,7 +21,7 @@ namespace Book.API.Queries.V1.Dtos
         public IReadOnlyCollection<CategoryDto> Categories { get; set; }
 
 
-        public DateTime PublishedDate { get; set; }
+        public DateTime? PublishedDate { get; set; }
         public DateTime ModificationDate { get; set; }
         public DateTime CreationDate { get; set; }
         

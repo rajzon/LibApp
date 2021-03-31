@@ -35,7 +35,7 @@ namespace Book.API.Domain
 
         
         
-        public DateTime PublishedDate { get; private set; }
+        public DateTime? PublishedDate { get; private set; }
         public DateTime ModificationDate { get; private set; }
         public DateTime CreationDate { get; private set; }
 
@@ -55,7 +55,7 @@ namespace Book.API.Domain
             int? publisherId = default,
             ushort? pageCount = default,
             bool visibility = default,
-            DateTime publishedDate = default) : this()
+            DateTime? publishedDate = default) : this()
         {
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("Title cannot be empty or whitespace");
@@ -86,7 +86,7 @@ namespace Book.API.Domain
         public Book(string title, int? authorId, string description = default, string isbn10 = default,
             string isbn13 = default,
             int? languageId = default, int? publisherId = default, ushort? pageCount = default,
-            bool visibility = default, DateTime publishedDate = default) : this(title, authorId, new BookEan13(), 
+            bool visibility = default, DateTime? publishedDate = default) : this(title, authorId, new BookEan13(), 
             description, isbn10, isbn13, languageId, publisherId, pageCount, visibility, publishedDate)
         {
             

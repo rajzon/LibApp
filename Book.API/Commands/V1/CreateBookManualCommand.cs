@@ -18,6 +18,6 @@ namespace Book.API.Commands.V1
         public int[] CategoriesIds { get; init; }
         
         
-        public DateTime PublishedDate { get; init; }
+        public DateTime? PublishedDate { get; init; }
     }
 }
