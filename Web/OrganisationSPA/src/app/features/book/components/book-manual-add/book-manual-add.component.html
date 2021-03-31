@@ -7,10 +7,10 @@
                     [label]='"Title"'></app-text-input>
     <div class="form-group">
       <label
-        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['author'])"
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['authorId'])"
         class="text-capitalize">author</label>
       <ng-select
-        formControlName="author"
+        formControlName="authorId"
         [items]="authors"
         bindLabel="fullName"
         bindValue="id"
@@ -20,10 +20,10 @@
 
     <div class="form-group">
       <label
-        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['categories'])"
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['categoriesIds'])"
         class="text-capitalize">categories</label>
       <ng-select
-        formControlName="categories"
+        formControlName="categoriesIds"
         [items]="categories"
         [multiple]= true
         bindLabel="name"
@@ -34,10 +34,10 @@
 
     <div class="form-group">
       <label
-        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['language'])"
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['languageId'])"
         class="text-capitalize">language</label>
       <ng-select
-        formControlName="language"
+        formControlName="languageId"
         [items]="languages"
         bindLabel="name"
         bindValue="id"
@@ -47,10 +47,10 @@
 
     <div class="form-group">
       <label
-        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['publisher'])"
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['publisherId'])"
         class="text-capitalize">publisher</label>
       <ng-select
-        formControlName="publisher"
+        formControlName="publisherId"
         [items]="publishers"
         bindLabel="name"
         bindValue="id"

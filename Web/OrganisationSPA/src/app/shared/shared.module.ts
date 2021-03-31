@@ -10,6 +10,7 @@ import {BsDatepickerModule} from "ngx-bootstrap/datepicker";
 import {QuillModule} from "ngx-quill";
 import {FileUploadModule} from "ng2-file-upload";
 import { FileUploaderComponent } from './file-uploader/file-uploader.component';
+import {NgxSpinnerModule} from "ngx-spinner";
 
 
 
@@ -25,14 +26,16 @@ import { FileUploaderComponent } from './file-uploader/file-uploader.component';
     BsDatepickerModule,
     QuillModule,
     FileUploadModule,
-    FileUploaderComponent
+    FileUploaderComponent,
+    NgxSpinnerModule
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
     QuillModule.forRoot(),
-    FileUploadModule
+    FileUploadModule,
+    NgxSpinnerModule
   ]
 })
 export class SharedModule { }

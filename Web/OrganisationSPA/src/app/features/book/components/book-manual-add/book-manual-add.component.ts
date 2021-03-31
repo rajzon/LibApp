@@ -11,6 +11,7 @@ import {isRequiredField} from "@shared/helpers/forms/is-required-field.function"
 import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
 import {FileUploaderOptions} from "ng2-file-upload";
 import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
+import {CreateManualBookDto} from "../../models/create-manual-book-dto";
 
 @Component({
   selector: 'app-book-manual-add',
@@ -26,7 +27,7 @@ export class BookManualAddComponent {
   @Input() publishers: Publisher[]
   @Input() uploaderOptions: FileUploaderOptions
   @Input() uploaderStyle: IFileUploaderStyle
-  @Output() createBookEvent = new EventEmitter<Book>()
+  @Output() createBookEvent = new EventEmitter<CreateManualBookDto>()
   bookFieldsSettings = environment.book;
 
   manualBookAddForm: FormGroup
@@ -41,14 +42,14 @@ export class BookManualAddComponent {
   private createFormGroup() {
     this.manualBookAddForm = new FormGroup({
       title: createFormControl(null, this.bookFieldsSettings.title),
-      author: createFormControl(null, this.bookFieldsSettings.author),
-      categories: createFormControl(null, this.bookFieldsSettings.categories),
+      authorId: createFormControl(null, this.bookFieldsSettings.author),
+      categoriesIds: createFormControl(null, this.bookFieldsSettings.categories),
       pageCount: createFormControl(null, this.bookFieldsSettings.pageCount),
-      language: createFormControl(null, this.bookFieldsSettings.language),
+      languageId: createFormControl(null, this.bookFieldsSettings.language),
       isbn10: createFormControl(null, this.bookFieldsSettings.isbn10),
       isbn13: createFormControl(null, this.bookFieldsSettings.isbn13),
       visibility: new FormControl(true),
-      publisher: createFormControl(null, this.bookFieldsSettings.publisher),
+      publisherId: createFormControl(null, this.bookFieldsSettings.publisher),
       publishedDate: createFormControl(null, this.bookFieldsSettings.publishedDate),
       description: new FormControl(null)
     })
@@ -63,7 +64,10 @@ export class BookManualAddComponent {
 
   onSubmitBook() {
     console.log(this.manualBookAddForm.value);
-    const book  = this.manualBookAddForm.value as Book;
+    const book  = this.manualBookAddForm.value as CreateManualBookDto;
+    console.log(book);
+    console.log(book.languageId);
+    console.log(book.categoriesIds);
     this.createBookEvent.emit(book)
 
   }

@@ -4,16 +4,29 @@ import {Category} from "../models/category";
 import {Language} from "../models/language";
 import {Author} from "../models/author";
 import {Publisher} from "../models/publisher";
+import {Book} from "../models/book";
 
 @Injectable({
   providedIn: "root"
 })
 export class BookState {
 
+
+  private adding$ = new BehaviorSubject<boolean>(false);
+
   private categories$ = new BehaviorSubject<Category[]>(null);
   private languages$ = new BehaviorSubject<Language[]>(null);
   private authors$ = new BehaviorSubject<Author[]>(null);
   private publishers$ = new BehaviorSubject<Publisher[]>(null);
+
+  isAdding$() {
+    return this.adding$.asObservable();
+  }
+
+  setAdding(isAdding: boolean) : void {
+    this.adding$.next(isAdding);
+  }
+
 
   //Categories
   getCategories$() {

@@ -11,6 +11,7 @@ export class Book {
   isbn13: string;
   publisher: Publisher;
   publishedDate: Date;
+  visibility: boolean;
   publicSiteLink: string;
   description: string;
 

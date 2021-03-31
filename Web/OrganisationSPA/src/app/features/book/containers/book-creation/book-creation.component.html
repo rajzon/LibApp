@@ -1,3 +1,6 @@
+<ngx-spinner *ngIf="isAdding$ |async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Adding...</h3>
+</ngx-spinner>
 
 <div class="mb-5 mt-4 border-bottom">
   <h1 class="display-4">Add new book</h1>
@@ -14,7 +17,8 @@
       [authors]="authors$ | async"
       [publishers]="publishers$ | async"
       [uploaderOptions]="uploaderOptions"
-      [uploaderStyle]="uploaderStyle"></app-book-manual-add>
+      [uploaderStyle]="uploaderStyle" (createBookEvent)="addBook($event)"></app-book-manual-add>
     </tab>
   </tabset>
 </div>
+
