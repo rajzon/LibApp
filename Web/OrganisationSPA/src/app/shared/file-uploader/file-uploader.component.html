@@ -71,7 +71,8 @@
             <button *ngIf="isRemoveOnly() || isAll()"
                     type="button"
                     class="btn btn-danger btn-xs"
-                    (click)="item.remove()">
+                    (click)="item.remove()"
+                    [disabled]="item.isUploading">
               <span class="glyphicon glyphicon-trash"></span> Remove
             </button>
             <button *ngIf="isAll()"
@@ -111,7 +112,8 @@
           <button *ngIf="isRemoveOnly() || isAll()"
                   type="button"
                   class="btn btn-danger btn-s"
-                  (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                  (click)="uploader.clearQueue()"
+                  [disabled]="!uploader.queue.length || uploader.isUploading">
             <span class="glyphicon glyphicon-trash"></span> Remove all
           </button>
 
@@ -123,16 +125,5 @@
   </div>
 
   <br><br>
-
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">Response</div>
-        <div class="panel-body">
-          {{ response }}
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 <!-- #uploader-->

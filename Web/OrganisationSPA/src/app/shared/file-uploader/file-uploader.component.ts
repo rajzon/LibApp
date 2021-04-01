@@ -1,34 +1,36 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, Input, Output} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output
+} from '@angular/core';
 import {FileItem, FileUploader, FileUploaderOptions} from "ng2-file-upload";
 import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
 import {BookFacade} from "../../features/book/book.facade";
+import {UploaderState} from "@core/state/uploader.state";
+import {BehaviorSubject, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-file-uploader',
   templateUrl: './file-uploader.component.html',
   styleUrls: ['./file-uploader.component.sass'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class FileUploaderComponent implements AfterViewInit{
 
-  @Input() uploaderOptions: FileUploaderOptions
-  @Input() uploaderStyle:  IFileUploaderStyle
-
+  @Input() uploaderStyle: IFileUploaderStyle
   uploader: FileUploader;
   hasBaseDropZoneOver: boolean;
-  response: string
 
-  constructor(private bookFacade: BookFacade) {
-    // this.uploader = new FileUploader(this.uploaderOptions);
-    bookFacade.getUploader$().subscribe(res => this.uploader = res);
+  constructor(private uploaderState: UploaderState) {
+    uploaderState.getUploader$().subscribe(res => this.uploader = res);
     this.hasBaseDropZoneOver = false;
 
-    // this.response = '';
-    //
-    // //TODO: consider later on
-    // this.uploader.response.subscribe(res => this.response = res);
-
   }
+
 
   public fileOverBase(e: any): void {
     this.hasBaseDropZoneOver = e;
@@ -42,8 +44,8 @@ export class FileUploaderComponent implements AfterViewInit{
     return this.uploaderStyle.style === 'all';
   }
 
-  setUploader() {
-    this.bookFacade.setUploader(this.uploader);
+  callback() {
+
   }
 
   ngAfterViewInit(): void {
@@ -51,6 +53,7 @@ export class FileUploaderComponent implements AfterViewInit{
       console.log("Error occured during uploading image");
       console.log(this.uploader);
     }
+    console.log(this.uploader.progress);
     console.log(this.uploader);
   }
 

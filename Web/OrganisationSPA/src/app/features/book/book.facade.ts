@@ -1,6 +1,6 @@
 ﻿import {Injectable} from "@angular/core";
 import {CategoriesApiService} from "./api/categories-api.service";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {Category} from "./models/category";
 import {BookState} from "./state/book.state";
 import {map} from "rxjs/operators";
@@ -15,6 +15,9 @@ import {Book} from "./models/book";
 import {CreateManualBookDto} from "./models/create-manual-book-dto";
 import {FileUploader} from "ng2-file-upload";
 import {environment} from "@env";
+import {UploaderState} from "@core/state/uploader.state";
+import {Router} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +29,9 @@ export class BookFacade {
               private authorsApi: AuthorsApiService,
               private publishersApi: PublishersApiService,
               private bookApi: BookApiService,
+              private router: Router,
+              private toastr: ToastrService,
+              private uploaderState: UploaderState,
               private bookState: BookState) { }
 
   isAdding$(): Observable<boolean> {
@@ -33,17 +39,22 @@ export class BookFacade {
   }
 
   //Book
-  addBookWithPhotos(book: CreateManualBookDto): void  {
+  addBookWithPhotos(book: CreateManualBookDto) {
     this.bookState.setAdding(true)
     this.bookApi.createBook(book)
       .subscribe((res:Book) => {
         this.bookState.setBook(res);
-        this.bookState.getUploader$().subscribe((upl:FileUploader) => {
+        this.uploaderState.getUploader$().subscribe((upl:FileUploader) => {
           console.log(upl);
           this.uploadPhoto(res.id, upl)
         });
-      }, (error: any) => {console.log(error); this.bookState.setAdding(false); },
-        () => this.bookState.setAdding(false))
+      }, (error: any) => {console.log(error); this.bookState.setAdding(false); this.toastr.error('TODO: info should came from server') },
+        () => {
+          this.bookState.setAdding(false);
+          //TODO info should came from server
+          this.toastr.success('TODO: info should came from server');
+          this.router.navigateByUrl('/book');
+      })
 
   }
 
@@ -52,7 +63,7 @@ export class BookFacade {
     if (uploader.queue.length < 1)
       return
 
-    const imagesCount = uploader.queue.length;
+    let imagesCount = 0;
     uploader.onBuildItemForm = (fileItem: any, form: any) => {
       form.append('IsMain', 'false')
       return {fileItem, form};
@@ -60,6 +71,13 @@ export class BookFacade {
 
     uploader.onBeforeUploadItem = (file) => {
       file.url = environment.bookApiUrl + `v1/book/${bookId}/add-photo`;
+    }
+    uploader.onSuccessItem = (file, response, status, headers) => {
+      imagesCount++;
+    }
+
+    uploader.onErrorItem = (item, response, status, header) => {
+      this.toastr.error(`error occured during uploading file ${item._file.name}`);
     }
 
     uploader.uploadAll();
@@ -73,11 +91,11 @@ export class BookFacade {
   }
 
   getUploader$(): Observable<FileUploader> {
-    return this.bookState.getUploader$();
+    return this.uploaderState.getUploader$();
   }
 
   setUploader(uploader: FileUploader) {
-    this.bookState.setUploader(uploader);
+    this.uploaderState.setUploader(uploader);
   }
 
 

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import { BookFacade } from '../../book.facade';
 import {Category} from "../../models/category";
@@ -11,6 +11,7 @@ import {CreateManualBookDto} from "../../models/create-manual-book-dto";
 import {NgxSpinnerService} from "ngx-spinner";
 import {environment} from "@env";
 import {Book} from "../../models/book";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-book-creation',
@@ -32,7 +33,9 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
   uploaderStyle: IFileUploaderStyle;
   readonly URL:string = environment.bookApiUrl + 'v1/book/';
 
-  constructor(private bookFacade: BookFacade, private spinner: NgxSpinnerService) {
+  constructor(private bookFacade: BookFacade,
+              private router: Router,
+              private spinner: NgxSpinnerService) {
     this.categories$ = bookFacade.getCategories$();
     this.languages$ = bookFacade.getLanguages$();
     this.authors$ = bookFacade.getAuthors$();
@@ -57,21 +60,6 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
     this.uploaderStyle = {style: "removeOnly"};
 
     this.uploaderOptions = {
-      // disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
-      // formatDataFunctionIsAsync: true,
-      // allowedFileType: ['image'],
-      // removeAfterUpload: true,
-      // autoUpload: false,
-      // formatDataFunction: async (item) => {
-      //   return new Promise( (resolve, reject) => {
-      //     resolve({
-      //       name: item._file.name,
-      //       length: item._file.size,
-      //       contentType: item._file.type,
-      //       date: new Date()
-      //     });
-      //   });
-      // }
       isHTML5: true,
       allowedFileType: ['image'],
       removeAfterUpload: true,
@@ -83,13 +71,6 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
 
   addBook(book: CreateManualBookDto): void {
     this.bookFacade.addBookWithPhotos(book);
-  }
-
-  uploadImage() {
-    this.bookFacade.getNewlyAddedBook$().subscribe(res => {
-
-    });
-
   }
 
 

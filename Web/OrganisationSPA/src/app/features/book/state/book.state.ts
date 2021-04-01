@@ -21,22 +21,12 @@ export class BookState {
   private publishers$ = new BehaviorSubject<Publisher[]>(null);
   private newlyAddedBook$ = new BehaviorSubject<Book>(null);
 
-  private uploader$ = new BehaviorSubject<FileUploader>(null);
-
   isAdding$() {
     return this.adding$.asObservable();
   }
 
   setAdding(isAdding: boolean) : void {
     this.adding$.next(isAdding);
-  }
-
-  setUploader(uploader: FileUploader): void {
-    this.uploader$.next(uploader);
-  }
-
-  getUploader$() {
-    return this.uploader$.asObservable();
   }
 
   //Book

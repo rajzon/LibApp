@@ -11,6 +11,7 @@ import {QuillModule} from "ngx-quill";
 import {FileUploadModule} from "ng2-file-upload";
 import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import {NgxSpinnerModule} from "ngx-spinner";
+import {ToastrModule} from "ngx-toastr";
 
 
 
@@ -27,7 +28,8 @@ import {NgxSpinnerModule} from "ngx-spinner";
     QuillModule,
     FileUploadModule,
     FileUploaderComponent,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    ToastrModule
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import {NgxSpinnerModule} from "ngx-spinner";
     BsDatepickerModule.forRoot(),
     QuillModule.forRoot(),
     FileUploadModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    ToastrModule.forRoot()
   ]
 })
 export class SharedModule { }
