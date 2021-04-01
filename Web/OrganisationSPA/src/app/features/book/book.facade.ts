@@ -18,6 +18,7 @@ import {environment} from "@env";
 import {UploaderState} from "@core/state/uploader.state";
 import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
+import {GoogleBookApiService} from "./api/google-book-api.service";
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,7 @@ export class BookFacade {
               private authorsApi: AuthorsApiService,
               private publishersApi: PublishersApiService,
               private bookApi: BookApiService,
+              private googleApi: GoogleBookApiService,
               private router: Router,
               private toastr: ToastrService,
               private uploaderState: UploaderState,
@@ -96,6 +98,17 @@ export class BookFacade {
 
   setUploader(uploader: FileUploader) {
     this.uploaderState.setUploader(uploader);
+  }
+
+  searchBooks$(query: string, searchParam: 'title' | 'author' | 'isbn'): Observable<any[]> {
+    return this.googleApi.getBooks$(query, searchParam).pipe(map(books => {
+      this.bookState.setBooks(books);
+      return books;
+    }));
+  }
+
+  getBooksFromSearch$(): Observable<any[]> {
+    return this.bookState.getBooksFromSearch$();
   }
 
 

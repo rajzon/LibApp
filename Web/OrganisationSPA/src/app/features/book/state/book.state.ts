@@ -1,5 +1,5 @@
 ﻿import {Injectable} from "@angular/core";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {Category} from "../models/category";
 import {Language} from "../models/language";
 import {Author} from "../models/author";
@@ -21,6 +21,8 @@ export class BookState {
   private publishers$ = new BehaviorSubject<Publisher[]>(null);
   private newlyAddedBook$ = new BehaviorSubject<Book>(null);
 
+  private books = new BehaviorSubject<any[]>(null);
+
   isAdding$() {
     return this.adding$.asObservable();
   }
@@ -36,6 +38,16 @@ export class BookState {
 
   setBook(book: Book): void {
     this.newlyAddedBook$.next(book);
+  }
+
+  //GoogleBook
+
+  setBooks(books: any[]): void {
+    this.books.next(books);
+  }
+
+  getBooksFromSearch$(): Observable<any[]> {
+    return this.books.asObservable();
   }
 
 

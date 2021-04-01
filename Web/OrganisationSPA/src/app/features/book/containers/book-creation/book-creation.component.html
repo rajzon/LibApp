@@ -10,7 +10,11 @@
 </div>
 <div>
   <tabset>
-    <tab heading="Adding Using Different Source" id="tab1">Content</tab>
+    <tab heading="Adding Using Different Source" id="tab1"><app-book-api-add
+      [booksFromSearch]="booksFromSearch$ | async"
+      (searchEvent)="searchBooks($event.searchValue, $event.searchParam)"></app-book-api-add>
+      <app-book-api-search-result [books]="booksFromSearch$ | async"></app-book-api-search-result>
+    </tab>
     <tab heading="Manual Adding"><app-book-manual-add
       [categories]="categories$ | async"
       [languages]="languages$ | async"

@@ -27,6 +27,7 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
   authors$: Observable<Author[]>;
   publishers$: Observable<Publisher[]>;
   newlyAddedBook$: Observable<Book>;
+  booksFromSearch$: Observable<any[]>;
 
   //Uploader
   uploaderOptions: FileUploaderOptions;
@@ -64,6 +65,7 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
       allowedFileType: ['image'],
       removeAfterUpload: true,
       autoUpload: false
+
     };
 
     this.bookFacade.setUploader(new FileUploader(this.uploaderOptions));
@@ -71,6 +73,13 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
 
   addBook(book: CreateManualBookDto): void {
     this.bookFacade.addBookWithPhotos(book);
+  }
+
+  searchBooks(query: string, searchParam: 'title' | 'author' | 'isbn') {
+    console.log(query);
+    console.log(searchParam);
+    this.bookFacade.searchBooks$(query, searchParam).subscribe();
+    this.booksFromSearch$ = this.bookFacade.getBooksFromSearch$();
   }
 
 
