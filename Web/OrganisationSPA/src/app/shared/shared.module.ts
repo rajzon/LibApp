@@ -12,6 +12,7 @@ import {FileUploadModule} from "ng2-file-upload";
 import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import {NgxSpinnerModule} from "ngx-spinner";
 import {ToastrModule} from "ngx-toastr";
+import {ModalModule} from "ngx-bootstrap/modal";
 
 
 
@@ -29,7 +30,8 @@ import {ToastrModule} from "ngx-toastr";
     FileUploadModule,
     FileUploaderComponent,
     NgxSpinnerModule,
-    ToastrModule
+    ToastrModule,
+    ModalModule
   ],
   imports: [
     CommonModule,
@@ -38,7 +40,8 @@ import {ToastrModule} from "ngx-toastr";
     QuillModule.forRoot(),
     FileUploadModule,
     NgxSpinnerModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    ModalModule.forRoot()
   ]
 })
 export class SharedModule { }

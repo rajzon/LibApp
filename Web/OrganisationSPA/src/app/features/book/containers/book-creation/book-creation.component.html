@@ -13,7 +13,7 @@
     <tab heading="Adding Using Different Source" id="tab1"><app-book-api-add
       [booksFromSearch]="booksFromSearch$ | async"
       (searchEvent)="searchBooks($event.searchValue, $event.searchParam)"></app-book-api-add>
-      <app-book-api-search-result [books]="booksFromSearch$ | async"></app-book-api-search-result>
+      <app-book-api-search-result [searchResult]="booksFromSearch$ | async"></app-book-api-search-result>
     </tab>
     <tab heading="Manual Adding"><app-book-manual-add
       [categories]="categories$ | async"

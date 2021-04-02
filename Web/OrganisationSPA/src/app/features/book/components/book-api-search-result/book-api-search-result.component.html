@@ -1,34 +1,50 @@
-<div class="container">
-  <div class="card mb-3" style="">
+
+  <div *ngFor="let book of searchResult?.items"
+       class="card mt-3">
     <div class="row no-gutters">
-    <div class="col-md-4">
-      <div class="card-img-wrapper text-center">
-        <img class="img-fluid" src="https://dictionary.cambridge.org/pl/images/thumb/book_noun_001_01679.jpg?version=5.0.158" alt="...">
+    <div class="col-md-2 d-flex align-items-center justify-content-center">
+      <div class="card-img-wrapper">
+        <img class="img-fluid" [src]="book.volumeInfo.imageLinks.thumbnail" alt="...">
       </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-10">
       <div class="card-body">
-        <h5 class="card-title">Book Title</h5>
-        <p class="card-text"><small class="text-muted">Author</small></p>
+        <div class="row">
+          <div class="col-11">
+        <h5 class="card-title">Title: {{book.volumeInfo.title}}</h5>
+        <p class="card-text"><small class="text-muted">Author: {{book.volumeInfo.authors}}</small></p>
         <div class="row">
           <div class="col-6">
-            <p class="card-text"><small>Category</small></p>
-            <p class="card-text"><small>Category</small></p>
-            <p class="card-text"><small>Category</small></p>
+            <p class="card-text mb-1"><small>Category: {{book.volumeInfo.categories}}</small></p>
+            <p *ngFor="let identity of book.volumeInfo.industryIdentifiers" class="card-text mb-1"><small>{{identity.type}}: {{identity.identifier}}</small></p>
           </div>
           <div class="col-6">
-            <p class="card-text"><small>Category</small></p>
-            <p class="card-text"><small>Category</small></p>
-            <p class="card-text"><small>Category</small></p>
+            <p class="card-text  mb-1"><small>Language: {{book.volumeInfo.language}}</small></p>
+            <p class="card-text  mb-1"><small>Published Date: {{book.volumeInfo.publishedDate}}</small></p>
+            <p class="card-text  mb-1" style=""><small>Publisher: {{book.volumeInfo.publisher}}</small></p>
           </div>
         </div>
+        <p class="card-text mt-3"><small>PageCount: {{book.volumeInfo.pageCount}}</small></p>
         <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus consectetur consequatur, consequuntur debitis delectus dicta dolor explicabo fugiat fugit id incidunt inventore nemo non odit optio quae qui rem similique sint tempore ut voluptas voluptates. Consectetur ducimus eos iusto mollitia optio pariatur quis quos repudiandae! Accusantium consectetur dolore ea incidunt nam nulla numquam provident soluta velit voluptatem! Architecto aut consequuntur, deleniti earum eligendi et inventore, itaque placeat possimus quaerat quidem reprehenderit sed ullam? Autem beatae culpa dignissimos facere fuga id illo in laboriosam laudantium magnam mollitia pariatur perferendis possimus qui reiciendis, rem reprehenderit tempora veritatis. A aspernatur placeat quas.</p>
+          </div>
+          <div class="col-lg-1 col-sm-12 card-footer">
+            <div class="row py-5">
+              <div class="col-lg-12 col-sm-6 my-5">
+                <button class="fa fa-plus action-btn border-0 mx-auto"></button>
+              </div>
+              <div class="col-lg-12 col-sm-6 my-5">
+                <button class="fa fa-edit action-btn border-0 mx-auto" (click)="edit(book.volumeInfo)"></button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
       </div>
     </div>
   </div>
-</div>
 
 
 
-<!--<pre><code>{{books | json}}</code></pre>-->
+
+<pre><code>{{searchResult | json}}</code></pre>

@@ -4,7 +4,7 @@ import {
   Component,
   EventEmitter,
   HostListener,
-  Input,
+  Input, OnInit,
   Output
 } from '@angular/core';
 import {FileItem, FileUploader, FileUploaderOptions} from "ng2-file-upload";
@@ -53,6 +53,7 @@ export class FileUploaderComponent implements AfterViewInit{
       console.log("Error occured during uploading image");
       console.log(this.uploader);
     }
+
     console.log(this.uploader.progress);
     console.log(this.uploader);
   }
