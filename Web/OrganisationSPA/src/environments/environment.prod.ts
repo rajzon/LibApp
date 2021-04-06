@@ -2,6 +2,7 @@ export const environment = {
   production: true,
   logoImg: 'assets/img/Logo-placeholder.png',
   bookApiUrl: 'https://localhost:5001/',
+  googleApiUrl: 'https://www.googleapis.com/',
   book: {
     title: {
       required: true,
@@ -14,11 +15,13 @@ export const environment = {
         required: true,
         minLength: 3,
         maxLength: 30,
+        pattern: "^[^0-9]+$",
       },
       authorLastName: {
         required: true,
         minLength: 3,
         maxLength: 30,
+        pattern: "^[^0-9]+$",
       }
     },
     categories: {

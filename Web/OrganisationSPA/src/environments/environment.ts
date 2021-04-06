@@ -20,11 +20,13 @@ export const environment = {
         required: true,
         minLength: 3,
         maxLength: 30,
+        pattern: "^[^0-9]+$",
       },
       authorLastName: {
         required: true,
         minLength: 3,
         maxLength: 30,
+        pattern: "^[^0-9]+$",
       }
     },
     categories: {
