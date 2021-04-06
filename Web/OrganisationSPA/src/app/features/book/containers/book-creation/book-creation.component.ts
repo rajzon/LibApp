@@ -12,6 +12,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {environment} from "@env";
 import {Book} from "../../models/book";
 import {Router} from "@angular/router";
+import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
 
 @Component({
   selector: 'app-book-creation',
@@ -21,6 +22,7 @@ import {Router} from "@angular/router";
 export class BookCreationComponent implements OnInit, AfterViewInit {
 
   isAdding$: Observable<boolean>;
+  isLoading$: Observable<boolean>;
 
   categories$: Observable<Category[]>;
   languages$: Observable<Language[]>;
@@ -43,6 +45,7 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
     this.publishers$ = bookFacade.getPublisher$();
     this.isAdding$ = bookFacade.isAdding$();
     this.newlyAddedBook$ = bookFacade.getNewlyAddedBook$();
+    this.isLoading$ = bookFacade.isLoading$();
   }
 
   ngAfterViewInit(): void {
@@ -75,7 +78,12 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
     this.bookFacade.addBookWithPhotos(book);
   }
 
-  searchBooks(query: string, searchParam: 'title' | 'author' | 'isbn') {
+  addBookUsingApi(book: CreateBookUsingApiDto): void {
+    console.log(book);
+    this.bookFacade.addBookWithPhotoUsingApi(book);
+  }
+
+  searchBooks(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn') {
     console.log(query);
     console.log(searchParam);
     this.bookFacade.searchBooks$(query, searchParam).subscribe();

@@ -1,5 +1,4 @@
-
-  <div *ngFor="let book of searchResult?.items"
+<div  *ngFor="let book of searchResult?.items"
        class="card mt-3">
     <div class="row no-gutters">
     <div class="col-md-2 d-flex align-items-center justify-content-center">
@@ -30,7 +29,7 @@
           <div class="col-lg-1 col-sm-12 card-footer">
             <div class="row py-5">
               <div class="col-lg-12 col-sm-6 my-5">
-                <button class="fa fa-plus action-btn border-0 mx-auto"></button>
+                <button class="fa fa-plus action-btn border-0 mx-auto" (click)="add(book.volumeInfo)"></button>
               </div>
               <div class="col-lg-12 col-sm-6 my-5">
                 <button class="fa fa-edit action-btn border-0 mx-auto" (click)="edit(book.volumeInfo)"></button>

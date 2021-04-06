@@ -58,6 +58,8 @@ namespace Book.API.Controllers.V1
         public async Task<IActionResult> Create(CreateBookCommand command)
         {
             var result = await _mediator.Send(command);
+            //TODO only for test purposes
+            Thread.Sleep(2000);
             
             return Ok(result);
         }

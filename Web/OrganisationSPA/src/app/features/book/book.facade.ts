@@ -1,9 +1,9 @@
 ﻿import {Injectable} from "@angular/core";
 import {CategoriesApiService} from "./api/categories-api.service";
-import {Observable, of} from "rxjs";
+import {empty, Observable, of} from "rxjs";
 import {Category} from "./models/category";
 import {BookState} from "./state/book.state";
-import {map} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
 import {LanguagesApiService} from "./api/languages-api.service";
 import {Language} from "./models/language";
 import {AuthorsApiService} from "./api/authors-api.service";
@@ -19,6 +19,7 @@ import {UploaderState} from "@core/state/uploader.state";
 import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 import {GoogleBookApiService} from "./api/google-book-api.service";
+import {CreateBookUsingApiDto} from "./models/create-book-using-api-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -40,17 +41,26 @@ export class BookFacade {
     return this.bookState.isAdding$();
   }
 
+  isLoading$(): Observable<boolean> {
+    return this.bookState.isLoading$();
+  }
+
   //Book
-  addBookWithPhotos(book: CreateManualBookDto) {
+  addBookWithPhotos(book: CreateManualBookDto): void {
     this.bookState.setAdding(true)
     this.bookApi.createBook(book)
       .subscribe((res:Book) => {
         this.bookState.setBook(res);
+          console.log(res);
         this.uploaderState.getUploader$().subscribe((upl:FileUploader) => {
           console.log(upl);
           this.uploadPhoto(res.id, upl)
         });
-      }, (error: any) => {console.log(error); this.bookState.setAdding(false); this.toastr.error('TODO: info should came from server') },
+      }, (error: any) => {
+          console.log(error);
+          this.bookState.setAdding(false);
+          this.toastr.error('TODO: info should came from server')
+        },
         () => {
           this.bookState.setAdding(false);
           //TODO info should came from server
@@ -60,10 +70,56 @@ export class BookFacade {
 
   }
 
-  private uploadPhoto(bookId: number, uploader: FileUploader) {
+  getNewlyAddedBook$(): Observable<Book> {
+    return this.bookState.getNewlyAddedBook$();
+  }
 
-    if (uploader.queue.length < 1)
+
+
+  searchBooks$(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn'): Observable<any[]> {
+    this.bookState.setLoading(true);
+    return this.googleApi.getBooks$(query, searchParam).pipe(map(books => {
+      this.bookState.setBooks(books);
+      this.bookState.setLoading(false);
+      return books;
+    }),catchError((err, caught) => {
+      this.bookState.setLoading(false);
+      this.toastr.error(err);
+      return of(err);
+    }));
+  }
+
+  getBooksFromSearch$(): Observable<any[]> {
+    return this.bookState.getBooksFromSearch$();
+  }
+
+  addBookWithPhotoUsingApi(book: CreateBookUsingApiDto): void {
+    this.bookState.setAdding(true)
+    this.bookApi.createBookUsingApi(book).subscribe((res:Book) => {
+      this.bookState.setBook(res);
+        console.log(res);
+      this.uploaderState.getUploader$().subscribe((upl:FileUploader) => {
+        this.uploadPhoto(res.id, upl);
+      });
+    }, (error: any) => {
+        console.log(error);
+        this.bookState.setAdding(false);
+        this.toastr.error(error.error.errors)
+    },
+      () => {
+        this.bookState.setAdding(false);
+        this.toastr.success('TODO: info should came from server');
+        this.router.navigateByUrl('/book');
+      })
+  }
+
+  //Uploader
+  private uploadPhoto(bookId: number, uploader: FileUploader): void {
+
+    const initalQueue = uploader.queue.length;
+    if (initalQueue < 1)
       return
+
 
     let imagesCount = 0;
     uploader.onBuildItemForm = (fileItem: any, form: any) => {
@@ -84,12 +140,11 @@ export class BookFacade {
 
     uploader.uploadAll();
     uploader.onCompleteAll = () => {
+      imagesCount === initalQueue? this.toastr.success(`Uploaded ${imagesCount} requested Images`):
+        this.toastr.info(`Uploaded ${imagesCount} requested Images but ${initalQueue-imagesCount} images wasn't uploaded`)
+
       console.log(`Uploaded ${imagesCount} requested Images`)
     }
-  }
-
-  getNewlyAddedBook$(): Observable<Book> {
-    return this.bookState.getNewlyAddedBook$();
   }
 
   getUploader$(): Observable<FileUploader> {
@@ -100,16 +155,7 @@ export class BookFacade {
     this.uploaderState.setUploader(uploader);
   }
 
-  searchBooks$(query: string, searchParam: 'title' | 'author' | 'isbn'): Observable<any[]> {
-    return this.googleApi.getBooks$(query, searchParam).pipe(map(books => {
-      this.bookState.setBooks(books);
-      return books;
-    }));
-  }
 
-  getBooksFromSearch$(): Observable<any[]> {
-    return this.bookState.getBooksFromSearch$();
-  }
 
 
   //Categories

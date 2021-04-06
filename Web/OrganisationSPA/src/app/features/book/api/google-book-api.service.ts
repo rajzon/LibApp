@@ -12,7 +12,7 @@ export class GoogleBookApiService {
 
   constructor(private http: HttpClient) { }
 
-  getBooks$(query: string, searchParam: 'title' | 'author' | 'isbn'): Observable<any[]> {
+  getBooks$(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn'): Observable<any[]> {
     return this.http.get<any[]>(this.URL + `?q=${query}+${searchParam}`);
   }
 }

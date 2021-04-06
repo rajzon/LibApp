@@ -5,21 +5,24 @@
   <form [formGroup]="editForm" (ngSubmit)="edit()">
     <app-text-input [formControl]="editForm.controls['title']"
                     [label]="'Title'"></app-text-input>
-    <app-text-input [formControl]="editForm.controls['authorFirstName']"
+    <app-text-input [formControl]="editForm.controls['author'].get('firstName')"
                     [label]="'Author Firstname'"></app-text-input>
-    <app-text-input [formControl]="editForm.controls['authorLastName']"
+    <app-text-input [formControl]="editForm.controls['author'].get('lastName')"
                     [label]="'Author Lastname'"></app-text-input>
-    <app-text-input [formControl]="editForm.controls['categoriesNames']"
-                    [label]="'Categories'"></app-text-input>
+    <ng-container *ngFor="let category of categories.controls; let i = index;" formArrayName="categoriesNames">
+      <app-text-input [formControl]="category"
+                      [label]="'Categories'"></app-text-input>
+    </ng-container>
+
     <app-number-input [formControl]="editForm.controls['pageCount']"
                     [label]="'Page Count'"></app-number-input>
-    <app-text-input [formControl]="editForm.controls['language']"
+    <app-text-input [formControl]="editForm.controls['languageName']"
                     [label]="'language'"></app-text-input>
     <app-text-input [formControl]="editForm.controls['isbn10']"
                     [label]="'isbn10'"></app-text-input>
     <app-text-input [formControl]="editForm.controls['isbn13']"
                     [label]="'isbn13'"></app-text-input>
-    <app-text-input [formControl]="editForm.controls['publisher']"
+    <app-text-input [formControl]="editForm.controls['publisherName']"
                     [label]="'publisher'"></app-text-input>
 
     <div class="form-group">
@@ -84,6 +87,10 @@
     </div>
     <!--# Description-->
 
+    <!-- Description-->
+    <app-file-uploader [uploaderStyle]="uploaderStyle"></app-file-uploader>
+
+
 
   </form>
 </div>
@@ -93,5 +100,6 @@
           (click)="bsModalRef.hide()">Cancel</button>
   <button type="submit"
           class="btn btn-primary"
-          (click)="edit()">Edit</button>
+          [disabled]="editForm.invalid"
+          (click)="edit()">Add</button>
 </div>

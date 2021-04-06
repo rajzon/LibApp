@@ -14,6 +14,7 @@ export class BookState {
 
 
   private adding$ = new BehaviorSubject<boolean>(false);
+  private loading$ = new BehaviorSubject<boolean>(false);
 
   private categories$ = new BehaviorSubject<Category[]>(null);
   private languages$ = new BehaviorSubject<Language[]>(null);
@@ -29,6 +30,14 @@ export class BookState {
 
   setAdding(isAdding: boolean) : void {
     this.adding$.next(isAdding);
+  }
+
+  isLoading$() {
+    return this.loading$.asObservable();
+  }
+
+  setLoading(isLoading: boolean): void {
+    this.loading$.next(isLoading);
   }
 
   //Book

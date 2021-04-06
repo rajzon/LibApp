@@ -2,7 +2,7 @@ import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 
 export interface SearchDto {
   searchValue: string
-  searchParam: 'title' | 'author' | 'isbn'
+  searchParam: 'intitle' | 'inauthor' | 'isbn'
 }
 
 @Component({
@@ -16,7 +16,7 @@ export class BookApiAddComponent implements OnInit {
   @Output() searchEvent = new EventEmitter<SearchDto>()
 
   searchValue: string;
-  searchParam: 'title' | 'author' | 'isbn'
+  searchParam: 'intitle' | 'inauthor' | 'isbn'
 
   constructor() { }
 

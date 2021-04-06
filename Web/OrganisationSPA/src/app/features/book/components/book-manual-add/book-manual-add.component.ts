@@ -25,7 +25,6 @@ export class BookManualAddComponent {
   @Input() languages: Language[]
   @Input() authors: Author[]
   @Input() publishers: Publisher[]
-  @Input() uploaderOptions: FileUploaderOptions
   @Input() uploaderStyle: IFileUploaderStyle
   @Output() createBookEvent = new EventEmitter<CreateManualBookDto>()
   bookFieldsSettings = environment.book;
