@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "@env";
 import {Observable} from "rxjs";
 
@@ -12,7 +12,21 @@ export class GoogleBookApiService {
 
   constructor(private http: HttpClient) { }
 
-  getBooks$(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn'): Observable<any[]> {
-    return this.http.get<any[]>(this.URL + `?q=${query}+${searchParam}`);
+  getBooks$(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn', startIndex?: number, maxResults?: number): Observable<any[]> {
+
+    let params = new HttpParams();
+
+    if (startIndex == null) {
+      startIndex = 0;
+    }
+
+    if (maxResults == null) {
+      maxResults = environment.pagination.itemsPerPageDefault;
+    }
+
+    params = params.append('startIndex', startIndex.toString());
+    params = params.append('maxResults', maxResults.toString());
+
+    return this.http.get<any[]>(this.URL + `?q=${query}+${searchParam}`,{params: params});
   }
 }

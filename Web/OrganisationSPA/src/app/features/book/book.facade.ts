@@ -76,9 +76,9 @@ export class BookFacade {
 
 
 
-  searchBooks$(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn'): Observable<any[]> {
+  searchBooks$(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn', startIndex?: number, maxResults?: number): Observable<any[]> {
     this.bookState.setLoading(true);
-    return this.googleApi.getBooks$(query, searchParam).pipe(map(books => {
+    return this.googleApi.getBooks$(query, searchParam, startIndex, maxResults).pipe(map(books => {
       this.bookState.setBooks(books);
       this.bookState.setLoading(false);
       return books;

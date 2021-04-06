@@ -1,9 +1,6 @@
-import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
-
-export interface SearchDto {
-  searchValue: string
-  searchParam: 'intitle' | 'inauthor' | 'isbn'
-}
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {SearchDto} from "../../models/search-dto";
+import {environment} from "@env";
 
 @Component({
   selector: 'app-book-api-add',
@@ -17,6 +14,7 @@ export class BookApiAddComponent implements OnInit {
 
   searchValue: string;
   searchParam: 'intitle' | 'inauthor' | 'isbn'
+  maxResults: number = environment.pagination.itemsPerPageDefault
 
   constructor() { }
 
@@ -24,7 +22,6 @@ export class BookApiAddComponent implements OnInit {
   }
 
   search(value: SearchDto) {
-    console.log(value);
     this.searchEvent.emit(value);
   }
 

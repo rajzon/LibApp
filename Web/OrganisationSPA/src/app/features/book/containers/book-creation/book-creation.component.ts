@@ -13,6 +13,7 @@ import {environment} from "@env";
 import {Book} from "../../models/book";
 import {Router} from "@angular/router";
 import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
+import {PaginationDto} from "../../models/pagination-dto";
 
 @Component({
   selector: 'app-book-creation',
@@ -31,10 +32,13 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
   newlyAddedBook$: Observable<Book>;
   booksFromSearch$: Observable<any[]>;
 
+  //search/pagination
+  query: string;
+  searchParam: 'intitle' | 'inauthor' | 'isbn';
+
   //Uploader
   uploaderOptions: FileUploaderOptions;
   uploaderStyle: IFileUploaderStyle;
-  readonly URL:string = environment.bookApiUrl + 'v1/book/';
 
   constructor(private bookFacade: BookFacade,
               private router: Router,
@@ -83,10 +87,23 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
     this.bookFacade.addBookWithPhotoUsingApi(book);
   }
 
-  searchBooks(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn') {
+  changePage(startIndex: number, maxResults: number) {
+    this.searchBooks(this.query, this.searchParam, startIndex, maxResults)
+  }
+
+  searchBooks(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn', startIndex?: number, maxResults?: number) {
     console.log(query);
     console.log(searchParam);
-    this.bookFacade.searchBooks$(query, searchParam).subscribe();
+    console.log(startIndex);
+    console.log(maxResults);
+    maxResults = maxResults?? environment.pagination.itemsPerPageDefault
+
+    console.log(maxResults)
+    console.log(environment.pagination.itemsPerPageDefault)
+
+    this.query = query
+    this.searchParam = searchParam;
+    this.bookFacade.searchBooks$(query, searchParam, startIndex, maxResults).subscribe();
     this.booksFromSearch$ = this.bookFacade.getBooksFromSearch$();
   }
 

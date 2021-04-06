@@ -3,30 +3,30 @@
     <div class="row no-gutters">
     <div class="col-md-2 d-flex align-items-center justify-content-center">
       <div class="card-img-wrapper">
-        <img class="img-fluid" [src]="book.volumeInfo.imageLinks.thumbnail" alt="...">
+        <img class="img-fluid" [src]="book.volumeInfo?.imageLinks?.thumbnail" alt="...">
       </div>
     </div>
     <div class="col-md-10">
       <div class="card-body">
         <div class="row">
           <div class="col-11">
-        <h5 class="card-title">Title: {{book.volumeInfo.title}}</h5>
-        <p class="card-text"><small class="text-muted">Author: {{book.volumeInfo.authors}}</small></p>
+        <h5 class="card-title">Title: {{book.volumeInfo?.title}}</h5>
+        <p class="card-text"><small class="text-muted">Author: {{book.volumeInfo?.authors}}</small></p>
         <div class="row">
           <div class="col-6">
-            <p class="card-text mb-1"><small>Category: {{book.volumeInfo.categories}}</small></p>
-            <p *ngFor="let identity of book.volumeInfo.industryIdentifiers" class="card-text mb-1"><small>{{identity.type}}: {{identity.identifier}}</small></p>
+            <p class="card-text mb-1"><small>Category: {{book.volumeInfo?.categories}}</small></p>
+            <p *ngFor="let identity of book.volumeInfo?.industryIdentifiers" class="card-text mb-1"><small>{{identity?.type}}: {{identity?.identifier}}</small></p>
           </div>
           <div class="col-6">
-            <p class="card-text  mb-1"><small>Language: {{book.volumeInfo.language}}</small></p>
-            <p class="card-text  mb-1"><small>Published Date: {{book.volumeInfo.publishedDate}}</small></p>
-            <p class="card-text  mb-1" style=""><small>Publisher: {{book.volumeInfo.publisher}}</small></p>
+            <p class="card-text  mb-1"><small>Language: {{book.volumeInfo?.language}}</small></p>
+            <p class="card-text  mb-1"><small>Published Date: {{book.volumeInfo?.publishedDate}}</small></p>
+            <p class="card-text  mb-1" style=""><small>Publisher: {{book.volumeInfo?.publisher}}</small></p>
           </div>
         </div>
-        <p class="card-text mt-3"><small>PageCount: {{book.volumeInfo.pageCount}}</small></p>
+        <p class="card-text mt-3"><small>PageCount: {{book.volumeInfo?.pageCount}}</small></p>
         <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus consectetur consequatur, consequuntur debitis delectus dicta dolor explicabo fugiat fugit id incidunt inventore nemo non odit optio quae qui rem similique sint tempore ut voluptas voluptates. Consectetur ducimus eos iusto mollitia optio pariatur quis quos repudiandae! Accusantium consectetur dolore ea incidunt nam nulla numquam provident soluta velit voluptatem! Architecto aut consequuntur, deleniti earum eligendi et inventore, itaque placeat possimus quaerat quidem reprehenderit sed ullam? Autem beatae culpa dignissimos facere fuga id illo in laboriosam laudantium magnam mollitia pariatur perferendis possimus qui reiciendis, rem reprehenderit tempora veritatis. A aspernatur placeat quas.</p>
           </div>
-          <div class="col-lg-1 col-sm-12 card-footer">
+          <div class="col-lg-1 col-sm-12">
             <div class="row py-5">
               <div class="col-lg-12 col-sm-6 my-5">
                 <button class="fa fa-plus action-btn border-0 mx-auto" (click)="add(book.volumeInfo)"></button>
@@ -42,6 +42,39 @@
       </div>
     </div>
   </div>
+<ng-container *ngIf="searchResult?.items">
+  <div class="row mt-5">
+    <div class="col-9">
+      <pagination class="justify-content-center"
+                  [boundaryLinks]="true"
+                  [totalItems]="searchResult?.totalItems"
+                  [itemsPerPage]="maxResults"
+                  (pageChanged)="pageChanged($event)"
+                  [maxSize]="5"
+                  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+      </pagination>
+    </div>
+    <div class="col-3">
+
+      <div class="row">
+        <div class="col-2">
+          <label class="float-right font-weight-bold mt-1">Show:</label>
+        </div>
+        <div class="col-10">
+          <ng-select class="w-75"
+                     id="maxResultsOpts"
+                     [items]="itemsPerPageOptions"
+                     [searchable]="false"
+                     [clearable]="false"
+                     [(ngModel)]="maxResults"
+                     (change)="onMaxResultsChanged($event)"></ng-select>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</ng-container>
 
 
 

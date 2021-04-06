@@ -13,6 +13,7 @@ import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import {NgxSpinnerModule} from "ngx-spinner";
 import {ToastrModule} from "ngx-toastr";
 import {ModalModule} from "ngx-bootstrap/modal";
+import {PaginationModule} from "ngx-bootstrap/pagination";
 
 
 
@@ -31,7 +32,8 @@ import {ModalModule} from "ngx-bootstrap/modal";
     FileUploaderComponent,
     NgxSpinnerModule,
     ToastrModule,
-    ModalModule
+    ModalModule,
+    PaginationModule
   ],
   imports: [
     CommonModule,
@@ -41,7 +43,8 @@ import {ModalModule} from "ngx-bootstrap/modal";
     FileUploadModule,
     NgxSpinnerModule,
     ToastrModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    PaginationModule.forRoot()
   ]
 })
 export class SharedModule { }

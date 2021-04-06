@@ -1,10 +1,11 @@
-import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {BookApiEditModalComponent} from "../book-api-edit-modal/book-api-edit-modal.component";
 import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
-import {first} from "rxjs/operators";
 import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
-import {Author} from "../../models/author";
+import {PaginationDto} from "../../models/pagination-dto";
+import {environment} from "@env";
+import {SearchResultDto} from "../../models/search-result-dto";
 
 @Component({
   selector: 'app-book-api-search-result',
@@ -14,15 +15,40 @@ import {Author} from "../../models/author";
 export class BookApiSearchResultComponent implements OnInit {
 
   @Output() addEvent = new EventEmitter<CreateBookUsingApiDto>();
+  @Output() changePageEvent = new EventEmitter<PaginationDto>()
   @Input() searchResult: SearchResultDto;
   @Input() uploaderStyle: IFileUploaderStyle;
   modalRef: BsModalRef;
 
+  //pagination
+  itemsPerPageOptions: number[] = environment.pagination.itemsPerPageOpts;
+  maxResults = environment.pagination.itemsPerPageDefault;
+  startIndex = 0;
+
   constructor(private modalService: BsModalService) { }
 
   ngOnInit(): void {
+  }
+
+  pageChanged(event: any): void {
+    this.startIndex = (event.page - 1) * this.maxResults;
+    const searchPagination: PaginationDto = {
+      startIndex: this.startIndex,
+      maxResults: this.maxResults,
+    }
+    this.changePageEvent.emit(searchPagination)
+  }
+
+  onMaxResultsChanged(event: any): void {
+    console.log(event)
+    const searchPagination: PaginationDto = {
+      startIndex:0,
+      maxResults: event
+    }
+    this.changePageEvent.emit(searchPagination)
 
   }
+
 
   edit(volumeInfo: any): void {
     const initialState = {
@@ -56,12 +82,4 @@ export class BookApiSearchResultComponent implements OnInit {
     this.addEvent.emit(book)
     // console.log(this.searchResult.items.filter(x => x.volumeInfo.id === 'PlegDwAAQBAJ')[0].volumeInfo)
   }
-
-
-}
-
-
-export interface SearchResultDto {
-  totalItems: number;
-  items: any[];
 }

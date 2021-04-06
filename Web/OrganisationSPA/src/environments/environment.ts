@@ -8,6 +8,10 @@ export const environment = {
   logoImg: 'assets/img/Logo-placeholder.png',
   bookApiUrl: 'https://localhost:5001/',
   googleApiUrl: 'https://www.googleapis.com/',
+  pagination: {
+    itemsPerPageDefault: 10,
+    itemsPerPageOpts: [10,20,40]
+  },
   book: {
     title: {
       required: true,
