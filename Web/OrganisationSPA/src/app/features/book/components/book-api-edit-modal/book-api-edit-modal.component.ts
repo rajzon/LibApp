@@ -24,6 +24,7 @@ export class BookApiEditModalComponent implements OnInit {
     return this.editForm.get('categoriesNames') as FormArray;
   }
 
+
   constructor(public bsModalRef: BsModalRef) { }
 
   ngOnInit(): void {
@@ -44,8 +45,14 @@ export class BookApiEditModalComponent implements OnInit {
       publishedDate: createFormControl(new Date(this.volumeInfo.publishedDate), this.bookFieldsSettings.publishedDate),
       description: new FormControl(this.volumeInfo.description),
     })
-    this.volumeInfo.categories.push('adadadawda');
-    const controls = this.volumeInfo.categories?.map(x => {
+
+    this.registerCategoriesFormArray();
+  }
+
+
+  private registerCategoriesFormArray() {
+    this.volumeInfo.categories = this.volumeInfo.categories ?? new Array<string>();
+    const controls = this.volumeInfo.categories.map(x => {
       return createFormControl(x, this.bookFieldsSettings.categories.name);
     })
     this.editForm.registerControl('categoriesNames', new FormArray(controls));
@@ -53,6 +60,17 @@ export class BookApiEditModalComponent implements OnInit {
 
   isRequiredField(abstractControl: AbstractControl): boolean {
     return isRequiredField(abstractControl);
+  }
+
+  removeCategory(index: number): void {
+    let categoriesNames = this.editForm.controls['categoriesNames'] as FormArray;
+    categoriesNames.removeAt(index)
+  }
+
+  insertCategory(): void {
+    let categoriesNames = this.editForm.controls['categoriesNames'] as FormArray;
+    const place = categoriesNames.length;
+    categoriesNames.insert(place, createFormControl(null, this.bookFieldsSettings.categories.name))
   }
 
 

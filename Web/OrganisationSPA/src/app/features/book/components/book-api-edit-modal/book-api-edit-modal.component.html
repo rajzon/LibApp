@@ -9,9 +9,17 @@
                     [label]="'Author Firstname'"></app-text-input>
     <app-text-input [formControl]="editForm.controls['author'].get('lastName')"
                     [label]="'Author Lastname'"></app-text-input>
-    <ng-container *ngFor="let category of categories.controls; let i = index;" formArrayName="categoriesNames">
-      <app-text-input [formControl]="category"
+    <ng-container *ngFor="let category of categories?.controls; let i = index;" formArrayName="categoriesNames">
+      <app-text-input [formControl]="categories.controls[i]"
                       [label]="'Categories'"></app-text-input>
+      <button type="button"
+              class="btn btn-danger"
+              (click)="removeCategory(i)">Remove</button>
+    </ng-container>
+    <ng-container>
+      <button type="button"
+              class="btn btn-primary mt-2 d-block"
+              (click)="insertCategory()">Add new category</button>
     </ng-container>
 
     <app-number-input [formControl]="editForm.controls['pageCount']"

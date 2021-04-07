@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterContentInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {BookApiEditModalComponent} from "../book-api-edit-modal/book-api-edit-modal.component";
 import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
@@ -27,6 +27,7 @@ export class BookApiSearchResultComponent implements OnInit {
 
   constructor(private modalService: BsModalService) { }
 
+
   ngOnInit(): void {
   }
 
@@ -46,7 +47,6 @@ export class BookApiSearchResultComponent implements OnInit {
       maxResults: event
     }
     this.changePageEvent.emit(searchPagination)
-
   }
 
 

@@ -26,6 +26,8 @@ export class GoogleBookApiService {
 
     params = params.append('startIndex', startIndex.toString());
     params = params.append('maxResults', maxResults.toString());
+    // params = params.append('orderBy', 'newest');
+
 
     return this.http.get<any[]>(this.URL + `?q=${query}+${searchParam}`,{params: params});
   }
