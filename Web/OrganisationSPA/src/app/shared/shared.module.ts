@@ -14,11 +14,12 @@ import {NgxSpinnerModule} from "ngx-spinner";
 import {ToastrModule} from "ngx-toastr";
 import {ModalModule} from "ngx-bootstrap/modal";
 import {PaginationModule} from "ngx-bootstrap/pagination";
+import {EmptyToNullDirective} from "@shared/directives/empty-to-null/empty-to-null.directive";
 
 
 
 @NgModule({
-  declarations: [TextInputComponent, NumberInputComponent, DigitsOnlyDirective, FileUploaderComponent],
+  declarations: [TextInputComponent, NumberInputComponent, DigitsOnlyDirective, FileUploaderComponent, EmptyToNullDirective],
   exports: [
     TextInputComponent,
     NumberInputComponent,
