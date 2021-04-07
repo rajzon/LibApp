@@ -49,6 +49,7 @@
                   [boundaryLinks]="true"
                   [totalItems]="searchResult?.totalItems"
                   [itemsPerPage]="maxResults"
+                  [(ngModel)]="initialPage"
                   (pageChanged)="pageChanged($event)"
                   [maxSize]="5"
                   previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">

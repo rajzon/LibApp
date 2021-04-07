@@ -15,10 +15,13 @@
   <tabset>
     <tab heading="Adding Using Different Source" id="tab1"><app-book-api-add
       [booksFromSearch]="booksFromSearch$ | async"
-      (searchEvent)="searchBooks($event.searchValue, $event.searchParam )"></app-book-api-add>
+      (searchEvent)="searchBooks($event.searchValue, $event.searchParam )" (clearSearchResultEvent)="reloadSearchResult = $event"></app-book-api-add>
       <app-book-api-search-result [searchResult]="booksFromSearch$ | async"
                                   [uploaderStyle]="uploaderStyle"
+                                  [reload]="reloadSearchResult"
+                                  [maxResults]="maxResults"
                                   (addEvent)="addBookUsingApi($event)"
+                                  (reloadEvent)="reloadSearchResult = $event"
                                   (changePageEvent)="changePage($event.startIndex, $event.maxResults)"></app-book-api-search-result>
     </tab>
     <tab heading="Manual Adding"><app-book-manual-add

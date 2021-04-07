@@ -1,4 +1,15 @@
-import {AfterContentInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterContentInit, AfterViewChecked, AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {BookApiEditModalComponent} from "../book-api-edit-modal/book-api-edit-modal.component";
 import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
@@ -12,7 +23,7 @@ import {SearchResultDto} from "../../models/search-result-dto";
   templateUrl: './book-api-search-result.component.html',
   styleUrls: ['./book-api-search-result.component.sass']
 })
-export class BookApiSearchResultComponent implements OnInit {
+export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Output() addEvent = new EventEmitter<CreateBookUsingApiDto>();
   @Output() changePageEvent = new EventEmitter<PaginationDto>()
@@ -22,13 +33,35 @@ export class BookApiSearchResultComponent implements OnInit {
 
   //pagination
   itemsPerPageOptions: number[] = environment.pagination.itemsPerPageOpts;
-  maxResults = environment.pagination.itemsPerPageDefault;
+  @Input() maxResults: number;
   startIndex = 0;
+  initialPage: number;
+  @Input() reload: boolean;
+  @Output() reloadEvent = new EventEmitter<boolean>();
 
-  constructor(private modalService: BsModalService) { }
+  constructor(private modalService: BsModalService, private cd: ChangeDetectorRef) {
+  }
 
+  ngAfterViewInit(): void {
+    this.cd.detectChanges();
+    }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes.reload)
+    if (changes.reload?.currentValue === true) {
+      console.log('called true')
+      this.reloadEvent.emit(false);
+      this.initialPage = 1;
+    } else {
+      console.log('called false')
+
+    }
+  }
 
   ngOnInit(): void {
+    console.log('called ngOnInit');
+    console.log(this.initialPage);
+
   }
 
   pageChanged(event: any): void {
@@ -37,6 +70,8 @@ export class BookApiSearchResultComponent implements OnInit {
       startIndex: this.startIndex,
       maxResults: this.maxResults,
     }
+    console.log('page Changed Fired')
+
     this.changePageEvent.emit(searchPagination)
   }
 
@@ -46,6 +81,8 @@ export class BookApiSearchResultComponent implements OnInit {
       startIndex:0,
       maxResults: event
     }
+    this.cd.detectChanges();
+    this.initialPage = 1
     this.changePageEvent.emit(searchPagination)
   }
 
@@ -80,6 +117,5 @@ export class BookApiSearchResultComponent implements OnInit {
       publishedDate: new Date(volumeInfo?.publishedDate)
     }
     this.addEvent.emit(book)
-    // console.log(this.searchResult.items.filter(x => x.volumeInfo.id === 'PlegDwAAQBAJ')[0].volumeInfo)
   }
 }

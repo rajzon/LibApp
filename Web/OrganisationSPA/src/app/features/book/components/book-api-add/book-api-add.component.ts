@@ -11,10 +11,10 @@ export class BookApiAddComponent implements OnInit {
 
   @Input() booksFromSearch: any[];
   @Output() searchEvent = new EventEmitter<SearchDto>()
+  @Output() clearSearchResultEvent = new EventEmitter<boolean>();
 
   searchValue: string;
-  searchParam: 'intitle' | 'inauthor' | 'isbn'
-  maxResults: number = environment.pagination.itemsPerPageDefault
+  searchParam: 'intitle' | 'inauthor' | 'isbn';
 
   constructor() { }
 
@@ -22,6 +22,7 @@ export class BookApiAddComponent implements OnInit {
   }
 
   search(value: SearchDto) {
+    this.clearSearchResultEvent.emit(true);
     this.searchEvent.emit(value);
   }
 

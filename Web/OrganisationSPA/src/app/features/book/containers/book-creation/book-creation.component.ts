@@ -35,6 +35,7 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
   //search/pagination
   query: string;
   searchParam: 'intitle' | 'inauthor' | 'isbn';
+  maxResults: number = environment.pagination.itemsPerPageDefault;
 
   //Uploader
   uploaderOptions: FileUploaderOptions;
@@ -51,7 +52,7 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
     this.newlyAddedBook$ = bookFacade.getNewlyAddedBook$();
     this.isLoading$ = bookFacade.isLoading$();
   }
-
+  reloadSearchResult: boolean;
   ngAfterViewInit(): void {
         this.spinner.show();
     }
@@ -96,14 +97,15 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
     console.log(searchParam);
     console.log(startIndex);
     console.log(maxResults);
-    maxResults = maxResults?? environment.pagination.itemsPerPageDefault
+    this.maxResults = maxResults?? this.maxResults;
+    // this.maxResults = maxResults;
 
     console.log(maxResults)
     console.log(environment.pagination.itemsPerPageDefault)
 
     this.query = query
     this.searchParam = searchParam;
-    this.bookFacade.searchBooks$(query, searchParam, startIndex, maxResults).subscribe();
+    this.bookFacade.searchBooks$(query, searchParam, startIndex, this.maxResults).subscribe();
     this.booksFromSearch$ = this.bookFacade.getBooksFromSearch$();
   }
 
