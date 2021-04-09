@@ -7,6 +7,7 @@ import {isRequiredField} from '@shared/helpers/forms/is-required-field.function'
 import {BehaviorSubject, Subject} from "rxjs";
 import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
 import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
+import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
 
 @Component({
   selector: 'app-book-api-edit-modal',
@@ -15,9 +16,10 @@ import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
 })
 export class BookApiEditModalComponent implements OnInit {
 
-  volumeInfo$ = new Subject<CreateBookUsingApiDto>();
+  addCommand$ = new Subject<CreateBookUsingApiDto>();
   volumeInfo: any;
   uploaderStyle: IFileUploaderStyle;
+  uploader: FileUploader;
   editForm: FormGroup;
   bookFieldsSettings = environment.book;
   get categories() {
@@ -28,7 +30,11 @@ export class BookApiEditModalComponent implements OnInit {
   constructor(public bsModalRef: BsModalRef) { }
 
   ngOnInit(): void {
-    this.volumeInfo$.next(this.volumeInfo);
+    const addCommand: CreateBookUsingApiDto = {
+      book: this.volumeInfo,
+      uploader: this.uploader
+    };
+    this.addCommand$.next(addCommand);
 
     this.editForm = new FormGroup({
       title: createFormControl(this.volumeInfo.title, this.bookFieldsSettings.title),
@@ -78,7 +84,11 @@ export class BookApiEditModalComponent implements OnInit {
 
   edit(): void {
     console.log(this.editForm.value);
-    this.volumeInfo$.next(this.editForm.value);
+    const addCommand: CreateBookUsingApiDto = {
+      book: this.editForm.value,
+      uploader: this.uploader
+    };
+    this.addCommand$.next(addCommand);
     this.bsModalRef.hide();
   }
 

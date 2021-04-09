@@ -7,17 +7,19 @@ import {FileUploader} from "ng2-file-upload";
 })
 export class UploaderState {
 
-  private uploader$ = new BehaviorSubject<FileUploader>(null);
+  private manualBookImgUploader$ = new BehaviorSubject<FileUploader>(null);
+  private googleBookImgUploaders$ = new BehaviorSubject<FileUploader[]>(null);
 
-
-  getUploader$() {
-    console.log('getUploader')
-    return this.uploader$.asObservable();
+  //Manual Book
+  getManualBookImgUploader$() {
+    return this.manualBookImgUploader$.asObservable();
   }
 
-  setUploader(uploader: FileUploader): void {
-    console.log('setUploader')
-    this.uploader$.next(uploader);
+  setManualBookImgUploader(uploader: FileUploader): void {
+    this.manualBookImgUploader$.next(uploader);
   }
+
+
+
 
 }

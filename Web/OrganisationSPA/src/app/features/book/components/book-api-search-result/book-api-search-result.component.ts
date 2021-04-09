@@ -12,13 +12,15 @@ import {
 } from '@angular/core';
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {BookApiEditModalComponent} from "../book-api-edit-modal/book-api-edit-modal.component";
-import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
+import {BookToCreateDto, CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
 import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
 import {PaginationDto} from "../../models/pagination-dto";
 import {environment} from "@env";
 import {SearchItemVolume, SearchResultDto} from "../../models/search-result-dto";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
+import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
+import {UploaderState} from "@core/state/uploader.state";
 
 @Component({
   selector: 'app-book-api-search-result',
@@ -43,7 +45,9 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
   @Input() reload: boolean;
   @Output() reloadEvent = new EventEmitter<boolean>();
 
-  constructor(private modalService: BsModalService, private cd: ChangeDetectorRef) {
+  uploaders: FileUploader[];
+
+  constructor(private modalService: BsModalService, private cd: ChangeDetectorRef, private uploaderState: UploaderState) {
   }
 
   ngAfterViewInit(): void {
@@ -59,12 +63,28 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
     if (this.searchResult !== null &&
       changes.searchResult?.currentValue !== changes.searchResult?.previousValue) {
       this.initForms()
+
+      const uploaderOptions: FileUploaderOptions = {
+        isHTML5: true,
+        allowedFileType: ['image'],
+        removeAfterUpload: true,
+        autoUpload: false
+      };
+
+      let uploaders = new Array<FileUploader>();
+      for (let i= 0; i<this.addBooksForms.length; i++){
+        uploaders.push(new FileUploader(uploaderOptions));
+      }
+      this.uploaders = uploaders;
+      console.log(this.uploaders);
     }
   }
 
   ngOnInit(): void {
     console.log('called ngOnInit');
     console.log(this.initialPage);
+    console.log(this.uploaders)
+
 
   }
 
@@ -90,21 +110,23 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
   }
 
   //AddEvent
-  addAfterEdit(volumeInfo: any): void {
+  addAfterEdit(volumeInfo: any, uploader: FileUploader): void {
     const initialState = {
       volumeInfo: volumeInfo,
-      uploaderStyle: this.uploaderStyle
+      uploaderStyle: this.uploaderStyle,
+      uploader: uploader
     };
     this.modalRef = this.modalService.show(BookApiEditModalComponent, {initialState});
     this.modalRef.setClass('modal-lg')
-    this.modalRef.content.volumeInfo$.subscribe((res:CreateBookUsingApiDto) => {
+    this.modalRef.content.addCommand$.subscribe((res:CreateBookUsingApiDto) => {
       this.addEvent.emit(res);
     })
   }
 
-  add(volumeInfo: any): void {
+  add(volumeInfo: any, uploader: FileUploader): void {
     console.log(volumeInfo);
-    const book: CreateBookUsingApiDto = {
+
+    const book: BookToCreateDto = {
       title: volumeInfo?.title,
       description: volumeInfo?.description,
       isbn10: volumeInfo.isbn10,
@@ -121,7 +143,13 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
       categoriesNames: volumeInfo?.categoriesNames,
       publishedDate: new Date(volumeInfo?.publishedDate)
     }
-    this.addEvent.emit(book)
+    const addCommand: CreateBookUsingApiDto = {
+      uploader: uploader,
+      book: book
+    }
+    console.log(addCommand);
+
+    this.addEvent.emit(addCommand)
   }
   ///////////////
 

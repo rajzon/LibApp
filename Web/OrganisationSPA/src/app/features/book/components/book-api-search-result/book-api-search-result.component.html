@@ -1,6 +1,6 @@
 <form *ngFor="let addBookForm of addBooksForms; let i = index"
         [formGroup]="addBookForm"
-        (ngSubmit)="add(addBookForm.value)"
+        (ngSubmit)="add(addBookForm.value, uploaders[i])"
         class="card mt-3">
     <div class="row no-gutters">
       <div class="col-md-2 d-flex align-items-center justify-content-center">
@@ -71,7 +71,7 @@
                 <div class="col-lg-12 col-sm-6 my-5">
                   <button type="button"
                           class="fa fa-edit action-btn border-0 mx-auto"
-                          (click)="addAfterEdit(addBookForm.value)"></button>
+                          (click)="addAfterEdit(addBookForm.value, uploaders[i])"></button>
                 </div>
               </div>
             </div>
@@ -111,5 +111,4 @@
     </div>
   </div>
 </ng-container>
-
 

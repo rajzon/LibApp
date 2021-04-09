@@ -74,16 +74,16 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
       autoUpload: false
     };
 
-    this.bookFacade.setUploader(new FileUploader(uploaderOptions));
+    this.bookFacade.setManualBookImgUploader(new FileUploader(uploaderOptions));
   }
 
   addBook(book: CreateManualBookDto): void {
     this.bookFacade.addBookWithPhotos(book);
   }
 
-  addBookUsingApi(book: CreateBookUsingApiDto): void {
-    console.log(book);
-    this.bookFacade.addBookWithPhotoUsingApi(book);
+  addBookUsingApi(addCommand: CreateBookUsingApiDto): void {
+    console.log(addCommand);
+    this.bookFacade.addBookWithPhotoUsingApi(addCommand);
   }
 
   changePage(startIndex: number, maxResults: number) {

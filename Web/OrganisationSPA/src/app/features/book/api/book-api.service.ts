@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Book} from "../models/book";
 import {CreateManualBookDto} from "../models/create-manual-book-dto";
-import {CreateBookUsingApiDto} from "../models/create-book-using-api-dto";
+import {BookToCreateDto, CreateBookUsingApiDto} from "../models/create-book-using-api-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class BookApiService {
     return this.http.post<Book>(this.API + '/add-manual', book);
   }
 
-  createBookUsingApi(book: CreateBookUsingApiDto): Observable<Book> {
+  createBookUsingApi(book: BookToCreateDto): Observable<Book> {
     return this.http.post<Book>(this.API +'/add', book);
   }
 }

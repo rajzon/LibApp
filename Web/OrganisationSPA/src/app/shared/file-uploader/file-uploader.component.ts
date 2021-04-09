@@ -22,11 +22,10 @@ import {BehaviorSubject, Subscription} from "rxjs";
 export class FileUploaderComponent implements AfterViewInit{
 
   @Input() uploaderStyle: IFileUploaderStyle
-  uploader: FileUploader;
+  @Input() uploader: FileUploader;
   hasBaseDropZoneOver: boolean;
 
   constructor(private uploaderState: UploaderState) {
-    uploaderState.getUploader$().subscribe(res => this.uploader = res);
     this.hasBaseDropZoneOver = false;
 
   }
@@ -49,12 +48,13 @@ export class FileUploaderComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    this.uploader.onErrorItem = (item, response, status, header) => {
+
+    this.uploader? this.uploader.onErrorItem = (item, response, status, header) => {
       console.log("Error occured during uploading image");
       console.log(this.uploader);
-    }
+    }:
 
-    console.log(this.uploader.progress);
+    console.log(this.uploader?.progress);
     console.log(this.uploader);
   }
 

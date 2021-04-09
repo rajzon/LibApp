@@ -24,7 +24,8 @@
                                   (reloadEvent)="reloadSearchResult = $event"
                                   (changePageEvent)="changePage($event.startIndex, $event.maxResults)"></app-book-api-search-result>
     </tab>
-    <tab heading="Manual Adding"><app-book-manual-add
+    <tab heading="Manual Adding">
+      <app-book-manual-add
       [categories]="categories$ | async"
       [languages]="languages$ | async"
       [authors]="authors$ | async"

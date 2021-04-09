@@ -9,9 +9,11 @@ import {Author} from "../../models/author";
 import {Publisher} from "../../models/publisher";
 import {isRequiredField} from "@shared/helpers/forms/is-required-field.function";
 import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
-import {FileUploaderOptions} from "ng2-file-upload";
+import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
 import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
 import {CreateManualBookDto} from "../../models/create-manual-book-dto";
+import {BookFacade} from "../../book.facade";
+import {UploaderState} from "@core/state/uploader.state";
 
 @Component({
   selector: 'app-book-manual-add',
@@ -27,13 +29,17 @@ export class BookManualAddComponent {
   @Input() publishers: Publisher[]
   @Input() uploaderStyle: IFileUploaderStyle
   @Output() createBookEvent = new EventEmitter<CreateManualBookDto>()
+  uploader: FileUploader;
+
   bookFieldsSettings = environment.book;
 
   manualBookAddForm: FormGroup
 
 
-
-  constructor() {
+  constructor(private uploaderState: UploaderState) {
+    this.uploaderState.getManualBookImgUploader$().subscribe(res => {
+      this.uploader = res;
+    })
     this.createFormGroup();
   }
 

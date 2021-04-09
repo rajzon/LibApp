@@ -13,13 +13,13 @@ import {Publisher} from "./models/publisher";
 import {BookApiService} from "./api/book-api.service";
 import {Book} from "./models/book";
 import {CreateManualBookDto} from "./models/create-manual-book-dto";
-import {FileUploader} from "ng2-file-upload";
+import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
 import {environment} from "@env";
 import {UploaderState} from "@core/state/uploader.state";
 import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 import {GoogleBookApiService} from "./api/google-book-api.service";
-import {CreateBookUsingApiDto} from "./models/create-book-using-api-dto";
+import {BookToCreateDto, CreateBookUsingApiDto} from "./models/create-book-using-api-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +52,7 @@ export class BookFacade {
       .subscribe((res:Book) => {
         this.bookState.setBook(res);
           console.log(res);
-        this.uploaderState.getUploader$().subscribe((upl:FileUploader) => {
+        this.uploaderState.getManualBookImgUploader$().subscribe((upl:FileUploader) => {
           console.log(upl);
           this.uploadPhoto(res.id, upl)
         });
@@ -94,14 +94,13 @@ export class BookFacade {
   }
 
 
-  addBookWithPhotoUsingApi(book: CreateBookUsingApiDto): void {
+  addBookWithPhotoUsingApi(addCommand: CreateBookUsingApiDto): void {
     this.bookState.setAdding(true)
-    this.bookApi.createBookUsingApi(book).subscribe((res:Book) => {
+    console.log(addCommand.book);
+    this.bookApi.createBookUsingApi(addCommand.book).subscribe((res:Book) => {
       this.bookState.setBook(res);
-        console.log(res);
-      this.uploaderState.getUploader$().subscribe((upl:FileUploader) => {
-        this.uploadPhoto(res.id, upl);
-      });
+      console.log(res);
+      this.uploadPhoto(res.id, addCommand.uploader);
     }, (error: any) => {
         console.log(error);
         this.bookState.setAdding(false);
@@ -148,12 +147,12 @@ export class BookFacade {
     }
   }
 
-  getUploader$(): Observable<FileUploader> {
-    return this.uploaderState.getUploader$();
+  getManualBookImgUploader$(): Observable<FileUploader> {
+    return this.uploaderState.getManualBookImgUploader$();
   }
 
-  setUploader(uploader: FileUploader) {
-    this.uploaderState.setUploader(uploader);
+  setManualBookImgUploader(uploader: FileUploader): void {
+    this.uploaderState.setManualBookImgUploader(uploader);
   }
 
 
