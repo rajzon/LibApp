@@ -5,7 +5,6 @@ import {Language} from "../models/language";
 import {Author} from "../models/author";
 import {Publisher} from "../models/publisher";
 import {Book} from "../models/book";
-import {FileUploader} from "ng2-file-upload";
 
 @Injectable({
   providedIn: "root"
@@ -22,7 +21,7 @@ export class BookState {
   private publishers$ = new BehaviorSubject<Publisher[]>(null);
   private newlyAddedBook$ = new BehaviorSubject<Book>(null);
 
-  private books = new BehaviorSubject<any[]>(null);
+  private googleBooks = new BehaviorSubject<any[]>(null);
 
   isAdding$() {
     return this.adding$.asObservable();
@@ -51,12 +50,12 @@ export class BookState {
 
   //GoogleBook
 
-  setBooks(books: any[]): void {
-    this.books.next(books);
+  setGoogleBooks(books: any[]): void {
+    this.googleBooks.next(books);
   }
 
   getBooksFromSearch$(): Observable<any[]> {
-    return this.books.asObservable();
+    return this.googleBooks.asObservable();
   }
 
 

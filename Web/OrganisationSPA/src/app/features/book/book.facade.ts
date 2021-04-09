@@ -1,6 +1,6 @@
 ﻿import {Injectable} from "@angular/core";
 import {CategoriesApiService} from "./api/categories-api.service";
-import {empty, Observable, of} from "rxjs";
+import {Observable, of} from "rxjs";
 import {Category} from "./models/category";
 import {BookState} from "./state/book.state";
 import {catchError, map} from "rxjs/operators";
@@ -79,7 +79,7 @@ export class BookFacade {
   searchBooks$(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn', startIndex?: number, maxResults?: number): Observable<any[]> {
     this.bookState.setLoading(true);
     return this.googleApi.getBooks$(query, searchParam, startIndex, maxResults).pipe(map(books => {
-      this.bookState.setBooks(books);
+      this.bookState.setGoogleBooks(books);
       this.bookState.setLoading(false);
       return books;
     }),catchError((err, caught) => {
@@ -92,6 +92,7 @@ export class BookFacade {
   getBooksFromSearch$(): Observable<any[]> {
     return this.bookState.getBooksFromSearch$();
   }
+
 
   addBookWithPhotoUsingApi(book: CreateBookUsingApiDto): void {
     this.bookState.setAdding(true)

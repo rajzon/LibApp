@@ -32,16 +32,17 @@ export class BookApiEditModalComponent implements OnInit {
 
     this.editForm = new FormGroup({
       title: createFormControl(this.volumeInfo.title, this.bookFieldsSettings.title),
+      //TODO later create form which allow authors as collection instead of only 1
       author: new FormGroup({
-        firstName: createFormControl(this.volumeInfo.authors, this.bookFieldsSettings.author.authorFirstName),
-        lastName: createFormControl(this.volumeInfo.authors, this.bookFieldsSettings.author.authorLastName),
+        firstName: createFormControl(this.volumeInfo.authors[0]?.firstName, this.bookFieldsSettings.author.authorFirstName),
+        lastName: createFormControl(this.volumeInfo.authors[0]?.lastName, this.bookFieldsSettings.author.authorLastName),
       }),
       pageCount: createFormControl(this.volumeInfo.pageCount, this.bookFieldsSettings.pageCount),
-      languageName: createFormControl(this.volumeInfo.language, this.bookFieldsSettings.language.languageName),
-      isbn10: createFormControl(this.volumeInfo.industryIdentifiers.filter(x => x.type === 'ISBN_10')[0]?.identifier, this.bookFieldsSettings.isbn10),
-      isbn13: createFormControl(this.volumeInfo.industryIdentifiers.filter(x => x.type === 'ISBN_13')[0]?.identifier, this.bookFieldsSettings.isbn13),
-      visibility: new FormControl(true),
-      publisherName: createFormControl(this.volumeInfo.publisher, this.bookFieldsSettings.publisher.publisherName),
+      languageName: createFormControl(this.volumeInfo.languageName, this.bookFieldsSettings.language.languageName),
+      isbn10: createFormControl(this.volumeInfo.isbn10, this.bookFieldsSettings.isbn10),
+      isbn13: createFormControl(this.volumeInfo.isbn13, this.bookFieldsSettings.isbn13),
+      visibility: new FormControl(this.volumeInfo.visibility),
+      publisherName: createFormControl(this.volumeInfo.publisherName, this.bookFieldsSettings.publisher.publisherName),
       publishedDate: createFormControl(new Date(this.volumeInfo.publishedDate), this.bookFieldsSettings.publishedDate),
       description: new FormControl(this.volumeInfo.description),
     })

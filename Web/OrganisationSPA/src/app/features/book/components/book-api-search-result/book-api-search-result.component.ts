@@ -16,7 +16,9 @@ import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
 import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
 import {PaginationDto} from "../../models/pagination-dto";
 import {environment} from "@env";
-import {SearchResultDto} from "../../models/search-result-dto";
+import {SearchItemVolume, SearchResultDto} from "../../models/search-result-dto";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
 
 @Component({
   selector: 'app-book-api-search-result',
@@ -30,6 +32,8 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
   @Input() searchResult: SearchResultDto;
   @Input() uploaderStyle: IFileUploaderStyle;
   modalRef: BsModalRef;
+  bookFieldsSettings = environment.book;
+  addBooksForms: FormGroup[];
 
   //pagination
   itemsPerPageOptions: number[] = environment.pagination.itemsPerPageOpts;
@@ -47,14 +51,14 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
     }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes.reload)
     if (changes.reload?.currentValue === true) {
-      console.log('called true')
       this.reloadEvent.emit(false);
       this.initialPage = 1;
-    } else {
-      console.log('called false')
+    }
 
+    if (this.searchResult !== null &&
+      changes.searchResult?.currentValue !== changes.searchResult?.previousValue) {
+      this.initForms()
     }
   }
 
@@ -64,14 +68,13 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
 
   }
 
+  //Pagination
   pageChanged(event: any): void {
     this.startIndex = (event.page - 1) * this.maxResults;
     const searchPagination: PaginationDto = {
       startIndex: this.startIndex,
       maxResults: this.maxResults,
     }
-    console.log('page Changed Fired')
-
     this.changePageEvent.emit(searchPagination)
   }
 
@@ -86,8 +89,8 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
     this.changePageEvent.emit(searchPagination)
   }
 
-
-  edit(volumeInfo: any): void {
+  //AddEvent
+  addAfterEdit(volumeInfo: any): void {
     const initialState = {
       volumeInfo: volumeInfo,
       uploaderStyle: this.uploaderStyle
@@ -100,22 +103,84 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
   }
 
   add(volumeInfo: any): void {
+    console.log(volumeInfo);
     const book: CreateBookUsingApiDto = {
       title: volumeInfo?.title,
       description: volumeInfo?.description,
-      isbn10: volumeInfo?.industryIdentifiers?.filter(x => x.type === 'ISBN_10')[0]?.identifier,
-      isbn13: volumeInfo?.industryIdentifiers.filter(x => x.type === 'ISBN_13')[0]?.identifier,
+      isbn10: volumeInfo.isbn10,
+      isbn13: volumeInfo.isbn13,
       pageCount: volumeInfo?.pageCount,
-      visibility: false,
-      languageName: volumeInfo?.language,
+      visibility: volumeInfo.visibility,
+      languageName: volumeInfo?.languageName,
+      //TODO later add all authors instead of only first
       author: {
-        firstName: volumeInfo?.authors?.toString(),
-        lastName: volumeInfo?.authors?.toString(),
+        firstName: volumeInfo?.authors[0]?.firstName,
+        lastName: volumeInfo?.authors[0]?.lastName,
       },
-      publisherName: volumeInfo?.publisher,
-      categoriesNames: volumeInfo?.categories,
+      publisherName: volumeInfo?.publisherName,
+      categoriesNames: volumeInfo?.categoriesNames,
       publishedDate: new Date(volumeInfo?.publishedDate)
     }
     this.addEvent.emit(book)
   }
+  ///////////////
+
+  ///////////Form
+  getCategoriesFromForm(formIndex: any): FormArray {
+    return this.addBooksForms[formIndex].controls['categoriesNames'] as FormArray;
+  }
+
+  getAuthorsFromForm(formIndex: any): FormArray {
+    return this.addBooksForms[formIndex].controls['authors'] as FormArray;
+  }
+
+  private initForms() {
+    this.addBooksForms = new Array<FormGroup>();
+
+    this.searchResult.items.forEach(item => {
+      let addBookForm = new FormGroup({
+        title: createFormControl(item.volumeInfo.title, this.bookFieldsSettings.title),
+        pageCount: createFormControl(item.volumeInfo.pageCount, this.bookFieldsSettings.pageCount),
+        languageName: createFormControl(item.volumeInfo.language, this.bookFieldsSettings.language.languageName),
+        isbn10: createFormControl(item.volumeInfo.industryIdentifiers.filter(x => x.type === 'ISBN_10')[0]?.identifier, this.bookFieldsSettings.isbn10),
+        isbn13: createFormControl(item.volumeInfo.industryIdentifiers.filter(x => x.type === 'ISBN_13')[0]?.identifier, this.bookFieldsSettings.isbn13),
+        visibility: new FormControl(true),
+        publisherName: createFormControl(item.volumeInfo.publisher, this.bookFieldsSettings.publisher.publisherName),
+        publishedDate: createFormControl(item.volumeInfo.publishedDate, this.bookFieldsSettings.publishedDate),
+        description: new FormControl(item.volumeInfo.description),
+        image: new FormControl(item.volumeInfo.imageLinks?.thumbnail, Validators.nullValidator)
+      });
+      this.registerCategoriesFormArray(item.volumeInfo, addBookForm);
+      this.registerAuthorsFormArray(item.volumeInfo, addBookForm);
+
+
+      this.addBooksForms.push(addBookForm);
+
+    })
+  }
+
+  private registerCategoriesFormArray(volumeInfo: SearchItemVolume, addBookForm: FormGroup) {
+    volumeInfo.categories = volumeInfo.categories ?? new Array<string>();
+    const controls = volumeInfo.categories.map(x => {
+      return createFormControl(x, this.bookFieldsSettings.categories.name);
+    })
+    addBookForm.registerControl('categoriesNames', new FormArray(controls,
+      this.bookFieldsSettings.categories.required?
+        Validators.required: Validators.nullValidator));
+  }
+
+  private registerAuthorsFormArray(volumeInfo: SearchItemVolume, addBookForm: FormGroup) {
+    volumeInfo.authors = volumeInfo.authors ?? new Array<string>();
+    const controls = volumeInfo.authors.map(x => {
+      return new FormGroup({
+        firstName: createFormControl(x, this.bookFieldsSettings.author.authorFirstName),
+        lastName: createFormControl(x, this.bookFieldsSettings.author.authorLastName),
+      });
+    })
+    addBookForm.registerControl('authors', new FormArray(controls,
+      this.bookFieldsSettings.author.required?
+        Validators.required: Validators.nullValidator));
+  }
+/////////////////////////////
+
 }

@@ -38,7 +38,6 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
   maxResults: number = environment.pagination.itemsPerPageDefault;
 
   //Uploader
-  uploaderOptions: FileUploaderOptions;
   uploaderStyle: IFileUploaderStyle;
 
   constructor(private bookFacade: BookFacade,
@@ -68,15 +67,14 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
     //Uploader
     this.uploaderStyle = {style: "removeOnly"};
 
-    this.uploaderOptions = {
+    const uploaderOptions: FileUploaderOptions = {
       isHTML5: true,
       allowedFileType: ['image'],
       removeAfterUpload: true,
       autoUpload: false
-
     };
 
-    this.bookFacade.setUploader(new FileUploader(this.uploaderOptions));
+    this.bookFacade.setUploader(new FileUploader(uploaderOptions));
   }
 
   addBook(book: CreateManualBookDto): void {
@@ -93,15 +91,7 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
   }
 
   searchBooks(query: string, searchParam: 'intitle' | 'inauthor' | 'isbn', startIndex?: number, maxResults?: number) {
-    console.log(query);
-    console.log(searchParam);
-    console.log(startIndex);
-    console.log(maxResults);
     this.maxResults = maxResults?? this.maxResults;
-    // this.maxResults = maxResults;
-
-    console.log(maxResults)
-    console.log(environment.pagination.itemsPerPageDefault)
 
     this.query = query
     this.searchParam = searchParam;
