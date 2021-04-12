@@ -20,7 +20,6 @@ import {SearchItemVolume, SearchResultDto} from "../../models/search-result-dto"
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
-import {UploaderState} from "@core/state/uploader.state";
 
 @Component({
   selector: 'app-book-api-search-result',
@@ -47,8 +46,9 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
 
   uploaders: FileUploader[];
 
-  constructor(private modalService: BsModalService, private cd: ChangeDetectorRef, private uploaderState: UploaderState) {
+  constructor(private modalService: BsModalService, private cd: ChangeDetectorRef) {
   }
+
 
   ngAfterViewInit(): void {
     this.cd.detectChanges();
@@ -72,6 +72,7 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
       };
 
       let uploaders = new Array<FileUploader>();
+
       for (let i= 0; i<this.addBooksForms.length; i++){
         uploaders.push(new FileUploader(uploaderOptions));
       }
@@ -80,12 +81,12 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
     }
   }
 
-  ngOnInit(): void {
-    console.log('called ngOnInit');
-    console.log(this.initialPage);
-    console.log(this.uploaders)
+  ngOnInit(): void { }
 
-
+  openImageInNewTab( event: any, url: string,): void {
+    if (!url)
+      return;
+    window.open(url)
   }
 
   //Pagination

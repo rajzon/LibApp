@@ -4,9 +4,12 @@
         class="card mt-3">
     <div class="row no-gutters">
       <div class="col-md-2 d-flex align-items-center justify-content-center">
-        <div class="card-img-wrapper">
-          <img class="img-fluid" [src]="addBookForm.controls['image'].value" alt="...">
-        </div>
+          <div class="card-img-wrapper">
+              <img class="img-fluid"
+                   [id]="'img'+i"
+                   [src]="addBookForm.controls['image'].value"
+                   (mouseup)="openImageInNewTab($event, addBookForm.controls['image'].value)" alt="...">
+          </div>
       </div>
       <div class="col-md-10">
         <div class="card-header">
