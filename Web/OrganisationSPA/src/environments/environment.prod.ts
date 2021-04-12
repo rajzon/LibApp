@@ -3,6 +3,10 @@ export const environment = {
   logoImg: 'assets/img/Logo-placeholder.png',
   bookApiUrl: 'https://localhost:5001/',
   googleApiUrl: 'https://www.googleapis.com/',
+  pagination: {
+    itemsPerPageDefault: 10,
+    itemsPerPageOpts: [10,20,40]
+  },
   book: {
     title: {
       required: true,
@@ -27,7 +31,7 @@ export const environment = {
     categories: {
       required: false,
       name: {
-        required: false,
+        required: true,
         minLength: 3,
         maxLength: 30,
       }
@@ -46,13 +50,13 @@ export const environment = {
         pattern: '[a-zA-Z]*'
       },
     },
-    isbn10: {
+    isbn10 : {
       required: false,
       minLength: 10,
       maxLength: 10,
       pattern: '^[0-9]+$'
     },
-    isbn13: {
+    isbn13 : {
       required: false,
       minLength: 13,
       maxLength: 13,
@@ -68,7 +72,6 @@ export const environment = {
     },
     publishedDate: {
       required: false
-
     },
     publicSiteLink: {
       required: false,
@@ -77,7 +80,7 @@ export const environment = {
     description: {
       required: false,
       minLength: 3,
-      maxLength: 10000
+      maxLength: 5000
     }
   }
 };
