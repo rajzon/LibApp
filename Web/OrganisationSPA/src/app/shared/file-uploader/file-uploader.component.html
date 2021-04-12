@@ -18,7 +18,7 @@
 
       Multiple
       <input
-        [disabled]="uploader.isUploading"
+        [disabled]="uploader?.isUploading"
         type="file"
         ng2FileSelect
         [uploader]="uploader"
@@ -26,7 +26,7 @@
 
       Single
       <input
-        [disabled]="uploader.isUploading"
+        [disabled]="uploader?.isUploading"
         type="file" ng2FileSelect
         [uploader]="uploader"/>
     </div>
@@ -47,10 +47,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let item of uploader.queue">
+        <tr *ngFor="let item of uploader?.queue">
           <td><strong>{{ item?.file?.name }}</strong></td>
-          <td *ngIf="uploader.options.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
-          <td *ngIf="uploader.options.isHTML5">
+          <td *ngIf="uploader?.options.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+          <td *ngIf="uploader?.options.isHTML5">
             <div class="progress" style="margin-bottom: 0;">
               <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
             </div>
@@ -71,7 +71,8 @@
             <button *ngIf="isRemoveOnly() || isAll()"
                     type="button"
                     class="btn btn-danger btn-xs"
-                    (click)="item.remove()">
+                    (click)="item.remove()"
+                    [disabled]="item.isUploading">
               <span class="glyphicon glyphicon-trash"></span> Remove
             </button>
             <button *ngIf="isAll()"
@@ -90,29 +91,33 @@
         <div>
           Queue progress:
           <div class="progress" style="">
-            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader?.progress + '%' }"></div>
           </div>
         </div>
-        <button *ngIf="isAll()"
-                type="button"
-                class="btn btn-success btn-s"
-                (click)="uploader.uploadAll()"
-                [disabled]="!uploader.getNotUploadedItems().length">
-          <span class="glyphicon glyphicon-upload"></span> Upload all
-        </button>
-        <button *ngIf="isAll()"
-                type="button"
-                class="btn btn-warning btn-s"
-                (click)="uploader.cancelAll()"
-                [disabled]="!uploader.isUploading">
-          <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
-        </button>
-        <button *ngIf="isRemoveOnly() || isAll()"
-                type="button"
-                class="btn btn-danger btn-s"
-                (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
-          <span class="glyphicon glyphicon-trash"></span> Remove all
-        </button>
+        <div class="mt-2">
+          <button *ngIf="isAll()"
+                  type="button"
+                  class="btn btn-success btn-s"
+                  (click)="uploader?.uploadAll()"
+                  [disabled]="!uploader?.getNotUploadedItems().length">
+            <span class="glyphicon glyphicon-upload"></span> Upload all
+          </button>
+          <button *ngIf="isAll()"
+                  type="button"
+                  class="btn btn-warning btn-s"
+                  (click)="uploader?.cancelAll()"
+                  [disabled]="!uploader?.isUploading">
+            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+          </button>
+          <button *ngIf="isRemoveOnly() || isAll()"
+                  type="button"
+                  class="btn btn-danger btn-s"
+                  (click)="uploader?.clearQueue()"
+                  [disabled]="!uploader?.queue.length || uploader.isUploading">
+            <span class="glyphicon glyphicon-trash"></span> Remove all
+          </button>
+
+        </div>
       </div>
 
     </div>
@@ -120,16 +125,5 @@
   </div>
 
   <br><br>
-
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">Response</div>
-        <div class="panel-body">
-          {{ response }}
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 <!-- #uploader-->

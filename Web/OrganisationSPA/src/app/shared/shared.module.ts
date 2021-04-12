@@ -10,11 +10,16 @@ import {BsDatepickerModule} from "ngx-bootstrap/datepicker";
 import {QuillModule} from "ngx-quill";
 import {FileUploadModule} from "ng2-file-upload";
 import { FileUploaderComponent } from './file-uploader/file-uploader.component';
+import {NgxSpinnerModule} from "ngx-spinner";
+import {ToastrModule} from "ngx-toastr";
+import {ModalModule} from "ngx-bootstrap/modal";
+import {PaginationModule} from "ngx-bootstrap/pagination";
+import {EmptyToNullDirective} from "@shared/directives/empty-to-null/empty-to-null.directive";
 
 
 
 @NgModule({
-  declarations: [TextInputComponent, NumberInputComponent, DigitsOnlyDirective, FileUploaderComponent],
+  declarations: [TextInputComponent, NumberInputComponent, DigitsOnlyDirective, FileUploaderComponent, EmptyToNullDirective],
   exports: [
     TextInputComponent,
     NumberInputComponent,
@@ -25,14 +30,22 @@ import { FileUploaderComponent } from './file-uploader/file-uploader.component';
     BsDatepickerModule,
     QuillModule,
     FileUploadModule,
-    FileUploaderComponent
+    FileUploaderComponent,
+    NgxSpinnerModule,
+    ToastrModule,
+    ModalModule,
+    PaginationModule
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
     QuillModule.forRoot(),
-    FileUploadModule
+    FileUploadModule,
+    NgxSpinnerModule,
+    ToastrModule.forRoot(),
+    ModalModule.forRoot(),
+    PaginationModule.forRoot()
   ]
 })
 export class SharedModule { }

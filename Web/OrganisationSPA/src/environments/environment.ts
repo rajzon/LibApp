@@ -7,6 +7,11 @@ export const environment = {
   production: false,
   logoImg: 'assets/img/Logo-placeholder.png',
   bookApiUrl: 'https://localhost:5001/',
+  googleApiUrl: 'https://www.googleapis.com/',
+  pagination: {
+    itemsPerPageDefault: 10,
+    itemsPerPageOpts: [10,20,40]
+  },
   book: {
     title: {
       required: true,
@@ -19,17 +24,19 @@ export const environment = {
         required: true,
         minLength: 3,
         maxLength: 30,
+        pattern: "^[^0-9]+$",
       },
       authorLastName: {
         required: true,
         minLength: 3,
         maxLength: 30,
+        pattern: "^[^0-9]+$",
       }
     },
     categories: {
       required: false,
       name: {
-        required: false,
+        required: true,
         minLength: 3,
         maxLength: 30,
       }

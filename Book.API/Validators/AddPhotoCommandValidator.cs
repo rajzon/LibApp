@@ -13,9 +13,6 @@ namespace Book.API.Validators
 
             RuleFor(p => p.File)
                 .NotEmpty();
-
-            RuleFor(p => p.IsMain)
-                .NotEmpty();
         }
     }
 }

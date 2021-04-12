@@ -1,13 +1,39 @@
+<ngx-spinner *ngIf="isAdding$ |async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Adding...</h3>
+</ngx-spinner>
+<ngx-spinner *ngIf="isLoading$ |async " [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
+
+<div class="mb-5 mt-4 border-bottom">
+  <h1 class="display-4">Add new book</h1>
+</div>
+<div class="text-right">
+  <button class="btn btn-primary" [routerLink]="['/book']" >Back to book list page</button>
+</div>
 <div>
   <tabset>
-    <tab heading="Adding Using Different Source" id="tab1">Content</tab>
-    <tab heading="Manual Adding"><app-book-manual-add
+    <tab heading="Adding Using Different Source" id="tab1"><app-book-api-add
+      [booksFromSearch]="booksFromSearch$ | async"
+      (searchEvent)="searchBooks($event.searchValue, $event.searchParam )" (clearSearchResultEvent)="reloadSearchResult = $event"></app-book-api-add>
+      <app-book-api-search-result *ngIf="booksFromSearch$ | async"
+                                  [searchResult]="booksFromSearch$ | async"
+                                  [uploaderStyle]="uploaderStyle"
+                                  [reload]="reloadSearchResult"
+                                  [maxResults]="maxResults"
+                                  (addEvent)="addBookUsingApi($event)"
+                                  (reloadEvent)="reloadSearchResult = $event"
+                                  (changePageEvent)="changePage($event.startIndex, $event.maxResults)"></app-book-api-search-result>
+    </tab>
+    <tab heading="Manual Adding">
+      <app-book-manual-add
       [categories]="categories$ | async"
       [languages]="languages$ | async"
       [authors]="authors$ | async"
       [publishers]="publishers$ | async"
-      [uploaderOptions]="uploaderOptions"
-      [uploaderStyle]="uploaderStyle"></app-book-manual-add>
+      [uploaderStyle]="uploaderStyle" (createBookEvent)="addBook($event)"></app-book-manual-add>
     </tab>
   </tabset>
 </div>
+
+

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container border mt-5">
   <form [formGroup]="manualBookAddForm"
         (ngSubmit)="onSubmitBook()"
         class="m-5">
@@ -7,10 +7,10 @@
                     [label]='"Title"'></app-text-input>
     <div class="form-group">
       <label
-        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['author'])"
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['authorId'])"
         class="text-capitalize">author</label>
       <ng-select
-        formControlName="author"
+        formControlName="authorId"
         [items]="authors"
         bindLabel="fullName"
         bindValue="id"
@@ -20,10 +20,10 @@
 
     <div class="form-group">
       <label
-        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['categories'])"
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['categoriesIds'])"
         class="text-capitalize">categories</label>
       <ng-select
-        formControlName="categories"
+        formControlName="categoriesIds"
         [items]="categories"
         [multiple]= true
         bindLabel="name"
@@ -34,10 +34,10 @@
 
     <div class="form-group">
       <label
-        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['language'])"
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['languageId'])"
         class="text-capitalize">language</label>
       <ng-select
-        formControlName="language"
+        formControlName="languageId"
         [items]="languages"
         bindLabel="name"
         bindValue="id"
@@ -47,10 +47,10 @@
 
     <div class="form-group">
       <label
-        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['publisher'])"
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['publisherId'])"
         class="text-capitalize">publisher</label>
       <ng-select
-        formControlName="publisher"
+        formControlName="publisherId"
         [items]="publishers"
         bindLabel="name"
         bindValue="id"
@@ -77,8 +77,28 @@
     <app-text-input [formControl]='manualBookAddForm.controls["isbn13"]'
                     [label]='"ISBN13"'></app-text-input>
 
-    <app-text-input [formControl]='manualBookAddForm.controls["publicSiteLink"]'
-                    [label]='"Public Site Link"'></app-text-input>
+    <!-- Visibility-->
+    <div class="form-group">
+      <label class="text-capitalize d-block">Visibility</label>
+      <div class="form-check form-check-inline">
+        <input type="radio" [formControl]="manualBookAddForm.controls['visibility']"
+          id="visible"
+          [value]="true"
+          class="form-check-input"
+          checked>
+        <label class="form-check-label text-capitalize"
+               for="visible">Visible</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input type="radio" [formControl]="manualBookAddForm.controls['visibility']"
+               id="hidden"
+               [value]="false"
+               class="form-check-input">
+        <label class="form-check-label text-capitalize"
+               for="hidden">hidden</label>
+      </div>
+    </div>
+    <!--# Visibility-->
 
     <div class="form-group">
       <label
@@ -111,8 +131,8 @@
 
     <!-- uploader-->
     <app-file-uploader
-      [uploaderStyle]="uploaderStyle"
-      [uploaderOptions]="uploaderOptions"></app-file-uploader>
+      [uploader]="uploader"
+      [uploaderStyle]="uploaderStyle"></app-file-uploader>
     <!-- #uploader-->
 
     <div class="form-group row">
@@ -125,13 +145,5 @@
       </div>
     </div>
   </form>
-  {{categories | json}}
-  <br><br>
-  {{languages | json}}
-  <br><br>
-  {{authors | json}}
-  <br><br>
-  {{publishers | json}}
-
 
 </div>

@@ -1,4 +1,5 @@
-﻿using Book.API.Controllers.V1;
+﻿using System.ComponentModel.DataAnnotations;
+using Book.API.Controllers.V1;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace Book.API.Commands.V1
     {
         [FromRoute(Name = "id")]
         public int Id { get; init; }
+        [Required]
         public bool IsMain { get; init; }
         public IFormFile File { get; init; }
 

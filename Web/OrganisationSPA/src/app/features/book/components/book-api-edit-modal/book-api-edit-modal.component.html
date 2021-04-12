@@ -1,0 +1,114 @@
+<div class="modal-header">
+  <h4 class="modal-title">Edit {{volumeInfo.title}}</h4>
+</div>
+<div class="modal-body">
+  <form [formGroup]="editForm" (ngSubmit)="edit()">
+    <app-text-input [formControl]="editForm.controls['title']"
+                    [label]="'Title'"></app-text-input>
+    <app-text-input [formControl]="editForm.controls['author'].get('firstName')"
+                    [label]="'Author Firstname'"></app-text-input>
+    <app-text-input [formControl]="editForm.controls['author'].get('lastName')"
+                    [label]="'Author Lastname'"></app-text-input>
+    <ng-container *ngFor="let category of categories?.controls; let i = index;" formArrayName="categoriesNames">
+      <app-text-input [formControl]="categories.controls[i]"
+                      [label]="'Categories'"></app-text-input>
+      <button type="button"
+              class="btn btn-danger"
+              (click)="removeCategory(i)">Remove</button>
+    </ng-container>
+    <ng-container>
+      <button type="button"
+              class="btn btn-primary mt-2 d-block"
+              (click)="insertCategory()">Add new category</button>
+    </ng-container>
+
+    <app-number-input [formControl]="editForm.controls['pageCount']"
+                    [label]="'Page Count'"></app-number-input>
+    <app-text-input [formControl]="editForm.controls['languageName']"
+                    [label]="'language'"></app-text-input>
+    <app-text-input [formControl]="editForm.controls['isbn10']"
+                    [label]="'isbn10'"></app-text-input>
+    <app-text-input [formControl]="editForm.controls['isbn13']"
+                    [label]="'isbn13'"></app-text-input>
+    <app-text-input [formControl]="editForm.controls['publisherName']"
+                    [label]="'publisher'"></app-text-input>
+
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(editForm.controls['publishedDate'])"
+        class="text-capitalize">published date</label>
+      <input type="text"
+             formControlName="publishedDate"
+             placeholder="Published Date"
+             class="form-control"
+             bsDatepicker [bsConfig]="{containerClass: 'theme-dark-blue'}">
+    </div>
+
+    <!-- Visibility-->
+    <div class="form-group">
+      <label class="text-capitalize d-block">Visibility</label>
+      <div class="form-check form-check-inline">
+        <input type="radio" [formControl]="editForm.controls['visibility']"
+               id="visible"
+               [value]="true"
+               class="form-check-input"
+               checked>
+        <label class="form-check-label text-capitalize"
+               for="visible">Visible</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input type="radio" [formControl]="editForm.controls['visibility']"
+               id="hidden"
+               [value]="false"
+               class="form-check-input">
+        <label class="form-check-label text-capitalize"
+               for="hidden">hidden</label>
+      </div>
+    </div>
+    <!--# Visibility-->
+    <div class="form-group">
+      <label
+        [class.font-weight-bold]="isRequiredField(editForm.controls['description'])"
+        class="text-capitalize">description
+      </label>
+
+      <!-- Description-->
+      <quill-editor
+        [formControl]="editForm.controls['description']"
+        [minLength]="bookFieldsSettings.description.minLength"
+        [maxLength]="bookFieldsSettings.description.maxLength"
+        [required]="bookFieldsSettings.description.required"
+        (onEditorChanged)="$event"></quill-editor>
+
+      <div *ngIf="editForm.controls['description'].errors?.requiredError"
+           class="invalid-feedback d-block">
+        <span class="text-capitalize">Description</span> field is required
+      </div>
+      <div *ngIf="editForm.controls['description'].errors?.minLengthError"
+           class="invalid-feedback d-block">
+        <span class="text-capitalize">Description</span> must be at least {{editForm.controls['description'].errors?.minLengthError['minLength']}} characters
+      </div>
+      <div *ngIf="editForm.controls['description'].errors?.maxLengthError"
+           class="invalid-feedback d-block">
+        <span class="text-capitalize">Description</span> must be at most {{editForm.controls['description'].errors?.maxLengthError['maxLength']}} characters
+      </div>
+    </div>
+    <!--# Description-->
+
+    <!-- Description-->
+    <app-file-uploader [uploaderStyle]="uploaderStyle"
+                       [uploader]="uploader"></app-file-uploader>
+
+
+
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button"
+          class="btn btn-default"
+          (click)="bsModalRef.hide()">Cancel</button>
+  <button type="submit"
+          class="btn btn-primary"
+          [disabled]="editForm.invalid"
+          (click)="edit()">Add</button>
+</div>

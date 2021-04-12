@@ -21,7 +21,7 @@ namespace Book.API.Commands.V1
         public int? PublisherId { get; set; }
         public IReadOnlyCollection<CategoryDto> Categories { get; set; }
         
-        public DateTime PublishedDate { get; set; }
+        public DateTime? PublishedDate { get; set; }
         public DateTime ModificationDate { get; set; }
         public DateTime CreationDate { get; set; }
     }
