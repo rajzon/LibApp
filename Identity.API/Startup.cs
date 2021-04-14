@@ -1,3 +1,4 @@
+using Identity.API.Configuration;
 using Identity.API.Data;
 using Identity.API.Models;
 using Microsoft.AspNetCore.Builder;
@@ -28,7 +29,9 @@ namespace Identity.API
             var migrationAssembly = typeof(Startup).Assembly.GetName().Name;
             services.AddDbContext<ApplicationDbContext>(config =>
             {
-                config.UseSqlServer(connectionString);
+                //SQL Server connection
+                // config.UseSqlServer(connectionString);
+                config.UseInMemoryDatabase("Memory");
             });
             
             services.AddIdentity<AppUser, IdentityRole<int>>(config =>
@@ -49,26 +52,37 @@ namespace Identity.API
             });
             
             
-            
+            /////IdentityServer - EF Core + SQLServer
+            // services.AddIdentityServer()
+            //     .AddAspNetIdentity<AppUser>()
+            //     // this adds the config data from DB (clients, resources)
+            //     .AddConfigurationStore(options =>
+            //     {
+            //         options.ConfigureDbContext = builder =>
+            //             builder.UseSqlServer(connectionString, 
+            //                 sql => sql.MigrationsAssembly(migrationAssembly));
+            //     })
+            //     // this adds the operational data from DB (codes, tokens, consents)
+            //     .AddOperationalStore(options =>
+            //     {
+            //         options.ConfigureDbContext = builder =>
+            //             builder.UseSqlServer(connectionString, 
+            //                 sql => sql.MigrationsAssembly(migrationAssembly));
+            //     })
+            //     .AddDeveloperSigningCredential();
+
+
             services.AddIdentityServer()
                 .AddAspNetIdentity<AppUser>()
-                // this adds the config data from DB (clients, resources)
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(connectionString, 
-                            sql => sql.MigrationsAssembly(migrationAssembly));
-                })
-                // this adds the operational data from DB (codes, tokens, consents)
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(connectionString, 
-                            sql => sql.MigrationsAssembly(migrationAssembly));
-                })
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryApiResources(Config.GetResources())
+                .AddInMemoryApiScopes(Config.GetScopes())
+                .AddInMemoryClients(Config.GetClients())
                 .AddDeveloperSigningCredential();
+            
+            
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

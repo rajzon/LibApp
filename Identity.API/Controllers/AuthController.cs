@@ -31,6 +31,8 @@ namespace Identity.API.Controllers
             var user = await _userManager.FindByEmailAsync(vm.Email);
 
             var result = await _signInManager.PasswordSignInAsync(user, vm.Password, false, false);
+
+            var userCtx = HttpContext.User;
             if (result.Succeeded)
             {
                 return Ok("Logged in");
