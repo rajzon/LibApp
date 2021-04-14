@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Identity.API.Configuration;
 using Identity.API.Data;
 using Identity.API.Models;
@@ -37,7 +38,7 @@ namespace Identity.API
             services.AddIdentity<AppUser, IdentityRole<int>>(config =>
                 {
                     config.Password.RequiredLength = 8;
-                    config.Password.RequireDigit = false;
+                    config.Password.RequireDigit = true;
                     config.Password.RequireNonAlphanumeric = true;
                     config.Password.RequireUppercase = true;
                     config.User.RequireUniqueEmail = true;
@@ -82,7 +83,9 @@ namespace Identity.API
             
             
 
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation()
+                .AddFluentValidation(mvcConfig => mvcConfig.RegisterValidatorsFromAssemblyContaining<Startup>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -17,6 +17,7 @@
       </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.4" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="9.5.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -172,10 +173,6 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\scss\_type.scss" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\scss\_utilities.scss" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\scss\_variables.scss" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="wwwroot\lib" />
     </ItemGroup>
 
 </Project>

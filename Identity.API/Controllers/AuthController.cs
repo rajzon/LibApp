@@ -10,7 +10,7 @@ namespace Identity.API.Controllers
     public class AuthController : Controller
     {
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly UserManager<AppUser> _userManager;;
+        private readonly UserManager<AppUser> _userManager;
 
         public AuthController(
             SignInManager<AppUser> signInManager,
@@ -29,7 +29,15 @@ namespace Identity.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel vm)
         {
+            if (! ModelState.IsValid)
+                return View();
+            
+            
+            
             var user = await _userManager.FindByEmailAsync(vm.Email);
+            if (user is null)
+                return View();
+                
 
             var result = await _signInManager.PasswordSignInAsync(user, vm.Password, false, false);
 
@@ -40,6 +48,8 @@ namespace Identity.API.Controllers
             }
 
             return View();
+
+
         }
     }
 }
