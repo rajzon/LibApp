@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AutoMapper.Configuration;
 using Identity.API.Models;
 using Identity.API.Models.AuthViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +10,7 @@ namespace Identity.API.Controllers
     public class AuthController : Controller
     {
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;;
 
         public AuthController(
             SignInManager<AppUser> signInManager,
