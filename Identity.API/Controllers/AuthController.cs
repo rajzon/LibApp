@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper.Configuration;
 using Identity.API.Models;
 using Identity.API.Models.AuthViewModels;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,19 +11,34 @@ namespace Identity.API.Controllers
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IIdentityServerInteractionService _interactionService;
 
         public AuthController(
             SignInManager<AppUser> signInManager,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager, 
+            IIdentityServerInteractionService interactionService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _interactionService = interactionService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout(string logoutId)
+        {
+            await _signInManager.SignOutAsync();
+
+            var logoutRequest = await _interactionService.GetLogoutContextAsync(logoutId);
+
+            return Redirect(logoutRequest.PostLogoutRedirectUri);
         }
         
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl)
         {
-            return View();
+            returnUrl ??= "http://localhost:4200";
+            
+            return View(new LoginViewModel {ReturnUrl = returnUrl});
         }
         
         [HttpPost]
@@ -32,19 +47,18 @@ namespace Identity.API.Controllers
             if (! ModelState.IsValid)
                 return View();
             
-            
-            
+
             var user = await _userManager.FindByEmailAsync(vm.Email);
             if (user is null)
                 return View();
-                
+
 
             var result = await _signInManager.PasswordSignInAsync(user, vm.Password, false, false);
 
             var userCtx = HttpContext.User;
             if (result.Succeeded)
             {
-                return Ok("Logged in");
+                return Redirect(vm.ReturnUrl);
             }
 
             return View();

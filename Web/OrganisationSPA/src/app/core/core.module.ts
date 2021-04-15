@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {NavComponent} from "./components/nav/nav.component";
 import {RouterModule} from "@angular/router";
+import {OAuthModule} from "angular-oauth2-oidc";
 
 @NgModule({
   declarations: [NavComponent],
@@ -10,7 +11,8 @@ import {RouterModule} from "@angular/router";
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    OAuthModule.forRoot()
   ]
 })
 export class CoreModule { }

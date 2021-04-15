@@ -175,4 +175,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\scss\_variables.scss" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Settings" />
+    </ItemGroup>
+
 </Project>

@@ -50,6 +50,7 @@ namespace Identity.API
             {
                 config.Cookie.Name = "Identity.Cookie";
                 config.LoginPath = "/Auth/Login";
+                config.LogoutPath = "/Auth/Logout";
             });
             
             
@@ -82,10 +83,22 @@ namespace Identity.API
                 .AddDeveloperSigningCredential();
             
             
+            
 
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation()
                 .AddFluentValidation(mvcConfig => mvcConfig.RegisterValidatorsFromAssemblyContaining<Startup>());
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,6 +113,7 @@ namespace Identity.API
             
             
             app.UseRouting();
+            app.UseCors("default");
             
 
             app.UseEndpoints(endpoints =>

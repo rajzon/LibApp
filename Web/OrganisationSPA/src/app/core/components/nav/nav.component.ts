@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 // @ts-ignore
 import { environment } from '@env';
+import {AuthService} from "@core/services/auth.service";
 
 
 @Component({
@@ -12,9 +13,13 @@ export class NavComponent implements OnInit {
 
   userNamePlaceholder: string = "UserName";
   logoImgSrc: string = environment.logoImg;
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 
 }

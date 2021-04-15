@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
+using Microsoft.Extensions.Options;
 
 namespace Identity.API.Configuration
 {
@@ -42,13 +43,23 @@ namespace Identity.API.Configuration
                 {
                     ClientId = "organisation_spa_client",
                     ClientName = "Organisation SPA",
+                    
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
+                    RequireClientSecret = false,
+                    AllowOfflineAccess = true,
+
+                    RedirectUris = { "http://localhost:4200" },
+                    PostLogoutRedirectUris = { "https://localhost:8001/auth/login" },
+                    AllowedCorsOrigins = { "http://localhost:4200" },
+                    RequireConsent = false,
+                    AllowAccessTokensViaBrowser = true,
 
                     AllowedScopes = new []
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
                         "role.scope",
                         "book_api"
                         
