@@ -1,3 +1,4 @@
+using System;
 using FluentValidation.AspNetCore;
 using Identity.API.Configuration;
 using Identity.API.Data;

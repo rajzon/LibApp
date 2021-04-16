@@ -17,7 +17,7 @@ namespace Identity.API.Configuration
                 new IdentityResource
                 {
                     Name = "role.scope",
-                    UserClaims = { "role" }
+                    UserClaims = { JwtClaimTypes.Role },
                 }
             };
 
@@ -26,7 +26,8 @@ namespace Identity.API.Configuration
             {
                 new ApiResource("book_api", "Book API")
                 {
-                    Scopes = { "book_api"}
+                    UserClaims = {JwtClaimTypes.Role, "book.privilege"},
+                    Scopes = { "book_api" }
                 }
             };
 
@@ -64,12 +65,18 @@ namespace Identity.API.Configuration
                         "book_api"
                         
                     }
-                },
-                new Client()
-                {
-                    ClientId = "book_api_client",
-                    ClientName = "Book API"
                 }
+                // new Client()
+                // {
+                //     ClientId = "book_api_client",
+                //     ClientName = "Book API",
+                //     ClientSecrets =
+                //     {
+                //         new Secret("book_api_secret".ToSha256())
+                //     },
+                //     
+                //     AllowedGrantTypes = GrantTypes.ClientCredentials,
+                // }
             };
         
     }

@@ -8,6 +8,7 @@ using Book.API.Commands.V1;
 using Book.API.Queries.V1;
 using Book.API.Queries.V1.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -16,6 +17,7 @@ namespace Book.API.Controllers.V1
     //TODO consider define cancellation token in controller methods
     [ApiVersion("1.0")]
     [ApiController]
+    [Authorize]
     [Route("v{version:apiVersion}/[controller]")]
     public class BookController : ControllerBase
     {
@@ -54,6 +56,7 @@ namespace Book.API.Controllers.V1
 
         
         [HttpPost("add")]
+        [Authorize(Policy = "book-write")]
         [ProducesResponseType(typeof(CreateBookCommandResult), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Create(CreateBookCommand command)
         {
@@ -65,6 +68,7 @@ namespace Book.API.Controllers.V1
         }
 
         [HttpPost("add-manual")]
+        [Authorize(Policy = "book-write")]
         [ProducesResponseType(typeof(CreateBookCommandResult), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> CreateManual(CreateBookManualCommand command)
         {
@@ -75,6 +79,7 @@ namespace Book.API.Controllers.V1
         }
 
         [HttpPost("{id}/add-photo")]
+        [Authorize(Policy = "book-edit")]
         [ProducesResponseType(typeof(AddPhotoCommandResult), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> AddPhotoToBook([FromForm]AddPhotoCommand command)
         {

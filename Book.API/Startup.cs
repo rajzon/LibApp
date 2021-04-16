@@ -5,6 +5,7 @@ using Book.API.Services;
 using Book.API.Settings;
 using FluentValidation.AspNetCore;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Book.API
 {
@@ -27,6 +29,37 @@ namespace Book.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", config =>
+                {
+                    config.Authority = "https://localhost:8001";
+                    config.Audience = "book_api";
+                    config.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateAudience = false
+                    };
+                });
+
+            services.AddAuthorization(config =>
+            {
+                config.AddPolicy("book-write", policyBuilder =>
+                {
+                    policyBuilder.RequireAssertion(ctx =>
+                        ctx.User.IsInRole("admin") ||
+                        (ctx.User.IsInRole("employee") && ctx.User.HasClaim("book.privilege", "write")));
+                });
+                
+                config.AddPolicy("book-edit", policyBuilder =>
+                {
+                    policyBuilder.RequireAssertion(ctx =>
+                        ctx.User.IsInRole("admin") ||
+                        (ctx.User.IsInRole("employee") && 
+                            (ctx.User.HasClaim("book.privilege", "write") || ctx.User.HasClaim("book.privilege", "edit") )));
+                });
+
+            });
+            
+            
             services.AddControllers()
                 .AddFluentValidation(mvcConfig => mvcConfig.RegisterValidatorsFromAssemblyContaining<Startup>());
             
@@ -60,12 +93,17 @@ namespace Book.API
             }
 
             app.UseHttpsRedirection();
-
+            
+            
+            
             app.UseRouting();
-
             app.UseCors(x => x.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("http://localhost:4200"));
-
+            
+            app.UseAuthentication();
             app.UseAuthorization();
+
+
+
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

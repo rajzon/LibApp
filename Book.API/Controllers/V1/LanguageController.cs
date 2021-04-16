@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Book.API.Queries.V1;
 using Book.API.Queries.V1.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Book.API.Controllers.V1
@@ -27,7 +28,7 @@ namespace Book.API.Controllers.V1
         public async Task<IActionResult> GetAll()
         {
             var result = await _mediator.Send(new GetAllLanguagesQuery());
-
+            var ctx = User.Claims;
             if (!result.Any())
                 return NotFound();
             

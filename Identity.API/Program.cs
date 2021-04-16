@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using Identity.API.Data;
 using Identity.API.Models;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -93,7 +94,8 @@ namespace Identity.API
             var userResult = userManager.CreateAsync(user, "Password1!").GetAwaiter().GetResult();
             if (! userResult.Succeeded)
                 return;
-            userManager.AddToRoleAsync(user, "employee");
+            userManager.AddToRoleAsync(user, "employee").GetAwaiter().GetResult();
+            userManager.AddClaimAsync(user, new Claim("book.privilege", "write")).GetAwaiter().GetResult();
         }
         
         

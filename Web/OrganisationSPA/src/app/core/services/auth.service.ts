@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {AuthConfig, OAuthService} from "angular-oauth2-oidc";
+import {AuthConfig, OAuthService, UserInfo} from "angular-oauth2-oidc";
 
 
 @Injectable({
@@ -30,14 +30,13 @@ export class AuthService {
       // and it might not enforce further best practices vital for security
       // such applications.
       // dummyClientSecret: 'secret',
-
       responseType: 'code',
 
       // set the scope for the permissions the client should request
       // The first four are defined by OIDC.
       // Important: Request offline_access to get a refresh token
       // The api scope is a usecase specific one
-      scope: 'openid profile offline_access role.scope book_api',
+      scope: 'openid profile offline_access book_api role.scope',
 
       showDebugInformation: true,
     };
@@ -50,13 +49,31 @@ export class AuthService {
       if(! this.oauthService.hasValidIdToken() || ! this.oauthService.hasValidAccessToken()) {
         console.log('Trying to Login: Id Token or Access Token is invalid')
         this.oauthService.initLoginFlow();
+        console.log("when token is invalid access token: ", this.oauthService.getAccessToken());
+        console.log("when token is invalid id token: ", this.oauthService.getIdToken());
+        console.log("when token is invalid IdTokenClaims: ", this.oauthService.getIdentityClaims());
+        console.log("when token is invalid UserProfileClaims: ", this.oauthService.loadUserProfile());
+
+      } else {
+        console.log("after initLoginFlow access token: ", this.oauthService.getAccessToken());
+        console.log("after initLoginFlow id token: ", this.oauthService.getIdToken());
+        console.log("after initLoginFlow IdTokenClaims: ", this.oauthService.getIdentityClaims());
+        console.log("after initLoginFlow UserProfileClaims: ", this.oauthService.loadUserProfile());
       }
     })
   }
 
-  logout() {
+  logout(): void {
     console.log('Trying to Logout')
-    this.oauthService.revokeTokenAndLogout()
+    this.oauthService.revokeTokenAndLogout();
+  }
+
+  getAccessToken(): string {
+    return this.oauthService.getAccessToken();
+  }
+
+  getUserProfile(): Promise<UserInfo> {
+    return this.oauthService.loadUserProfile();
   }
 
 }
