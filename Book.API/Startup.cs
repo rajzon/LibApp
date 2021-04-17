@@ -46,7 +46,7 @@ namespace Book.API
                 {
                     policyBuilder.RequireAssertion(ctx =>
                         ctx.User.IsInRole("admin") ||
-                        (ctx.User.IsInRole("employee") && ctx.User.HasClaim("book.privilege", "write")));
+                        (ctx.User.IsInRole("employee") && ctx.User.HasClaim("book_privilege", "write")));
                 });
                 
                 config.AddPolicy("book-edit", policyBuilder =>
@@ -54,7 +54,7 @@ namespace Book.API
                     policyBuilder.RequireAssertion(ctx =>
                         ctx.User.IsInRole("admin") ||
                         (ctx.User.IsInRole("employee") && 
-                            (ctx.User.HasClaim("book.privilege", "write") || ctx.User.HasClaim("book.privilege", "edit") )));
+                            (ctx.User.HasClaim("book_privilege", "write") || ctx.User.HasClaim("book_privilege", "edit") )));
                 });
 
             });

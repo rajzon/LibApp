@@ -18,6 +18,11 @@ namespace Identity.API.Configuration
                 {
                     Name = "role.scope",
                     UserClaims = { JwtClaimTypes.Role },
+                },
+                new IdentityResource
+                {
+                    Name = "book_privilege.scope",
+                    UserClaims = { "book_privilege" },
                 }
             };
 
@@ -26,7 +31,7 @@ namespace Identity.API.Configuration
             {
                 new ApiResource("book_api", "Book API")
                 {
-                    UserClaims = {JwtClaimTypes.Role, "book.privilege"},
+                    UserClaims = {JwtClaimTypes.Role, "book_privilege"},
                     Scopes = { "book_api" }
                 }
             };
@@ -49,7 +54,10 @@ namespace Identity.API.Configuration
                     RequirePkce = true,
                     RequireClientSecret = false,
                     AllowOfflineAccess = true,
-
+                    RefreshTokenUsage = TokenUsage.ReUse,
+                    RefreshTokenExpiration = TokenExpiration.Absolute,
+                    AbsoluteRefreshTokenLifetime = 30,
+                    AccessTokenLifetime = 20,
                     RedirectUris = { "http://localhost:4200" },
                     PostLogoutRedirectUris = { "https://localhost:8001/auth/login" },
                     AllowedCorsOrigins = { "http://localhost:4200" },
@@ -62,6 +70,7 @@ namespace Identity.API.Configuration
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OfflineAccess,
                         "role.scope",
+                        "book_privilege.scope",
                         "book_api"
                         
                     }

@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import {AuthConfig, OAuthService, UserInfo} from "angular-oauth2-oidc";
+import {OAuthErrorEvent, OAuthService, UserInfo} from "angular-oauth2-oidc";
+import {authConfig} from "@core/services/auth-config";
+import {BehaviorSubject, Observable} from "rxjs";
+import {filter} from "rxjs/operators";
 
 
 @Injectable({
@@ -7,39 +10,65 @@ import {AuthConfig, OAuthService, UserInfo} from "angular-oauth2-oidc";
 })
 export class AuthService {
 
+  private authenticated$ = new BehaviorSubject<boolean>(false);
+  private userInfo$ = new BehaviorSubject<UserInfo>(null);
+
   constructor(private oauthService: OAuthService) {
+    window.addEventListener('storage', (event) => {
+      if (event.key !== 'access_token' && event.key !== null) {
+        return;
+      }
+
+      this.setAuthenticated(this.oauthService.hasValidAccessToken());
+
+      if (!this.oauthService.hasValidAccessToken()) {
+        this.oauthService.initLoginFlow();
+      }
+    });
+
+    this.oauthService.events
+      .subscribe(_ => {
+        this.setAuthenticated(this.oauthService.hasValidAccessToken());
+      });
+
+
+    this.oauthService.events
+      .pipe(filter(e => ['token_refresh_error'].includes(e.type)))
+      .subscribe(e => this.oauthService.logOut());
+
+    this.oauthService.events
+      .pipe(filter(e => ['token_refreshed'].includes(e.type)))
+      .subscribe(_ => {
+        this.getUserProfile().then((value: UserInfo) => {
+          console.log(value);
+          this.setUserInfo(value);
+        })
+      })
+
+    this.oauthService.setupAutomaticSilentRefresh();
+
+  }
+
+
+  //Authentication Observable
+  isAuthenticated$() : Observable<boolean> {
+    return this.authenticated$.asObservable();
+  }
+
+  setAuthenticated(value: boolean): void {
+    this.authenticated$.next(value);
+  }
+
+  //UserInfo Observable
+  getUserInfo$(): Observable<UserInfo> {
+    return this.userInfo$.asObservable();
+  }
+
+  setUserInfo(value: UserInfo): void {
+    this.userInfo$.next(value);
   }
 
   initAuth(): void {
-    const authConfig: AuthConfig = {
-      // Url of the Identity Provider
-      issuer: 'https://localhost:8001',
-
-      // URL of the SPA to redirect the user to after login
-      redirectUri: window.location.origin,
-      postLogoutRedirectUri: 'https://localhost:8001/auth/login',
-      logoutUrl: 'https://localhost:8001/auth/logout',
-
-      // The SPA's id. The SPA is registerd with this id at the auth-server
-      // clientId: 'server.code',
-      clientId: 'organisation_spa_client',
-
-
-      // Just needed if your auth server demands a secret. In general, this
-      // is a sign that the auth server is not configured with SPAs in mind
-      // and it might not enforce further best practices vital for security
-      // such applications.
-      // dummyClientSecret: 'secret',
-      responseType: 'code',
-
-      // set the scope for the permissions the client should request
-      // The first four are defined by OIDC.
-      // Important: Request offline_access to get a refresh token
-      // The api scope is a usecase specific one
-      scope: 'openid profile offline_access book_api role.scope',
-
-      showDebugInformation: true,
-    };
     this.oauthService.configure(authConfig);
     this.login();
   }
@@ -59,7 +88,10 @@ export class AuthService {
         console.log("after initLoginFlow id token: ", this.oauthService.getIdToken());
         console.log("after initLoginFlow IdTokenClaims: ", this.oauthService.getIdentityClaims());
         console.log("after initLoginFlow UserProfileClaims: ", this.oauthService.loadUserProfile());
+
       }
+    }).then(_ => {
+      this.setAuthenticated(this.oauthService.hasValidAccessToken());
     })
   }
 
@@ -74,6 +106,19 @@ export class AuthService {
 
   getUserProfile(): Promise<UserInfo> {
     return this.oauthService.loadUserProfile();
+  }
+
+  hasValidAccessToken(): boolean {
+    return this.oauthService.hasValidAccessToken();
+  }
+
+  hasValidIdToken(): boolean {
+    return this.oauthService.hasValidIdToken();
+  }
+
+  hasValidIdTokenAndAccessToken(): boolean {
+    return this.oauthService.hasValidIdToken() &&
+      this.oauthService.hasValidAccessToken()
   }
 
 }
