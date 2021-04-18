@@ -20,6 +20,14 @@ export class NavComponent implements OnInit {
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
+    console.log('NAV INIT');
+  }
+
+  getUserName$(): Observable<string> {
+    return this.authService.getUserInfo$().pipe(map((res: UserInfo) => {
+      console.log(res);
+      return res?.name
+    }));
   }
 
   getUserName$(): Observable<string> {
