@@ -30,13 +30,6 @@ export class NavComponent implements OnInit {
     }));
   }
 
-  getUserName$(): Observable<string> {
-    return this.authService.getUserInfo$().pipe(map((res: UserInfo) => {
-      console.log('userInfo From Nav ',res);
-      return res?.name
-    }));
-  }
-
   logout(): void {
     this.authService.logout();
   }

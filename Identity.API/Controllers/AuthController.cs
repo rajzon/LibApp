@@ -44,13 +44,19 @@ namespace Identity.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel vm)
         {
-            if (! ModelState.IsValid)
-                return View();
+            if (!ModelState.IsValid)
+            {
+                vm.IsUserPassedIncorrectCredentials = true;
+                return View(vm);
+            }
             
 
             var user = await _userManager.FindByEmailAsync(vm.Email);
             if (user is null)
-                return View();
+            {
+                vm.IsUserPassedIncorrectCredentials = true;
+                return View(vm);
+            }
 
 
             var result = await _signInManager.PasswordSignInAsync(user, vm.Password, false, false);
@@ -61,7 +67,8 @@ namespace Identity.API.Controllers
                 return Redirect(vm.ReturnUrl);
             }
 
-            return View();
+            vm.IsUserPassedIncorrectCredentials = true;
+            return View(vm);
 
 
         }
