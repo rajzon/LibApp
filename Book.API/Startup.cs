@@ -1,15 +1,14 @@
-using Book.API.Data;
+using Book.API.Filters;
 using Book.API.Installers;
 using Book.API.Mappings;
 using Book.API.Services;
 using Book.API.Settings;
 using FluentValidation.AspNetCore;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,17 +43,14 @@ namespace Book.API
             {
                 config.AddPolicy("book-write", policyBuilder =>
                 {
-                    policyBuilder.RequireAssertion(ctx =>
-                        ctx.User.IsInRole("admin") ||
-                        (ctx.User.IsInRole("employee") && ctx.User.HasClaim("book_privilege", "write")));
+                    policyBuilder.RequireRole("employee")
+                        .RequireClaim("book_privilege", "write");
                 });
                 
                 config.AddPolicy("book-edit", policyBuilder =>
                 {
-                    policyBuilder.RequireAssertion(ctx =>
-                        ctx.User.IsInRole("admin") ||
-                        (ctx.User.IsInRole("employee") && 
-                            (ctx.User.HasClaim("book_privilege", "write") || ctx.User.HasClaim("book_privilege", "edit") )));
+                    policyBuilder.RequireRole("employee")
+                        .RequireClaim("book_privilege", "edit", "write");
                 });
 
             });
@@ -73,6 +69,8 @@ namespace Book.API
             services.AddCors();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+            services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
