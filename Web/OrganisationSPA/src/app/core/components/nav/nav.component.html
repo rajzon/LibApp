@@ -12,7 +12,7 @@
   <!-- UserName-->
   <!--  TODO: get user name from service !!!-->
   <div class="text-white mb-4" id="sidebar-user-heading">
-    <span>Hello <b>{{userNamePlaceholder}}</b></span>
+    <span>Hello <b>{{getUserName$() | async}}</b></span>
   </div>
   <!-- /#UserName-->
 
