@@ -4,7 +4,7 @@ import {ModuleWithProviders} from "@angular/core";
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home'},
-  { path: 'home', component: HomeComponent },
+  { path: 'home', component: HomeComponent},
   {
     path: 'book',
     loadChildren: './features/book/book.module#BookModule'

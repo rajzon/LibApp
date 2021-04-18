@@ -20,6 +20,7 @@ import {SearchItemVolume, SearchResultDto} from "../../models/search-result-dto"
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
+import {AuthService} from "@core/services/auth.service";
 
 @Component({
   selector: 'app-book-api-search-result',
@@ -46,7 +47,9 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
 
   uploaders: FileUploader[];
 
-  constructor(private modalService: BsModalService, private cd: ChangeDetectorRef) {
+  constructor(private modalService: BsModalService,
+              private cd: ChangeDetectorRef,
+              private authService: AuthService) {
   }
 
 
@@ -65,6 +68,7 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
       this.initForms()
 
       const uploaderOptions: FileUploaderOptions = {
+        authToken: 'Bearer ' + this.authService.getAccessToken(),
         isHTML5: true,
         allowedFileType: ['image'],
         removeAfterUpload: true,

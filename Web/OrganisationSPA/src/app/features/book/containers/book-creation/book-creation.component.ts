@@ -14,6 +14,7 @@ import {Book} from "../../models/book";
 import {Router} from "@angular/router";
 import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
 import {PaginationDto} from "../../models/pagination-dto";
+import {AuthService} from "@core/services/auth.service";
 
 @Component({
   selector: 'app-book-creation',
@@ -42,7 +43,8 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
 
   constructor(private bookFacade: BookFacade,
               private router: Router,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private authService: AuthService) {
     this.categories$ = bookFacade.getCategories$();
     this.languages$ = bookFacade.getLanguages$();
     this.authors$ = bookFacade.getAuthors$();
@@ -68,6 +70,7 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
     this.uploaderStyle = {style: "removeOnly"};
 
     const uploaderOptions: FileUploaderOptions = {
+      authToken: 'Bearer ' + this.authService.getAccessToken(),
       isHTML5: true,
       allowedFileType: ['image'],
       removeAfterUpload: true,

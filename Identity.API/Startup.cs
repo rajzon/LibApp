@@ -1,3 +1,6 @@
+using System;
+using FluentValidation.AspNetCore;
+using Identity.API.Configuration;
 using Identity.API.Data;
 using Identity.API.Models;
 using Microsoft.AspNetCore.Builder;
@@ -28,13 +31,15 @@ namespace Identity.API
             var migrationAssembly = typeof(Startup).Assembly.GetName().Name;
             services.AddDbContext<ApplicationDbContext>(config =>
             {
-                config.UseSqlServer(connectionString);
+                //SQL Server connection
+                // config.UseSqlServer(connectionString);
+                config.UseInMemoryDatabase("Memory");
             });
             
             services.AddIdentity<AppUser, IdentityRole<int>>(config =>
                 {
                     config.Password.RequiredLength = 8;
-                    config.Password.RequireDigit = false;
+                    config.Password.RequireDigit = true;
                     config.Password.RequireNonAlphanumeric = true;
                     config.Password.RequireUppercase = true;
                     config.User.RequireUniqueEmail = true;
@@ -46,29 +51,55 @@ namespace Identity.API
             {
                 config.Cookie.Name = "Identity.Cookie";
                 config.LoginPath = "/Auth/Login";
+                config.LogoutPath = "/Auth/Logout";
             });
             
             
-            
+            /////IdentityServer - EF Core + SQLServer
+            // services.AddIdentityServer()
+            //     .AddAspNetIdentity<AppUser>()
+            //     // this adds the config data from DB (clients, resources)
+            //     .AddConfigurationStore(options =>
+            //     {
+            //         options.ConfigureDbContext = builder =>
+            //             builder.UseSqlServer(connectionString, 
+            //                 sql => sql.MigrationsAssembly(migrationAssembly));
+            //     })
+            //     // this adds the operational data from DB (codes, tokens, consents)
+            //     .AddOperationalStore(options =>
+            //     {
+            //         options.ConfigureDbContext = builder =>
+            //             builder.UseSqlServer(connectionString, 
+            //                 sql => sql.MigrationsAssembly(migrationAssembly));
+            //     })
+            //     .AddDeveloperSigningCredential();
+
+
             services.AddIdentityServer()
                 .AddAspNetIdentity<AppUser>()
-                // this adds the config data from DB (clients, resources)
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(connectionString, 
-                            sql => sql.MigrationsAssembly(migrationAssembly));
-                })
-                // this adds the operational data from DB (codes, tokens, consents)
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(connectionString, 
-                            sql => sql.MigrationsAssembly(migrationAssembly));
-                })
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryApiResources(Config.GetResources())
+                .AddInMemoryApiScopes(Config.GetScopes())
+                .AddInMemoryClients(Config.GetClients())
                 .AddDeveloperSigningCredential();
+            
+            
+            
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation()
+                .AddFluentValidation(mvcConfig => mvcConfig.RegisterValidatorsFromAssemblyContaining<Startup>());
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,6 +114,7 @@ namespace Identity.API
             
             
             app.UseRouting();
+            app.UseCors("default");
             
 
             app.UseEndpoints(endpoints =>

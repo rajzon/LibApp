@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Book.API.Queries.V1;
 using Book.API.Queries.V1.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Book.API.Controllers.V1

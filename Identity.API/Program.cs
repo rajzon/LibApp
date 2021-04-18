@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using Identity.API.Data;
 using Identity.API.Models;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -25,8 +26,11 @@ namespace Identity.API
                 try
                 {
                     var userManager = services.GetRequiredService<UserManager<AppUser>>();
-                    SeedDbContexts(services);
-                    CreateAdmin(userManager);
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
+                    //Seed EF Core contexts for real db approach
+                    //SeedDbContexts(services);
+                    CreateAdmin(userManager, roleManager);
+                    CreateTestEmployee(userManager, roleManager);
 
                 }
                 catch (Exception e)
@@ -39,13 +43,15 @@ namespace Identity.API
                 
             host.Run();
         }
+
         
+
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
         
         
-        private static void CreateAdmin(UserManager<AppUser> userManager)
+        private static void CreateAdmin(UserManager<AppUser> userManager, RoleManager<IdentityRole<int>> roleManager)
         {
             if (userManager.Users.Any(u => u.Email.Equals("admin@example.com"))) 
                 return;
@@ -55,8 +61,43 @@ namespace Identity.API
                 UserName = "admin",
                 Email = "admin@example.com"
             };
-            userManager.CreateAsync(user, "Password1!").GetAwaiter().GetResult();
+            var roleResult = roleManager.CreateAsync(new IdentityRole<int> {Name = "admin"}).GetAwaiter().GetResult();
+            if (! roleResult.Succeeded)
+                return;
+            
+            
+            var userResult = userManager.CreateAsync(user, "Password1!").GetAwaiter().GetResult();
+            if (! userResult.Succeeded)
+                return;
+            
+            userManager.AddToRoleAsync(user, "admin").GetAwaiter().GetResult();
+            
+
         }
+        
+        
+        private static void CreateTestEmployee(UserManager<AppUser> userManager, RoleManager<IdentityRole<int>> roleManager)
+        {
+            if (userManager.Users.Any(u => u.Email.Equals("employee@example.com")))
+                return;
+
+            var roleResult = roleManager.CreateAsync(new IdentityRole<int> {Name = "employee"}).GetAwaiter().GetResult();
+            if (! roleResult.Succeeded)
+                return;
+
+            var user = new AppUser
+            {
+                UserName = "employee",
+                Email = "employee@example.com"
+            };
+            
+            var userResult = userManager.CreateAsync(user, "Password1!").GetAwaiter().GetResult();
+            if (! userResult.Succeeded)
+                return;
+            userManager.AddToRoleAsync(user, "employee").GetAwaiter().GetResult();
+            userManager.AddClaimAsync(user, new Claim("book_privilege", "write")).GetAwaiter().GetResult();
+        }
+        
         
         private static void SeedDbContexts(IServiceProvider services)
         {

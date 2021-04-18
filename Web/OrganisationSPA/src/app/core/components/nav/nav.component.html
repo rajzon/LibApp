@@ -10,9 +10,8 @@
   <!-- /#Logo-->
 
   <!-- UserName-->
-  <!--  TODO: get user name from service !!!-->
   <div class="text-white mb-4" id="sidebar-user-heading">
-    <span>Hello <b>{{userNamePlaceholder}}</b></span>
+    <span>Hello <b>{{getUserName$() | async}}</b></span>
   </div>
   <!-- /#UserName-->
 
@@ -64,7 +63,8 @@
     <div class="text-white sidebar-section-header m-2 p-1 pl-3">Account</div>
     <div class="list-group list-group-flush">
       <a href="#" class="list-group-item list-group-item-action "><i class="fa fa-key mr-2"></i> Change Password</a>
-      <a href="#" class="list-group-item list-group-item-action "><i class="fa fa-sign-out-alt mr-2"></i> Logout</a>
+      <a (click)="logout()"
+         class="list-group-item list-group-item-action "><i class="fa fa-sign-out-alt mr-2"></i> Logout</a>
     </div>
   </div>
   <!-- /#Account -->
