@@ -90,9 +90,7 @@ export class AuthService {
         console.log("after initLoginFlow UserProfileClaims: ", this.oauthService.loadUserProfile());
 
       }
-    }).then(_ => {
-      this.setAuthenticated(this.oauthService.hasValidAccessToken());
-    })
+    });
   }
 
   logout(): void {
