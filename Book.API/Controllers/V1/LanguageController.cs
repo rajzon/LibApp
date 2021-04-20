@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Book.API.Queries.V1.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Book.API.Controllers.V1
 {
@@ -16,10 +18,12 @@ namespace Book.API.Controllers.V1
     public class LanguageController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<LanguageController> _logger;
 
-        public LanguageController(IMediator mediator)
+        public LanguageController(IMediator mediator, ILogger<LanguageController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -45,7 +49,7 @@ namespace Book.API.Controllers.V1
 
             if (result is null)
                 return NotFound();
-
+            
             return Ok(result);
         }
         

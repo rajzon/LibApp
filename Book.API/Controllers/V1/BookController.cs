@@ -47,7 +47,6 @@ namespace Book.API.Controllers.V1
         public async Task<IActionResult> Get(int id)
         {
             var result = await _mediator.Send(new FindBookByIdQuery {Id = id});
-
             if (result is null)
                 return NotFound();
 

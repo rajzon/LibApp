@@ -1,6 +1,8 @@
-using Book.API.Filters;
+using Book.API.AuthHandlers;
+using Book.API.Behaviors;
 using Book.API.Installers;
 using Book.API.Mappings;
+using Book.API.Middleware;
 using Book.API.Services;
 using Book.API.Settings;
 using FluentValidation.AspNetCore;
@@ -13,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace Book.API
 {
@@ -63,7 +66,11 @@ namespace Book.API
             
             services.AddBookDbContextInitializer();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+            
             services.AddMediatR(typeof(Startup));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+            
+            
             services.AddApiVersioningInitializer();
             services.AddSwaggerInitializer();
             services.AddCors();
@@ -76,6 +83,8 @@ namespace Book.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<HttpRequestBodyMiddleware>();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -91,6 +100,7 @@ namespace Book.API
             }
 
             app.UseHttpsRedirection();
+            app.UseSerilogRequestLogging();
             
             
             

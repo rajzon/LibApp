@@ -2,6 +2,6 @@
 {
     public class Error
     {
-        public string[] Errors { get; init; }
+        public object[] Errors { get; init; }
     }
 }

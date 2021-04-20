@@ -17,12 +17,12 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.4" />
+        <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Application" />
-      <Folder Include="Behaviors" />
       <Folder Include="Commands\V1\Dtos" />
       <Folder Include="Contracts\Responses" />
       <Folder Include="Controllers\V2" />

@@ -41,6 +41,7 @@ namespace Book.API.Handlers
                   _languageRepository.Add(new Language(request.LanguageName))
                 : null;
             
+            
             await _languageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
             var author = request.Author is not null
@@ -83,16 +84,16 @@ namespace Book.API.Handlers
             IEnumerable<string> categoriesNames)
         {
             var categories = await _categoryRepository.GetAllAsync();
-            var requestedCategories = categories.Where(c => categoriesNames.Contains(c.Name)).ToList();
+            var requestedCategoriesThatExists = categories.Where(c => categoriesNames.Contains(c.Name)).ToList();
             foreach (var categoryName in categoriesNames)
             {
-                var category = requestedCategories.SingleOrDefault(c => c.Name.Equals(categoryName));
+                var category = requestedCategoriesThatExists.SingleOrDefault(c => c.Name.Equals(categoryName));
                 if (category is not null)
                 {
                     book.AddCategory(category);
                     continue;
                 }
-
+            
                 book.AddCategory(new Category(categoryName));
             }
         }
