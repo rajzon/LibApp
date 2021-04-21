@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Book.API.Commands.V1;
+using Book.API.Commands.V1.Dtos;
 using Book.API.Controllers.V1;
 using Book.API.Domain;
 using MediatR;
@@ -28,16 +29,11 @@ namespace Book.API.Handlers
         {
             var categories = await _categoryRepository.GetAllByIdAsync(request.CategoriesIds);
 
-            var book = new Domain.Book(request.Title,
-                request.AuthorId,
-                request.Description,
-                request.Isbn10,
-                request.Isbn13,
-                request.LanguageId,
-                request.PublisherId,
-                request.PageCount,
-                request.Visibility,
-                request.PublishedDate);
+            var book = new Domain.Book(request.Title, request.AuthorId,
+                request.Description, request.Isbn10,
+                request.Isbn13, request.LanguageId,
+                request.PublisherId, request.PageCount,
+                request.Visibility, request.PublishedDate);
 
             foreach (var category in categories)
             {
@@ -45,9 +41,11 @@ namespace Book.API.Handlers
             }
 
             var result = _bookRepository.Add(book);
-            await _bookRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            if (await _bookRepository.UnitOfWork.SaveChangesAsync(cancellationToken) < 1)
+                return new CreateBookCommandResult(false, new[] {"Error occured during saving Book"});
 
-            return _mapper.Map<CreateBookCommandResult>(result);
+            var bookResult = _mapper.Map<CommandBookDto>(result);
+            return new CreateBookCommandResult(true, bookResult);
 
         }
     }

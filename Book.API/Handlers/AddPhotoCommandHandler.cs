@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Book.API.Commands.V1;
+using Book.API.Commands.V1.Dtos;
 using Book.API.Controllers.V1;
 using Book.API.Domain;
 using Book.API.Services;
@@ -31,19 +32,15 @@ namespace Book.API.Handlers
         public async Task<AddPhotoCommandResult> Handle(AddPhotoCommand request, CancellationToken cancellationToken)
         {
             var book = await _bookRepository.FindByIdWithPhotoAsync(request.Id);
-
             if (book is null)
-                return null;
-
-            //Call cloudinary service
-            _logger.LogInformation("Requesting {CloudinaryServiceRequest} : Args {Args}", 
-                _cloudinaryService.GetType().GetMethod(nameof(_cloudinaryService.AddImageToCloud))?.Name, request);
+                return new AddPhotoCommandResult(false, new []{$"Requested Book Id: {request.Id} not found"});
             
+            //Call cloudinary service
             var uploadResult = _cloudinaryService.AddImageToCloud(request);
-            if (uploadResult.Error is not null && uploadResult.Error.Errors.Any())
+            if (! uploadResult.Succeeded)
             {
                 _logger.LogError("Uploading Errors : {Errors}", uploadResult.Error.Errors);
-                return null;
+                return new AddPhotoCommandResult(false, uploadResult.Error.Errors);
             }
             
             book.AddImage(uploadResult.Url, uploadResult.PublicId, request.IsMain);
@@ -56,11 +53,12 @@ namespace Book.API.Handlers
             {
                 _logger.LogError("Error occured during saving {Image} : Url {Url} : IsMain: {IsMain} : to DB", nameof(Domain.Image),
                     book.Images.Select(x => x.Url).LastOrDefault(), book.Images.Select(x => x.IsMain).LastOrDefault());
-                return null;
+                 return new AddPhotoCommandResult(false, new []{$"Error occured during saving Image for Book Id: ${request.Id}"});
             }
             
-            return _mapper.Map<AddPhotoCommandResult>(book.Images.LastOrDefault());
-            
+            var photoResult = _mapper.Map<CommandPhotoDto>(book.Images.LastOrDefault());
+            return new AddPhotoCommandResult(true, photoResult);
+
         }
     }
 }

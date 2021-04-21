@@ -20,4 +20,5 @@ namespace Book.API.Commands.V1
         
         public DateTime? PublishedDate { get; init; }
     }
+    
 }

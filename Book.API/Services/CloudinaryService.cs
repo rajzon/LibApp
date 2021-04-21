@@ -21,6 +21,8 @@ namespace Book.API.Services
         private readonly IOptions<CloudinarySettings> _cloudinarySettings;
         private readonly ILogger<CloudinaryService> _logger;
 
+        private string TypeFullName => this.GetType().FullName;
+
 
         public CloudinaryService(IOptions<CloudinarySettings> cloudinarySettings, ILogger<CloudinaryService> logger)
         {
@@ -40,10 +42,10 @@ namespace Book.API.Services
             var file = command.File;
             if (file?.Length == 0)
             {
-                _logger.LogError("File is empty - length equals : {fileLength}", file.Length);
-                return new CloudImageUploadResult(new Error
+                _logger.LogError("{CloudinaryService}: {Method} File is empty - length equals : {fileLength}",TypeFullName, nameof(AddImageToCloud), file.Length);
+                return new CloudImageUploadResult(false, new Error
                 {
-                    Errors = new object[]{"File not contain any byte information - Uploading terminated"}
+                    Errors = new []{"File not contain any byte information - Uploading terminated"}
                 });
             }
 
@@ -52,20 +54,22 @@ namespace Book.API.Services
             {
                 File = new FileDescription(file?.Name, stream)
             };
+            
 
-            _logger.LogInformation("Requesting Cloudinary : Params {ImageFileParams}", uploadParams);
             var uploadResult = _cloudinary.Upload(uploadParams);
             if (uploadResult?.Url is null)
             {
-                _logger.LogError("Uri from cloudinary is {uploadResultUrl}", uploadResult?.Url);
-                return new CloudImageUploadResult(new Error
+                _logger.LogError("{CloudinaryService}: {Method} Uri from cloudinary is {uploadResultUrl}",
+                    TypeFullName, nameof(AddImageToCloud), uploadResult?.Url);
+                return new CloudImageUploadResult(false,new Error
                 {
-                    Errors = new object[] {"Uri from cloudinary is null - Uploading terminated"}
+                    Errors = new [] {"Uri from cloudinary is null - Uploading terminated"}
                 });
             }
             
-            _logger.LogInformation("Successfully uploaded image : Url {Url}", uploadResult.Url);
-            return new CloudImageUploadResult(uploadResult.Url.ToString(), uploadResult.PublicId);
+            _logger.LogInformation("{CloudinaryService}: {Method} Successfully uploaded image : Url {Url}", 
+                TypeFullName, nameof(AddImageToCloud), uploadResult.Url);
+            return new CloudImageUploadResult(true, uploadResult.Url.ToString(), uploadResult.PublicId);
         }
     }
 

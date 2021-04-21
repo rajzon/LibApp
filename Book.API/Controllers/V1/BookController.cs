@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Book.API.Commands.V1;
+using Book.API.Contracts.Responses;
 using Book.API.Queries.V1;
 using Book.API.Queries.V1.Dtos;
 using MediatR;
@@ -60,10 +61,17 @@ namespace Book.API.Controllers.V1
         public async Task<IActionResult> Create(CreateBookCommand command)
         {
             var result = await _mediator.Send(command);
+            
+            if (! result.Succeeded)
+                return result.Errors.Any()? BadRequest(new ErrorResponse
+                {
+                    Errors =  result.Errors
+                }): BadRequest();
+            
             //TODO only for test purposes
             Thread.Sleep(2000);
             
-            return Ok(result);
+            return Ok(result.Book);
         }
 
         [HttpPost("add-manual")]
@@ -72,9 +80,17 @@ namespace Book.API.Controllers.V1
         public async Task<IActionResult> CreateManual(CreateBookManualCommand command)
         {
             var result = await _mediator.Send(command);
+            
+            if (! result.Succeeded)
+                return result.Errors.Any()? BadRequest(new ErrorResponse
+                {
+                    Errors =  result.Errors
+                }): BadRequest();
+            
+            
             //TODO only for test purposes
             Thread.Sleep(2000);
-            return Ok(result);
+            return Ok(result.Book);
         }
 
         [HttpPost("{id}/add-photo")]
@@ -82,13 +98,16 @@ namespace Book.API.Controllers.V1
         [ProducesResponseType(typeof(AddPhotoCommandResult), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> AddPhotoToBook([FromForm]AddPhotoCommand command)
         {
-            
             var result = await _mediator.Send(command);
+            
+            if (! result.Succeeded)
+                return result.Errors.Any()? BadRequest(new ErrorResponse
+                {
+                    Errors =  result.Errors
+                }): BadRequest();
 
-            if (result is null)
-                return BadRequest();
 
-            return Ok(result);
+            return Ok(result.Photo);
         }
 
     }

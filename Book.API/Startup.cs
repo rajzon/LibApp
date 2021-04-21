@@ -36,10 +36,6 @@ namespace Book.API
                 {
                     config.Authority = "https://localhost:8001";
                     config.Audience = "book_api";
-                    config.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateAudience = false
-                    };
                 });
 
             services.AddAuthorization(config =>

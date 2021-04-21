@@ -23,8 +23,6 @@
 
     <ItemGroup>
       <Folder Include="Application" />
-      <Folder Include="Commands\V1\Dtos" />
-      <Folder Include="Contracts\Responses" />
       <Folder Include="Controllers\V2" />
       <Folder Include="Domain\DomainEvent" />
       <Folder Include="Infrastructure" />
