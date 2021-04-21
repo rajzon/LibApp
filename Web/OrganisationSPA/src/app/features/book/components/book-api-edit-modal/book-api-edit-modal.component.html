@@ -5,10 +5,8 @@
   <form [formGroup]="editForm" (ngSubmit)="edit()">
     <app-text-input [formControl]="editForm.controls['title']"
                     [label]="'Title'"></app-text-input>
-    <app-text-input [formControl]="editForm.controls['author'].get('firstName')"
-                    [label]="'Author Firstname'"></app-text-input>
-    <app-text-input [formControl]="editForm.controls['author'].get('lastName')"
-                    [label]="'Author Lastname'"></app-text-input>
+    <app-text-input [formControl]="editForm.controls['author']"
+                    [label]="'Author'"></app-text-input>
     <ng-container *ngFor="let category of categories?.controls; let i = index;" formArrayName="categoriesNames">
       <app-text-input [formControl]="categories.controls[i]"
                       [label]="'Categories'"></app-text-input>

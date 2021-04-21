@@ -11,9 +11,11 @@ namespace Book.API.Data.Configurations
             builder.OwnsOne<AuthorName>(a => a.Name, name =>
             {
                 name.Property(n => n.FirstName)
-                    .HasMaxLength(100);
+                    .HasMaxLength(40);
                 name.Property(n => n.LastName)
-                    .HasMaxLength(100);
+                    .HasMaxLength(40);
+                name.Property(n => n.FullName)
+                    .HasMaxLength(81);
             });
         }
     }

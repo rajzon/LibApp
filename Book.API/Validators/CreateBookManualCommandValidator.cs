@@ -11,7 +11,7 @@ namespace Book.API.Validators
         {
             RuleFor(b => b.Title)
                 .MinimumLength(3)
-                .MaximumLength(50);
+                .MaximumLength(100);
 
             RuleFor(b => b.Description)
                 .MinimumLength(3)

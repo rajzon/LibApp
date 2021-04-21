@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Book.API.Domain.Common;
+using Book.API.Extensions;
 
 namespace Book.API.Domain
 {
@@ -19,7 +20,7 @@ namespace Book.API.Domain
             if (! name.All(char.IsLetter))
                 throw new ArgumentException("Language name must contain only letters");
 
-            Name = name;
+            Name = name.TrimWithMultipleBetweens();
             ModificationDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;
         }

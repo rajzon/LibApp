@@ -30,8 +30,8 @@ namespace Book.API.Data.Repositories
         
         public Author Add(Author author)
         {
-            _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Requesting adding new {Author} : Name {AuthorFirstName} {AuthorLastName}", 
-                TypeFullName, nameof(Add), nameof(Author), author?.Name?.FirstName, author?.Name?.LastName);
+            _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Requesting adding new {Author} : Name {AuthorFullName}", 
+                TypeFullName, nameof(Add), nameof(Author), author?.Name?.FullName);
             
             if (author is null)
             {
@@ -66,12 +66,12 @@ namespace Book.API.Data.Repositories
         public async Task<Author> FindByNameAsync(AuthorName name)
         {
             var result = await _bookDbContext.Authors
-                .SingleOrDefaultAsync(a => a.Name.FirstName.Equals(name.FirstName) &&
-                                           a.Name.LastName.Equals(name.LastName));
-
+                .SingleOrDefaultAsync(a => a.Name.FullName.Equals(name.FullName));
+            
+            
             if (result is null)
-                _logger.LogWarning("{AuthorRepository}: {AuthorRepositoryMethod}: Requested {Author} : {AuthorFirstName} {AuthorLastName} not found", 
-                    TypeFullName, nameof(FindByNameAsync), nameof(Author), name.FirstName, name.LastName);
+                _logger.LogWarning("{AuthorRepository}: {AuthorRepositoryMethod}: Requested {Author} : {AuthorFullName} not found", 
+                    TypeFullName, nameof(FindByNameAsync), nameof(Author), name.FullName);
             
             
             _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Request returned {Author} {@AuthorObj}", 

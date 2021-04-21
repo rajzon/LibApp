@@ -11,7 +11,7 @@ namespace Book.API.Validators
         {
             RuleFor(b => b.Title)
                 .MinimumLength(3)
-                .MaximumLength(50);
+                .MaximumLength(100);
             
             RuleFor(b => b.Description)
                 .MinimumLength(3)
@@ -34,20 +34,13 @@ namespace Book.API.Validators
 
             RuleFor(b => b.Author)
                 .NotNull();
-            
-            RuleFor(b => b.Author.FirstName)
+
+            RuleFor(b => b.Author)
                 .NotEmpty()
-                .MinimumLength(3)
-                .MaximumLength(30)
-                .Matches("^[^0-9]+$").WithMessage("Author Firstname cannot contain any digits")
-                .When(b => b.Author is not null);
-            
-            RuleFor(b => b.Author.LastName)
-                .NotEmpty()
-                .MinimumLength(3)
-                .MaximumLength(30)
-                .Matches("^[^0-9]+$").WithMessage("Author Lastname cannot contain any digits")
-                .When(b => b.Author is not null);
+                .MinimumLength(7)
+                .MaximumLength(61)
+                .Matches("^[^0-9]+$")
+                .WithMessage("Author name cannot contain any digits");
 
             RuleFor(b => b.PublisherName)
                 .MinimumLength(2)

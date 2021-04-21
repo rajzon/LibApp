@@ -1,5 +1,6 @@
 ﻿using System;
 using Book.API.Domain.Common;
+using Book.API.Extensions;
 
 namespace Book.API.Domain
 {
@@ -16,11 +17,9 @@ namespace Book.API.Domain
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Publisher name cannot be empty or whitespace");
             
-            Name = name;
+            Name = name.TrimWithMultipleBetweens();
             ModificationDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;
         }
-
-        
     }
 }

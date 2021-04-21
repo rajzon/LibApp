@@ -140,10 +140,7 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
       visibility: volumeInfo.visibility,
       languageName: volumeInfo?.languageName,
       //TODO later add all authors instead of only first
-      author: {
-        firstName: volumeInfo?.authors[0]?.firstName,
-        lastName: volumeInfo?.authors[0]?.lastName,
-      },
+      author: volumeInfo?.authors[0].author,
       publisherName: volumeInfo?.publisherName,
       categoriesNames: volumeInfo?.categoriesNames,
       publishedDate: new Date(volumeInfo?.publishedDate)
@@ -206,8 +203,7 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
     volumeInfo.authors = volumeInfo.authors ?? new Array<string>();
     const controls = volumeInfo.authors.map(x => {
       return new FormGroup({
-        firstName: createFormControl(x, this.bookFieldsSettings.author.authorFirstName),
-        lastName: createFormControl(x, this.bookFieldsSettings.author.authorLastName),
+        author: createFormControl(x, this.bookFieldsSettings.author)
       });
     })
     addBookForm.registerControl('authors', new FormArray(controls,

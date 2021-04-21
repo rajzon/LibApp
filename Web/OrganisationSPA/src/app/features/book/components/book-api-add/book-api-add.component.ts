@@ -9,7 +9,6 @@ import {environment} from "@env";
 })
 export class BookApiAddComponent implements OnInit {
 
-  @Input() booksFromSearch: any[];
   @Output() searchEvent = new EventEmitter<SearchDto>()
   @Output() clearSearchResultEvent = new EventEmitter<boolean>();
 

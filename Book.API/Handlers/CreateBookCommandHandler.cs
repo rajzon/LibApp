@@ -83,9 +83,8 @@ namespace Book.API.Handlers
         private async Task<Author> GetOrCreateAuthorAsync(CreateBookCommand request, CancellationToken cancellationToken)
         {
             var author = request.Author is not null
-                ? await _authorRepository.FindByNameAsync(new AuthorName(request.Author.FirstName,
-                      request.Author.LastName)) ??
-                  _authorRepository.Add(new Author(new AuthorName(request.Author.FirstName, request.Author.LastName)))
+                ? await _authorRepository.FindByNameAsync(new AuthorName(request.Author)) ??
+                  _authorRepository.Add(new Author(new AuthorName(request.Author)))
                 : null;
 
             await _authorRepository.UnitOfWork.SaveChangesAsync(cancellationToken);

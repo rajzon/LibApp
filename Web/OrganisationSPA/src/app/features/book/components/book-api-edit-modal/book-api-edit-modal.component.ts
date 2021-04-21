@@ -35,14 +35,10 @@ export class BookApiEditModalComponent implements OnInit {
       uploader: this.uploader
     };
     this.addCommand$.next(addCommand);
-
     this.editForm = new FormGroup({
       title: createFormControl(this.volumeInfo.title, this.bookFieldsSettings.title),
       //TODO later create form which allow authors as collection instead of only 1
-      author: new FormGroup({
-        firstName: createFormControl(this.volumeInfo.authors[0]?.firstName, this.bookFieldsSettings.author.authorFirstName),
-        lastName: createFormControl(this.volumeInfo.authors[0]?.lastName, this.bookFieldsSettings.author.authorLastName),
-      }),
+      author: createFormControl(this.volumeInfo.authors[0]?.author, this.bookFieldsSettings.author),
       pageCount: createFormControl(this.volumeInfo.pageCount, this.bookFieldsSettings.pageCount),
       languageName: createFormControl(this.volumeInfo.languageName, this.bookFieldsSettings.language.languageName),
       isbn10: createFormControl(this.volumeInfo.isbn10, this.bookFieldsSettings.isbn10),

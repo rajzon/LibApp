@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Book.API.Domain.Common;
+using Book.API.Extensions;
 
 namespace Book.API.Domain
 {
@@ -86,7 +87,7 @@ namespace Book.API.Domain
         public Book(string title, int? authorId, string description = default, string isbn10 = default,
             string isbn13 = default,
             int? languageId = default, int? publisherId = default, ushort? pageCount = default,
-            bool visibility = default, DateTime? publishedDate = default) : this(title, authorId, new BookEan13(), 
+            bool visibility = default, DateTime? publishedDate = default) : this(title.TrimWithMultipleBetweens(), authorId, new BookEan13(), 
             description, isbn10, isbn13, languageId, publisherId, pageCount, visibility, publishedDate)
         {
             
