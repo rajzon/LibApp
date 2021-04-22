@@ -26,10 +26,13 @@ namespace Book.API.Validators
 
             RuleFor(b => b.PageCount)
                 .GreaterThanOrEqualTo((ushort) 1);
-
-            RuleFor(b => b.AuthorId)
+            
+            const int authorIdMinValue = 1;
+            RuleFor(b => b.AuthorsIds)
                 .NotEmpty()
-                .GreaterThanOrEqualTo(1);
+                .ForEach(a =>
+                    a.GreaterThanOrEqualTo(authorIdMinValue)
+                        .WithMessage($"Author id must be greater then {authorIdMinValue - 1}"));
             
             RuleFor(b => b.LanguageId)
                 .GreaterThanOrEqualTo(1);
@@ -37,8 +40,6 @@ namespace Book.API.Validators
             RuleFor(b => b.PublisherId)
                 .GreaterThanOrEqualTo(1);
             
-            
-            //TODO consider place for storing rules
             const int categoryIdMinValue = 1;
             RuleFor(b => b.CategoriesIds)
                 .ForEach(c =>

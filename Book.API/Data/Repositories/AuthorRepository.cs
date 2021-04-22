@@ -79,6 +79,21 @@ namespace Book.API.Data.Repositories
             
             return result;
         }
+        
+        public async Task<IEnumerable<Author>> GetAllByIdAsync(int[] authorsIds)
+        {
+            var result = authorsIds is not null && authorsIds.Any()
+                ? await _bookDbContext.Authors.Where(a => authorsIds.Contains(a.Id)).ToListAsync()
+                : Enumerable.Empty<Author>().ToList();
+
+            if (! result.Any())
+                _logger.LogWarning("{AuthorRepository}: {AuthorRepositoryMethod} : Requested {Authors} not found", 
+                    TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>));
+            
+            _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Request returned {Authors} Count {AuthorsCount}", 
+                TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>), result, result.Count);
+            return result;
+        }
 
         public async Task<IEnumerable<Author>> GetAllAsync()
         {
@@ -93,5 +108,7 @@ namespace Book.API.Data.Repositories
 
             return result;
         }
+
+        
     }
 }

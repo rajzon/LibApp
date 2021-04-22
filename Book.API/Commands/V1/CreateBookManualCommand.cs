@@ -12,9 +12,10 @@ namespace Book.API.Commands.V1
         public ushort? PageCount { get; init; }
         public bool Visibility { get; init; }
         
-        public int? AuthorId { get; init; }
         public int? LanguageId { get; init; }
         public int? PublisherId { get; init; }
+        
+        public int[] AuthorsIds { get; set; }
         public int[] CategoriesIds { get; init; }
         
         

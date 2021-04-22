@@ -191,10 +191,6 @@ export class BookFacade {
 
   loadAuthors$(): Observable<Author[]> {
     return this.authorsApi.getAuthors$().pipe(map(authors => {
-     authors = authors.map(author => ({
-        ...author,
-        fullName: `${author.firstName} ${author.lastName}`
-      }));
       this.bookState.setAuthors(authors);
       return authors;
     }))
