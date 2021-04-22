@@ -13,6 +13,11 @@ namespace Book.API.Domain
         public DateTime ModificationDate { get; private set; }
         public DateTime CreationDate { get; private set; }
         
+
+        private readonly List<Book> _books;
+        public IReadOnlyCollection<Book> Books => _books;
+        
+        
         public Author(AuthorName name)
         {
             Name = name ?? throw new ArgumentException("AuthorName cannot be null");

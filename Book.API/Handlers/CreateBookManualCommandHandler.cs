@@ -29,7 +29,7 @@ namespace Book.API.Handlers
         {
             var categories = await _categoryRepository.GetAllByIdAsync(request.CategoriesIds);
 
-            var book = new Domain.Book(request.Title, request.AuthorId,
+            var book = new Domain.Book(request.Title,
                 request.Description, request.Isbn10,
                 request.Isbn13, request.LanguageId,
                 request.PublisherId, request.PageCount,

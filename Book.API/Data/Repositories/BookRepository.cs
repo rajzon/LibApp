@@ -83,6 +83,7 @@ namespace Book.API.Data.Repositories
         {
             var result = await _bookContext.Books
                 .Include(b => b.Categories)
+                .Include(b => b.Authors)
                 .ToListAsync();
             
             if (! result.Any())

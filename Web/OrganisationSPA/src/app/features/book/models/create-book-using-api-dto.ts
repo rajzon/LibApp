@@ -14,8 +14,9 @@ export class BookToCreateDto {
   pageCount: number;
   visibility: boolean;
   languageName: string;
-  author: string;
   publisherName: string;
+
+  authorsNames: string[];
   categoriesNames: string[];
   publishedDate: Date;
 }

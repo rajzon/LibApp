@@ -24,15 +24,15 @@ namespace Book.API.Domain
         private int? _languageId;
         public int? LanguageId => _languageId;
         
-        private int? _authorId;
-        public int? AuthorId => _authorId;
-        
         private int? _publisherId;
         public int? PublisherId => _publisherId;
         
         //DDD violation: Navigation property to outside aggregate in order to create many-to-many relationship
         private readonly List<Category> _categories;
         public IReadOnlyCollection<Category> Categories => _categories;
+        
+        private readonly List<Author> _authors;
+        public IReadOnlyCollection<Author> Authors => _authors; 
 
         
         
@@ -47,7 +47,6 @@ namespace Book.API.Domain
         }
         
         private Book(string title,
-            int? authorId,
             BookEan13 bookEan13,
             string description = default,
             string isbn10 = default,
@@ -62,8 +61,6 @@ namespace Book.API.Domain
                 throw new ArgumentException("Title cannot be empty or whitespace");
             if (string.IsNullOrWhiteSpace(bookEan13?.Code))
                 throw new ArgumentException("Book EAN cannot be null");
-            if (authorId is null)
-                throw new ArgumentException("Author id cannot be null");
 
             Title = title;
             Description = description;
@@ -73,21 +70,21 @@ namespace Book.API.Domain
             Visibility = visibility;
             PublishedDate = publishedDate;
             _languageId = languageId;
-            _authorId = authorId;
             _publisherId = publisherId;
             
             
             _categories = new List<Category>();
+            _authors = new List<Author>();
             Ean13 = bookEan13;
             
             ModificationDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;
         }
 
-        public Book(string title, int? authorId, string description = default, string isbn10 = default,
+        public Book(string title, string description = default, string isbn10 = default,
             string isbn13 = default,
             int? languageId = default, int? publisherId = default, ushort? pageCount = default,
-            bool visibility = default, DateTime? publishedDate = default) : this(title.TrimWithMultipleBetweens(), authorId, new BookEan13(), 
+            bool visibility = default, DateTime? publishedDate = default) : this(title.TrimWithMultipleBetweens(),new BookEan13(), 
             description, isbn10, isbn13, languageId, publisherId, pageCount, visibility, publishedDate)
         {
             
@@ -95,6 +92,10 @@ namespace Book.API.Domain
         
         public void AddCategory(Category category)
         {
+            if (category is null)
+                throw new ArgumentException("Category cannot be null");
+            
+
             var existingCategoryRelation = _categories.SingleOrDefault(c => c.Name.Equals(category.Name));
             
             //TODO: Potentially log info about trying to add duplicate category or throw exception    
@@ -119,6 +120,13 @@ namespace Book.API.Domain
         {
             return code is null ? null : new BookIsbn13(code);
         }
-        
+
+        public void AddAuthor(Author author)
+        {
+            if (author is null)
+                throw new ArgumentException("Author cannot be null");
+
+            this._authors.Add(author);
+        }
     }
 }

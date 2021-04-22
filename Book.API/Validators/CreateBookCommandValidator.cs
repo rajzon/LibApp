@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Book.API.Commands.V1;
+using Book.API.Domain;
 using FluentValidation;
 
 namespace Book.API.Validators
@@ -31,16 +32,17 @@ namespace Book.API.Validators
                 .MinimumLength(2)
                 .MaximumLength(20)
                 .Matches("^[a-zA-Z]+$").WithMessage("Language name can contain only letters");
-
-            RuleFor(b => b.Author)
+            
+            RuleFor(b => b.AuthorsNames)
                 .NotNull();
-
-            RuleFor(b => b.Author)
-                .NotEmpty()
-                .MinimumLength(7)
-                .MaximumLength(61)
-                .Matches("^[^0-9]+$")
-                .WithMessage("Author name cannot contain any digits");
+            RuleFor(b => b.AuthorsNames)
+                .ForEach(a =>
+                    a.NotEmpty()
+                        .MinimumLength(7)
+                        .MaximumLength(61)
+                        .Matches("^[^0-9]+$")
+                        .WithMessage("Author name cannot contain any digits")
+                );
 
             RuleFor(b => b.PublisherName)
                 .MinimumLength(2)

@@ -16,8 +16,9 @@ namespace Book.API.Commands.V1.Dtos
         public bool Visibility { get; set; }
 
         public int? LanguageId { get; set; }
-        public int? AuthorId { get; set; }
         public int? PublisherId { get; set; }
+        
+        public IEnumerable<AuthorDto> Authors { get; init; }
         public IReadOnlyCollection<CategoryDto> Categories { get; set; }
         
         public DateTime? PublishedDate { get; set; }

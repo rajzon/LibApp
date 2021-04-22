@@ -5,19 +5,57 @@
   <form [formGroup]="editForm" (ngSubmit)="edit()">
     <app-text-input [formControl]="editForm.controls['title']"
                     [label]="'Title'"></app-text-input>
-    <app-text-input [formControl]="editForm.controls['author']"
-                    [label]="'Author'"></app-text-input>
-    <ng-container *ngFor="let category of categories?.controls; let i = index;" formArrayName="categoriesNames">
-      <app-text-input [formControl]="categories.controls[i]"
-                      [label]="'Categories'"></app-text-input>
-      <button type="button"
-              class="btn btn-danger"
-              (click)="removeCategory(i)">Remove</button>
-    </ng-container>
+<!--    Authors -->
     <ng-container>
-      <button type="button"
-              class="btn btn-primary mt-2 d-block"
-              (click)="insertCategory()">Add new category</button>
+      <div *ngFor="let category of authors?.controls; let i = index; let first = first;" formArrayName="authorsNames">
+        <div *ngIf="first" class="mb-3 mt-3 border-bottom">
+          <h4 [class.font-weight-normal]="! isRequiredField(authors)">Authors</h4>
+        </div>
+        <div class="row">
+          <div class="col-md-9">
+            <app-text-input [formControl]="authors.controls[i]"
+                            [label]="'Author'"></app-text-input>
+          </div>
+          <div class="col-md-3 d-flex align-items-center">
+            <button type="button"
+                    class="btn btn-danger mb-3 mt-md-3  mb-md-0"
+                    (click)="removeFormControlFromArray(i, authors)">Remove</button>
+          </div>
+        </div>
+      </div>
+      <div class="mt-2 mb-4">
+        <button type="button"
+                class="btn btn-primary mt-2 d-block"
+                (click)="insertFormControlToArray(authors, bookFieldsSettings.author)">Add new author</button>
+      </div>
+    </ng-container>
+
+<!--    Categories -->
+    <ng-container>
+      <div *ngFor="let category of categories?.controls; let i = index; let first = first;"
+           formArrayName="categoriesNames">
+        <div *ngIf="first" class="mb-3 mt-3 border-bottom">
+          <h4 [class.font-weight-normal]="! isRequiredField(categories)">Categories</h4>
+        </div>
+        <div class="row">
+          <div class="col-md-9">
+            <app-text-input [formControl]="categories.controls[i]"
+                            [label]="'Category'"></app-text-input>
+          </div>
+          <div class="col-md-3 d-flex align-items-center">
+            <button type="button"
+                    class="btn btn-danger mb-3 mt-md-3  mb-md-0"
+                    (click)="removeFormControlFromArray(i, categories)">Remove</button>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="mt-2 mb-4">
+        <button type="button"
+                class="btn btn-primary d-block"
+                (click)="insertFormControlToArray(categories, bookFieldsSettings.categories.name)">Add new category</button>
+      </div>
     </ng-container>
 
     <app-number-input [formControl]="editForm.controls['pageCount']"

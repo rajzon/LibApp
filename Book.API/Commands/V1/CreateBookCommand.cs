@@ -15,8 +15,9 @@ namespace Book.API.Commands.V1
         public bool Visibility { get; init; }
 
         public string LanguageName { get; init; }
-        public string Author { get; init; }
         public string PublisherName { get; init; }
+        
+        public IEnumerable<string> AuthorsNames { get; init; }
         public IEnumerable<string> CategoriesNames { get; init; }
         
         

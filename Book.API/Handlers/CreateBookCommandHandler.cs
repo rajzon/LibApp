@@ -39,12 +39,10 @@ namespace Book.API.Handlers
         public async Task<CreateBookCommandResult> Handle(CreateBookCommand request, CancellationToken cancellationToken)
         {
             var language = await GetOrCreateLanguageAsync(request, cancellationToken);
-
-            var author = await GetOrCreateAuthorAsync(request, cancellationToken);
-
+            
             var publisher = await GetOrCreatePublisherAsync(request, cancellationToken);
 
-            var book = new Domain.Book(request.Title, author?.Id,
+            var book = new Domain.Book(request.Title,
                 request.Description, request.Isbn10,
                 request.Isbn13, language?.Id,
                 publisher?.Id, request.PageCount,
@@ -52,6 +50,10 @@ namespace Book.API.Handlers
 
             if (request.CategoriesNames is not null && request.CategoriesNames.Any())
                 await AddCategoriesToBookAsync(book, request.CategoriesNames.Distinct());
+            
+            
+            if (request.AuthorsNames is not null && request.AuthorsNames.Any())
+                await AddAuthorsToBookAsync(book, request.AuthorsNames);
 
             var result = _bookRepository.Add(book);
             
@@ -61,34 +63,38 @@ namespace Book.API.Handlers
             var bookResult = _mapper.Map<CommandBookDto>(result);
             return new CreateBookCommandResult(true, bookResult);
         }
+
+        private async Task AddAuthorsToBookAsync(Domain.Book book, IEnumerable<string> authorsNames)
+        {
+            var authors = await _authorRepository.GetAllAsync();
+            foreach (var name in authorsNames)
+            {
+                var authorThatExist = authors.SingleOrDefault(a => a.Name.FullName.Equals(name));
+                if (authorThatExist is not null)
+                {
+                    book.AddAuthor(authorThatExist);
+                    continue;
+                }
+
+                book.AddAuthor(new Author(new AuthorName(name)));
+            }
+        }
         
         private async Task AddCategoriesToBookAsync(Domain.Book book,
             IEnumerable<string> categoriesNames)
         {
             var categories = await _categoryRepository.GetAllAsync();
-            var requestedCategoriesThatExists = categories.Where(c => categoriesNames.Contains(c.Name)).ToList();
             foreach (var categoryName in categoriesNames)
             {
-                var category = requestedCategoriesThatExists.SingleOrDefault(c => c.Name.Equals(categoryName));
-                if (category is not null)
+                var categoryThatExist = categories.SingleOrDefault(c => c.Name.Equals(categoryName));
+                if (categoryThatExist is not null)
                 {
-                    book.AddCategory(category);
+                    book.AddCategory(categoryThatExist);
                     continue;
                 }
             
                 book.AddCategory(new Category(categoryName));
             }
-        }
-
-        private async Task<Author> GetOrCreateAuthorAsync(CreateBookCommand request, CancellationToken cancellationToken)
-        {
-            var author = request.Author is not null
-                ? await _authorRepository.FindByNameAsync(new AuthorName(request.Author)) ??
-                  _authorRepository.Add(new Author(new AuthorName(request.Author)))
-                : null;
-
-            await _authorRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-            return author;
         }
 
         private async Task<Language> GetOrCreateLanguageAsync(CreateBookCommand request, CancellationToken cancellationToken)

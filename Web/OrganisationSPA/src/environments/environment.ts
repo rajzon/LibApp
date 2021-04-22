@@ -39,7 +39,7 @@ export const environment = {
     categories: {
       required: false,
       name: {
-        required: true,
+        required: false,
         minLength: 3,
         maxLength: 30,
       }

@@ -139,8 +139,7 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
       pageCount: volumeInfo?.pageCount,
       visibility: volumeInfo.visibility,
       languageName: volumeInfo?.languageName,
-      //TODO later add all authors instead of only first
-      author: volumeInfo?.authors[0].author,
+      authorsNames: volumeInfo?.authors.map(x => x.author),
       publisherName: volumeInfo?.publisherName,
       categoriesNames: volumeInfo?.categoriesNames,
       publishedDate: new Date(volumeInfo?.publishedDate)
