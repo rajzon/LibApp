@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -31,7 +33,14 @@ namespace Book.API.Handlers
         public async Task<CreateBookCommandResult> Handle(CreateBookManualCommand request, CancellationToken cancellationToken)
         {
             var categories = await _categoryRepository.GetAllByIdAsync(request.CategoriesIds);
+            
+            if (! categories.Any())
+                return new CreateBookCommandResult(false, new[] {"Requested category/s not found"});
+
             var authors = await _authorRepository.GetAllByIdAsync(request.AuthorsIds);
+            
+            if (! authors.Any())
+                return new CreateBookCommandResult(false, new[] {"Requested category/s not found"});
 
             var book = new Domain.Book(request.Title,
                 request.Description, request.Isbn10,

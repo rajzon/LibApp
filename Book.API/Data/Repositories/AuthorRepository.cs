@@ -91,7 +91,7 @@ namespace Book.API.Data.Repositories
                     TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>));
             
             _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Request returned {Authors} Count {AuthorsCount}", 
-                TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>), result, result.Count);
+                TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>), result.Count);
             return result;
         }
 
@@ -104,7 +104,7 @@ namespace Book.API.Data.Repositories
                     TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>));
             
             _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Request returned {Authors} Count {AuthorsCount}", 
-                TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>), result, result.Count);
+                TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>), result.Count);
 
             return result;
         }
