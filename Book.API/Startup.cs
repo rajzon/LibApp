@@ -1,5 +1,10 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using Book.API.AuthHandlers;
 using Book.API.Behaviors;
+using Book.API.Data.Repositories;
+using Book.API.Domain;
 using Book.API.Installers;
 using Book.API.Mappings;
 using Book.API.Middleware;
@@ -13,7 +18,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
@@ -72,6 +79,7 @@ namespace Book.API
             services.AddCors();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddScoped<ICloudinaryService, CloudinaryService>();
+            
 
             services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
         }

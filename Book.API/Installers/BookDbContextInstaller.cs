@@ -1,8 +1,10 @@
 ﻿using Book.API.Data;
+using Book.API.Data.Decorators;
 using Book.API.Data.Repositories;
 using Book.API.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Book.API.Installers
 {
@@ -11,11 +13,51 @@ namespace Book.API.Installers
         public static IServiceCollection AddBookDbContextInitializer(this IServiceCollection services)
         {
             services.AddDbContext<BookDbContext>(config => config.UseInMemoryDatabase("BookService"));
-            services.AddScoped<ILanguageRepository, LanguageRepository>();
-            services.AddScoped<IAuthorRepository, AuthorRepository>();
-            services.AddScoped<IPublisherRepository, PublisherRepository>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            return services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<ILanguageRepository>(sp =>
+            {
+                var dbContext = sp.GetRequiredService<BookDbContext>();
+                var logger = sp.GetRequiredService<ILogger<LanguageRepositoryLoggingDecorator>>();
+
+                var service = new LanguageRepository(dbContext);
+                return new LanguageRepositoryLoggingDecorator(service, logger);
+            });
+            
+            services.AddScoped<IAuthorRepository>(sp =>
+            {
+                var dbContext = sp.GetRequiredService<BookDbContext>();
+                var logger = sp.GetRequiredService<ILogger<AuthorRepositoryLoggingDecorator>>();
+
+                var service = new AuthorRepository(dbContext);
+                return new AuthorRepositoryLoggingDecorator(service, logger);
+            });
+            
+            services.AddScoped<IPublisherRepository>(sp =>
+            {
+                var dbContext = sp.GetRequiredService<BookDbContext>();
+                var logger = sp.GetRequiredService<ILogger<PublisherRepositoryLoggingDecorator>>();
+
+                var service = new PublisherRepository(dbContext);
+                return new PublisherRepositoryLoggingDecorator(service, logger);
+            });
+            
+            
+            services.AddScoped<ICategoryRepository>(sp =>
+            {
+                var dbContext = sp.GetRequiredService<BookDbContext>();
+                var logger = sp.GetRequiredService<ILogger<CategoryRepositoryLoggingDecorator>>();
+
+                var service = new CategoryRepository(dbContext);
+                return new CategoryRepositoryLoggingDecorator(service, logger);
+            });
+            
+            return services.AddScoped<IBookRepository>(sp =>
+            {
+                var dbContext = sp.GetRequiredService<BookDbContext>();
+                var logger = sp.GetRequiredService<ILogger<BookRepositoryLoggingDecorator>>();
+
+                var service = new BookRepository(dbContext);
+                return new BookRepositoryLoggingDecorator(service, logger);
+            });
         }
     }
 }

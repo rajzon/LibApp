@@ -26,6 +26,7 @@
       <Folder Include="Controllers\V2" />
       <Folder Include="Domain\DomainEvent" />
       <Folder Include="Infrastructure" />
+      <Folder Include="Logging" />
       <Folder Include="Responses\V1" />
     </ItemGroup>
 

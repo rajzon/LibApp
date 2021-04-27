@@ -16,33 +16,18 @@ namespace Book.API.Data.Repositories
     public class AuthorRepository : IAuthorRepository
     {
         private BookDbContext _bookDbContext;
-        private readonly ILogger<AuthorRepository> _logger;
         
-        private string TypeFullName => this.GetType().FullName;
         
         public IUnitOfWork UnitOfWork => _bookDbContext;
 
-        public AuthorRepository(BookDbContext bookDbContext, ILogger<AuthorRepository> logger)
+        public AuthorRepository(BookDbContext bookDbContext)
         {
             _bookDbContext = bookDbContext;
-            _logger = logger;
         }
         
         public Author Add(Author author)
         {
-            _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Requesting adding new {Author} : Name {AuthorFullName}", 
-                TypeFullName, nameof(Add), nameof(Author), author?.Name?.FullName);
-            
-            if (author is null)
-            {
-                _logger.LogWarning("{AuthorRepository}: {AuthorRepositoryMethod} : {Author} to add is {AuthorValue}", 
-                    TypeFullName, nameof(Add), nameof(Author), null);
-            }
-            
             var result = _bookDbContext.Authors.Add(author).Entity;
-            
-            _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Added new {Author} with value {@AuthorObj} to be tracked by EF", 
-                TypeFullName, nameof(Add), nameof(Author), result);
             
             return result;
         }
@@ -50,14 +35,6 @@ namespace Book.API.Data.Repositories
         public async Task<Author> FindByIdAsync(int id)
         {
             var result = await _bookDbContext.Authors.FindAsync(id);
-
-            if (result is null)
-                _logger.LogWarning("{AuthorRepository}: {AuthorRepositoryMethod} : Requested {Author} {AuthorId} not found", 
-                    TypeFullName, nameof(FindByIdAsync), nameof(Author), id);
-            
-            
-            _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Request returned {Author} {@AuthorObj}", 
-                TypeFullName, nameof(FindByIdAsync), nameof(Author), result);
             
             
             return result;
@@ -69,14 +46,6 @@ namespace Book.API.Data.Repositories
                 .SingleOrDefaultAsync(a => a.Name.FullName.Equals(name.FullName));
             
             
-            if (result is null)
-                _logger.LogWarning("{AuthorRepository}: {AuthorRepositoryMethod}: Requested {Author} : {AuthorFullName} not found", 
-                    TypeFullName, nameof(FindByNameAsync), nameof(Author), name.FullName);
-            
-            
-            _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Request returned {Author} {@AuthorObj}", 
-                TypeFullName, nameof(FindByNameAsync), nameof(Author), result);
-            
             return result;
         }
         
@@ -85,13 +54,7 @@ namespace Book.API.Data.Repositories
             var result = authorsIds is not null && authorsIds.Any()
                 ? await _bookDbContext.Authors.Where(a => authorsIds.Contains(a.Id)).ToListAsync()
                 : Enumerable.Empty<Author>().ToList();
-
-            if (! result.Any())
-                _logger.LogWarning("{AuthorRepository}: {AuthorRepositoryMethod} : Requested {Authors} not found", 
-                    TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>));
             
-            _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Request returned {Authors} Count {AuthorsCount}", 
-                TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>), result.Count);
             return result;
         }
 
@@ -99,12 +62,6 @@ namespace Book.API.Data.Repositories
         {
             var result = await _bookDbContext.Authors.ToListAsync();
             
-            if (! result.Any())
-                _logger.LogWarning("{AuthorRepository}: {AuthorRepositoryMethod} : Requested {Authors} not found", 
-                    TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>));
-            
-            _logger.LogInformation("{AuthorRepository}: {AuthorRepositoryMethod} : Request returned {Authors} Count {AuthorsCount}", 
-                TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Author>), result.Count);
 
             return result;
         }

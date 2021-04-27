@@ -12,35 +12,16 @@ namespace Book.API.Data.Repositories
     public class BookRepository : IBookRepository
     {
         private readonly BookDbContext _bookContext;
-        private readonly ILogger<BookRepository> _logger;
-
-        private string TypeFullName => this.GetType().FullName;
         public IUnitOfWork UnitOfWork => _bookContext;
 
-        public BookRepository(BookDbContext bookContext, ILogger<BookRepository> logger)
+        public BookRepository(BookDbContext bookContext)
         {
             _bookContext = bookContext;
-            _logger = logger;
         }
         public Domain.Book Add(Domain.Book book)
         {
-            
-            _logger.LogInformation("{BookRepository}: {BookRepositoryMethod} : Requesting adding new {Book} : Value {@BookObj}", 
-                TypeFullName, nameof(Add), nameof(Domain.Book), book);
-            
-            
-            if (book is null)
-            {
-                _logger.LogWarning("{BookRepository}: {BookRepositoryMethod} : {Book} to add is {BookValue}", 
-                    TypeFullName, nameof(Add), nameof(Domain.Book), null);
-            }
-            
-            
             var result = _bookContext.Books.Add(book).Entity;
-            
-            _logger.LogInformation("{BookRepository}: {BookRepositoryMethod} : Added new {Book} with Value {@BookObj} to be tracked by EF", 
-                TypeFullName, nameof(Add), nameof(Domain.Book), result);
-            
+
             return result;
         }
 
@@ -51,14 +32,6 @@ namespace Book.API.Data.Repositories
                 .Include(b => b.Categories)
                 .SingleOrDefaultAsync(b => b.Id.Equals(id));
             
-            if (result is null)
-                _logger.LogWarning("{BookRepository}: {BookRepositoryMethod}: Requested {Book} {BookId} not found", 
-                    TypeFullName, nameof(FindByIdAsync), nameof(Domain.Book), id);
-            
-            
-            _logger.LogInformation("{BookRepository}: {BookRepositoryMethod} : Request returned {Book} : {@BookObj}", 
-                TypeFullName, nameof(FindByIdAsync), nameof(Domain.Book), result);
-            
             return result;
         }
 
@@ -67,13 +40,6 @@ namespace Book.API.Data.Repositories
             var result = await _bookContext.Books
                 .Include(i => i.Images)
                 .SingleOrDefaultAsync(b => b.Id.Equals(id));
-            
-            if (result is null)
-                _logger.LogWarning("{BookRepository}: {BookRepositoryMethod}: Requested {Book} {BookId} not found", 
-                    TypeFullName, nameof(FindByIdWithPhotoAsync), nameof(Domain.Book), id);
-            
-            _logger.LogInformation("{BookRepository}: {BookRepositoryMethod} : Request returned {Book} : {@BookObj}", 
-                TypeFullName, nameof(FindByIdWithPhotoAsync), nameof(Domain.Book), result);
             
             return result;
         }
@@ -85,13 +51,6 @@ namespace Book.API.Data.Repositories
                 .Include(b => b.Categories)
                 .Include(b => b.Authors)
                 .ToListAsync();
-            
-            if (! result.Any())
-                _logger.LogWarning("{BookRepository}: {BookRepositoryMethod} : Requested {Books} not found", 
-                    TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Domain.Book>));
-            
-            _logger.LogInformation("{BookRepository}: {BookRepositoryMethod} : Request returned {Books} Count {Count}", 
-                TypeFullName, nameof(GetAllAsync), typeof(IEnumerable<Domain.Book>), result.Count);
             
             return result;
         }

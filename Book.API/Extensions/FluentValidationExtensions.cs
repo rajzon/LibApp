@@ -21,8 +21,8 @@ namespace Book.API.Extensions
                     var available = new List<TElement>();
                     foreach (var resultElement in sourceResult)
                     {
-                        var a = (TElement) resultElement.GetType().GetProperty(sourcePropToCompare).GetValue(resultElement);
-                        available.Add(a);
+                        var availableEl = (TElement) resultElement.GetType().GetProperty(sourcePropToCompare).GetValue(resultElement);
+                        available.Add(availableEl);
                     }
                     
                     
