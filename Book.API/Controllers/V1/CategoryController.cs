@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Book.API.Contracts.Responses;
 using Book.API.Queries.V1;
 using Book.API.Queries.V1.Dtos;
 using MediatR;
@@ -29,7 +30,7 @@ namespace Book.API.Controllers.V1
         {
             var result = await _mediator.Send(new GetAllCategoriesQuery());
 
-            if (!result.Any())
+            if (! result.Any())
                 return NotFound();
             
             return Ok(result);

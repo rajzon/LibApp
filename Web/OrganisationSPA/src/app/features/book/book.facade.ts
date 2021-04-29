@@ -20,6 +20,7 @@ import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 import {GoogleBookApiService} from "./api/google-book-api.service";
 import {BookToCreateDto, CreateBookUsingApiDto} from "./models/create-book-using-api-dto";
+import {MessagePopupService} from "@core/services/message-popup.service";
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class BookFacade {
               private bookApi: BookApiService,
               private googleApi: GoogleBookApiService,
               private router: Router,
-              private toastr: ToastrService,
+              private messagePopup: MessagePopupService,
               private uploaderState: UploaderState,
               private bookState: BookState) { }
 
@@ -58,13 +59,12 @@ export class BookFacade {
         });
       }, (error: any) => {
           console.log(error);
+          this.messagePopup.displayError(error);
           this.bookState.setAdding(false);
-          this.toastr.error('TODO: info should came from server')
         },
         () => {
+          this.messagePopup.displaySuccess('Successfully added new book');
           this.bookState.setAdding(false);
-          //TODO info should came from server
-          this.toastr.success('TODO: info should came from server');
           this.router.navigateByUrl('/book');
       })
 
@@ -83,8 +83,8 @@ export class BookFacade {
       this.bookState.setLoading(false);
       return books;
     }),catchError((err, caught) => {
+      this.messagePopup.displayError(err);
       this.bookState.setLoading(false);
-      this.toastr.error(err);
       return of(err);
     }));
   }
@@ -103,12 +103,12 @@ export class BookFacade {
       this.uploadPhoto(res.id, addCommand.uploader);
     }, (error: any) => {
         console.log(error);
+        this.messagePopup.displayError(error);
         this.bookState.setAdding(false);
-        this.toastr.error(error.error.errors)
     },
       () => {
         this.bookState.setAdding(false);
-        this.toastr.success('TODO: info should came from server');
+        this.messagePopup.displaySuccess('Successfully added new book');
         this.router.navigateByUrl('/book');
       })
   }
@@ -135,13 +135,13 @@ export class BookFacade {
     }
 
     uploader.onErrorItem = (item, response, status, header) => {
-      this.toastr.error(`error occured during uploading file ${item._file.name}`);
+      this.messagePopup.displayError(`error occured during uploading file ${item._file.name}`);
     }
 
     uploader.uploadAll();
     uploader.onCompleteAll = () => {
-      imagesCount === initalQueue? this.toastr.success(`Uploaded ${imagesCount} requested Images`):
-        this.toastr.info(`Uploaded ${imagesCount} requested Images but ${initalQueue-imagesCount} images wasn't uploaded`)
+      imagesCount === initalQueue? this.messagePopup.displaySuccess(`Uploaded ${imagesCount} requested Images`):
+        this.messagePopup.displayInfo(`Uploaded ${imagesCount} requested Images but ${initalQueue-imagesCount} images wasn't uploaded`)
 
       console.log(`Uploaded ${imagesCount} requested Images`)
     }

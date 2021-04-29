@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {environment} from "@env";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Observable, throwError} from "rxjs";
 import {Book} from "../models/book";
 import {CreateManualBookDto} from "../models/create-manual-book-dto";
-import {BookToCreateDto, CreateBookUsingApiDto} from "../models/create-book-using-api-dto";
+import {BookToCreateDto} from "../models/create-book-using-api-dto";
 
 @Injectable({
   providedIn: 'root'
