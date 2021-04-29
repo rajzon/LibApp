@@ -8,6 +8,7 @@ using Book.API.Queries.V1.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Book.API.Controllers.V1
 {

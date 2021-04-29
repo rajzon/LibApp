@@ -10,5 +10,6 @@ namespace Book.API.Domain
         Task<Author> FindByIdAsync(int id);
         Task<Author> FindByNameAsync(AuthorName name);
         Task<IEnumerable<Author>> GetAllAsync();
+        Task<IEnumerable<Author>> GetAllByIdAsync(int[] authorsIds);
     }
 }

@@ -47,8 +47,8 @@ export class BookManualAddComponent {
   private createFormGroup() {
     this.manualBookAddForm = new FormGroup({
       title: createFormControl(null, this.bookFieldsSettings.title),
-      authorId: createFormControl(null, this.bookFieldsSettings.author),
-      categoriesIds: createFormControl(null, this.bookFieldsSettings.categories),
+      authorsIds: new FormControl(null, this.bookFieldsSettings.author.required? Validators.required: Validators.nullValidator),
+      categoriesIds: new FormControl(null, this.bookFieldsSettings.categories.required? Validators.required: Validators.nullValidator),
       pageCount: createFormControl(null, this.bookFieldsSettings.pageCount),
       languageId: createFormControl(null, this.bookFieldsSettings.language),
       isbn10: createFormControl(null, this.bookFieldsSettings.isbn10),

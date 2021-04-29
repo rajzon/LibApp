@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {BsModalRef} from "ngx-bootstrap/modal";
-import {AbstractControl, FormArray, FormControl, FormGroup} from "@angular/forms";
+import {AbstractControl, FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
 import {environment} from "@env";
 import {isRequiredField} from '@shared/helpers/forms/is-required-field.function';
@@ -25,6 +25,9 @@ export class BookApiEditModalComponent implements OnInit {
   get categories() {
     return this.editForm.get('categoriesNames') as FormArray;
   }
+  get authors() {
+    return this.editForm.get('authorsNames') as FormArray;
+  }
 
 
   constructor(public bsModalRef: BsModalRef) { }
@@ -35,14 +38,8 @@ export class BookApiEditModalComponent implements OnInit {
       uploader: this.uploader
     };
     this.addCommand$.next(addCommand);
-
     this.editForm = new FormGroup({
       title: createFormControl(this.volumeInfo.title, this.bookFieldsSettings.title),
-      //TODO later create form which allow authors as collection instead of only 1
-      author: new FormGroup({
-        firstName: createFormControl(this.volumeInfo.authors[0]?.firstName, this.bookFieldsSettings.author.authorFirstName),
-        lastName: createFormControl(this.volumeInfo.authors[0]?.lastName, this.bookFieldsSettings.author.authorLastName),
-      }),
       pageCount: createFormControl(this.volumeInfo.pageCount, this.bookFieldsSettings.pageCount),
       languageName: createFormControl(this.volumeInfo.languageName, this.bookFieldsSettings.language.languageName),
       isbn10: createFormControl(this.volumeInfo.isbn10, this.bookFieldsSettings.isbn10),
@@ -53,6 +50,7 @@ export class BookApiEditModalComponent implements OnInit {
       description: new FormControl(this.volumeInfo.description),
     })
 
+    this.registerAuthorsFormArray();
     this.registerCategoriesFormArray();
   }
 
@@ -62,24 +60,34 @@ export class BookApiEditModalComponent implements OnInit {
     const controls = this.volumeInfo.categories.map(x => {
       return createFormControl(x, this.bookFieldsSettings.categories.name);
     })
-    this.editForm.registerControl('categoriesNames', new FormArray(controls));
+    this.editForm.registerControl('categoriesNames',
+      new FormArray(controls,
+      this.bookFieldsSettings.categories.required? Validators.required: Validators.nullValidator));
+  }
+
+  private registerAuthorsFormArray() {
+    this.volumeInfo.authors = this.volumeInfo.authors ?? new Array<string>();
+    const controls = this.volumeInfo.authors.map(x => {
+      return createFormControl(x.author, this.bookFieldsSettings.author)
+    });
+    this.editForm.registerControl('authorsNames',
+      new FormArray(controls,
+      this.bookFieldsSettings.author.required? Validators.required: Validators.nullValidator
+      ));
   }
 
   isRequiredField(abstractControl: AbstractControl): boolean {
     return isRequiredField(abstractControl);
   }
 
-  removeCategory(index: number): void {
-    let categoriesNames = this.editForm.controls['categoriesNames'] as FormArray;
-    categoriesNames.removeAt(index)
+  removeFormControlFromArray(index: number, formArray: FormArray): void {
+    formArray.removeAt(index);
   }
 
-  insertCategory(): void {
-    let categoriesNames = this.editForm.controls['categoriesNames'] as FormArray;
-    const place = categoriesNames.length;
-    categoriesNames.insert(place, createFormControl(null, this.bookFieldsSettings.categories.name))
+  insertFormControlToArray(formArray: FormArray, validatorsOpts: any): void {
+    const place = formArray.length;
+    formArray.insert(place, createFormControl(null, validatorsOpts))
   }
-
 
 
   edit(): void {

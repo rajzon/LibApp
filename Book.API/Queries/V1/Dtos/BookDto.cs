@@ -16,9 +16,9 @@ namespace Book.API.Queries.V1.Dtos
         
         
         public int? LanguageId { get; set; }
-        public int? AuthorId { get; set; }
         public int? PublisherId { get; set; }
         public IReadOnlyCollection<CategoryDto> Categories { get; set; }
+        public IReadOnlyCollection<AuthorDto> Authors { get; set; }
 
 
         public DateTime? PublishedDate { get; set; }

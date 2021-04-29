@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Book.API.Domain;
 using Book.API.Domain.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Book.API.Data.Repositories
 {
@@ -20,22 +22,31 @@ namespace Book.API.Data.Repositories
         
         public Publisher Add(Publisher publisher)
         {
-            return _bookDbContext.Publishers.Add(publisher).Entity;
+            var result = _bookDbContext.Publishers.Add(publisher).Entity;
+
+            return result;
         }
 
         public async Task<Publisher> FindByIdAsync(int id)
         {
-            return await _bookDbContext.Publishers.FindAsync(id);
+            var result = await _bookDbContext.Publishers.FindAsync(id);
+            
+            return result;
         }
 
         public async Task<Publisher> FindByNameAsync(string name)
         {
-            return await _bookDbContext.Publishers.SingleOrDefaultAsync(p => p.Name.Equals(name));
+            var result = await _bookDbContext.Publishers.SingleOrDefaultAsync(p => p.Name.Equals(name));
+
+            return result;
         }
 
         public async Task<IEnumerable<Publisher>> GetAllAsync()
         {
-            return await _bookDbContext.Publishers.ToListAsync();
+            var result = await _bookDbContext.Publishers.ToListAsync();
+            
+            
+            return result;
         }
     }
 }

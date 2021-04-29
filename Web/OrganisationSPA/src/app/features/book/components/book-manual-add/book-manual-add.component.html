@@ -7,14 +7,15 @@
                     [label]='"Title"'></app-text-input>
     <div class="form-group">
       <label
-        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['authorId'])"
+        [class.font-weight-bold]="isRequiredField(manualBookAddForm.controls['authorsIds'])"
         class="text-capitalize">author</label>
       <ng-select
-        formControlName="authorId"
+        formControlName="authorsIds"
         [items]="authors"
+        [multiple]="true"
         bindLabel="fullName"
         bindValue="id"
-        placeholder="Select Author"
+        placeholder="Select Authors"
       ></ng-select>
     </div>
 

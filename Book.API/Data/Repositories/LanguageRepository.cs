@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using Book.API.Domain;
 using Book.API.Domain.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Book.API.Data.Repositories
 {
     public class LanguageRepository : ILanguageRepository
     {
         private readonly BookDbContext _bookContext;
+        
         public IUnitOfWork UnitOfWork => _bookContext;
 
 
@@ -21,24 +23,31 @@ namespace Book.API.Data.Repositories
         
         public Language Add(Language language)
         {
-            return _bookContext.Languages.Add(language).Entity;
+            var result = _bookContext.Languages.Add(language).Entity;
+
+            return result;
         }
 
         public async Task<Language> FindByIdAsync(int id)
         {
-            return await _bookContext.Languages.FindAsync(id);
+            var result = await _bookContext.Languages.FindAsync(id);
+            
+            return result;
         }
 
         public async Task<Language> FindByNameAsync(string name)
         {
-            var a = _bookContext.Languages;
-            return await _bookContext.Languages
+            var result = await _bookContext.Languages
                 .SingleOrDefaultAsync(l => l.Name.Equals(name));
+            
+            return result;
         }
 
         public async Task<IEnumerable<Language>> GetAllAsync()
         {
-            return await _bookContext.Languages.ToListAsync();
+            var result = await _bookContext.Languages.ToListAsync();
+
+            return result;
         }
     }
 }

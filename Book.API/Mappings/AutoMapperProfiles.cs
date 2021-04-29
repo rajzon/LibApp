@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Book.API.Commands.V1;
+using Book.API.Commands.V1.Dtos;
 using Book.API.Controllers.V1;
 using Book.API.Domain;
 using Book.API.Queries.V1.Dtos;
@@ -13,9 +14,9 @@ namespace Book.API.Mappings
             CreateMap<Language, LanguageDto>();
             CreateMap<Publisher, PublisherDto>();
             CreateMap<Category, CategoryDto>();
-            CreateMap<Image, AddPhotoCommandResult>();
+            CreateMap<Image, CommandPhotoDto>();
             
-            CreateMap<Domain.Book, CreateBookCommandResult>()
+            CreateMap<Domain.Book, CommandBookDto>()
                 .ForMember(dest => dest.Title,
                     opt => opt.MapFrom(src => src.Title));
 
@@ -27,10 +28,12 @@ namespace Book.API.Mappings
 
             CreateMap<Author, AuthorDto>()
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Name.FirstName))
-                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Name.LastName));
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Name.LastName))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Name.FullName));
             
+
             //TODO only for test purposes
-            CreateMap<Domain.Book, CreateBookCommandResult>()
+            CreateMap<Domain.Book, CommandBookDto>()
                 .ForMember(dest => dest.Ean13, opt => opt.MapFrom(src => src.Ean13.Code))
                 .ForMember(dest => dest.Isbn10, opt => opt.MapFrom(src => src.Isbn10.Code))
                 .ForMember(dest => dest.Isbn13, opt => opt.MapFrom(src => src.Isbn13.Code));

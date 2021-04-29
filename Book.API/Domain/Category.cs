@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Book.API.Domain.Common;
+using Book.API.Extensions;
 
 namespace Book.API.Domain
 {
@@ -20,8 +21,8 @@ namespace Book.API.Domain
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Category name cannot be empty or whitespace");
-            
-            Name = name;
+
+            Name = name.TrimWithMultipleBetweens();
             ModificationDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;
         }

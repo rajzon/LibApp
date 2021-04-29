@@ -15,19 +15,14 @@ namespace Book.API.Commands.V1
         public bool Visibility { get; init; }
 
         public string LanguageName { get; init; }
-        public AuthorNameDto Author { get; init; }
-        public string PublisherName { get; set; }
+        public string PublisherName { get; init; }
+        
+        public IEnumerable<string> AuthorsNames { get; init; }
         public IEnumerable<string> CategoriesNames { get; init; }
         
         
         public DateTime? PublishedDate { get; init; }
         
         
-    }
-
-    public record AuthorNameDto
-    {
-        public string FirstName { get; init; }
-        public string LastName { get; init; }
     }
 }

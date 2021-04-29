@@ -53,16 +53,6 @@ namespace Book.API.Data.Configurations
                 .IsRequired(false)
                 .HasForeignKey("_languageId");
 
-
-            builder
-                .Property<int?>("_authorId")
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
-
-            builder
-                .HasOne<Author>()
-                .WithMany()
-                .HasForeignKey("_authorId");
-
             builder
                 .Property<int?>("_publisherId")
                 .UsePropertyAccessMode(PropertyAccessMode.Field)

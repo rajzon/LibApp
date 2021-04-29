@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Book.API.Filters
+namespace Book.API.AuthHandlers
 {
     public class AdminAuthHandler : IAuthorizationHandler
     {
