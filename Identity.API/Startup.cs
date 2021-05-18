@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using FluentValidation.AspNetCore;
 using Identity.API.Configuration;
 using Identity.API.Data;
@@ -27,6 +28,8 @@ namespace Identity.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            ServicePointManager.Expect100Continue = true;
+
             var connectionString = _config.GetConnectionString("DefaultConnection");
             var migrationAssembly = typeof(Startup).Assembly.GetName().Name;
             services.AddDbContext<ApplicationDbContext>(config =>
@@ -75,7 +78,10 @@ namespace Identity.API
             //     .AddDeveloperSigningCredential();
 
 
-            services.AddIdentityServer()
+            services.AddIdentityServer(opt =>
+                {
+                    opt.IssuerUri = "http://identity-service:80";
+                })
                 .AddAspNetIdentity<AppUser>()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetResources())
@@ -99,6 +105,23 @@ namespace Identity.API
                         .AllowCredentials()
                         .AllowAnyMethod();
                 });
+                
+                options.AddPolicy("default2", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5000")
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .AllowAnyMethod();
+                });
+                
+                options.AddPolicy("default3", policy =>
+                {
+                    policy.WithOrigins("http://localhost:80")
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .AllowAnyMethod();
+                });
+                
             });
         }
 

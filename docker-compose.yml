@@ -1,0 +1,50 @@
+﻿version: '3.8'
+
+
+
+services:
+  book-service:
+    image: ${DOCKER_REGISTRY-}bookservice
+    build:
+      context: .
+      dockerfile: Book.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONEMENT=Development
+      - ASPNETCORE_HTTPS_PORT=5001
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+#      - IDENTITY_AUTHORITY=http://identity-service:80
+    ports:
+      - 5000:80
+      - 5001:443
+    volumes:
+#      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+#      - ${USERPROFILE}\.aspnet\https\aspnetapp.pfx
+#      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+#      - Book.API:/src/Services/Book/Book.API/
+      - ~/.aspnet/https:/https:ro
+#      - /etc/timezone:/etc/timezone:ro
+#      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - identity-service
+#   Only for dev purposes
+#    network_mode: bridge
+
+
+  identity-service:
+    image: ${DOCKER_REGISTRY-}identityservice
+    build:
+      context: .
+      dockerfile: Identity.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONEMENT=Development
+      - ASPNETCORE_HTTPS_PORT=8001
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - 8000:80
+      - 8001:443
+    volumes:
+      - ~/.aspnet/https:/https:ro

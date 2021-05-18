@@ -1,0 +1,28 @@
+﻿.env
+.git
+.gitignore
+.vs
+.vscode
+docker-compose.yml
+docker-compose.*.yml
+# **/bin
+# **/obj
+# bin/
+# obj/
+# */obj/*
+# Book.API/obj/
+# Book.API/bin/
+
+
+# directories
+**/bin/
+**/obj/
+**/out/
+
+# files
+Dockerfile*
+**/*.trx
+**/*.md
+**/*.ps1
+**/*.cmd
+**/*.sh

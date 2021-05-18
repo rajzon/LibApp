@@ -48,7 +48,7 @@ namespace Identity.API
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>().UseWebRoot("wwwroot"); });
         
         
         private static void CreateAdmin(UserManager<AppUser> userManager, RoleManager<IdentityRole<int>> roleManager)

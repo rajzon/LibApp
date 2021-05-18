@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using Book.API.AuthHandlers;
 using Book.API.Behaviors;
@@ -21,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
@@ -38,11 +40,23 @@ namespace Book.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ServicePointManager.Expect100Continue = true;
+            IdentityModelEventSource.ShowPII = true;
+
+
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", config =>
                 {
-                    config.Authority = "https://localhost:8001";
+                    config.Authority = "http://identity-service:80";
                     config.Audience = "book_api";
+                    config.RequireHttpsMetadata = false;
+                    
+                    config.TokenValidationParameters.ValidIssuers = new[]
+                    {
+                        "http://localhost:8000",
+                        "https://localhost:8001",
+                        "http://identity-service:80"
+                    };
                 });
 
             services.AddAuthorization(config =>
@@ -92,18 +106,30 @@ namespace Book.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    var provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
-                    foreach (var description in provider.ApiVersionDescriptions)
-                    {
-                        c.SwaggerEndpoint($"/swagger/{description.ApiVersion}/swagger.json", $"Book.API {description.ApiVersion}");
-                    }
-                });
+                // app.UseSwagger();
+                // app.UseSwaggerUI(c =>
+                // {
+                //     var provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
+                //     foreach (var description in provider.ApiVersionDescriptions)
+                //     {
+                //         c.SwaggerEndpoint($"/swagger/{description.ApiVersion}/swagger.json", $"Book.API {description.ApiVersion}");
+                //         c.RoutePrefix = "swagger";
+                //     }
+                // });
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                var provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    c.SwaggerEndpoint($"/swagger/{description.ApiVersion}/swagger.json", $"Book.API {description.ApiVersion}");
+                    c.RoutePrefix = "swagger";
+                }
+            });
+            
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseSerilogRequestLogging();
             
             
