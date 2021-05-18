@@ -10,7 +10,7 @@ for: browsing all available books in the system, reviewing / rating them, bookin
 the list of favorites, etc.
 
 
-#Prerequisite
+# Prerequisite
 If you are missing https dev certificate or have problem with existing dev cert to be found by docker, then you have to do:
 1. Clear existing dev certs
 ```bash
