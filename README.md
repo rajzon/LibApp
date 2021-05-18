@@ -18,7 +18,7 @@ dotnet dev-certs https --clean
 ```
 2. Run command in PowerShell, that will create and trust certificate and export it to below location
 ```bash
-dotnet dev-certs https --trust -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx -p SECRETPASSWORD
+dotnet dev-certs https --trust -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx -p password
 ```
 
 ## Angular packages installation
