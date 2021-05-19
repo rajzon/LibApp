@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Nest;
+using Search.API.Installers;
 
 namespace Search.API
 {
@@ -25,18 +26,10 @@ namespace Search.API
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+        public void ConfigureServices(IServiceCollection services)
         {
-            var url = configuration["elasticsearch:url"];
-            var defaultIndex = configuration["elasticsearch:index"];
-
-            var settings = new ConnectionSettings(new Uri(url))
-                .DefaultIndex(defaultIndex);
-
-            var client = new ElasticClient(settings);
-            services.AddSingleton(client);
-            client.Indices.Create(defaultIndex, index => index.Map(x => x.AutoMap()));
-
+            services.AddElasticsearchInitializer(Configuration);
+            
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
