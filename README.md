@@ -10,16 +10,19 @@ for: browsing all available books in the system, reviewing / rating them, bookin
 the list of favorites, etc.
 
 
-# Prerequisite
-If you are missing https dev certificate or have problem with existing dev cert to be found by docker, then you have to do:
-1. Clear existing dev certs
+## Prerequisite
+1 If you are missing https dev certificate or have problem with existing dev cert to be found by docker, then you have to do:
+
+1.1 Clear existing dev certs
 ```bash
 dotnet dev-certs https --clean
 ```
-2. Run command in PowerShell, that will create and trust certificate and export it to below location
+1.2 Run command in PowerShell, that will create and trust certificate and export it to below location
 ```bash
 dotnet dev-certs https --trust -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx -p password
 ```
+
+2 Set vm.max_map_count to at least 262144 more info: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#_set_vm_max_map_count_to_at_least_262144
 
 ## Angular packages installation
 
