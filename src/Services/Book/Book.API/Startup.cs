@@ -11,6 +11,7 @@ using Book.API.Mappings;
 using Book.API.Middleware;
 using Book.API.Services;
 using Book.API.Settings;
+using EventBus.Messages.Common;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +25,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using RabbitMQ.Client;
 using Serilog;
 
 namespace Book.API
@@ -90,6 +92,20 @@ namespace Book.API
             
             services.AddApiVersioningInitializer();
             services.AddSwaggerInitializer();
+
+            var factory = new ConnectionFactory
+            {
+                UserName = Configuration["EventBusSettings:UserName"],
+                Password = Configuration["EventBusSettings:Password"],
+                HostName = Configuration["EventBusSettings:HostName"]
+            };
+            IConnection conn = factory.CreateConnection();
+            IModel channel = conn.CreateModel();
+            channel.ExchangeDeclare(EventBusConstants.CreateBookExchange, ExchangeType.Direct);
+            services.AddSingleton<IModel>(sp => channel);
+            
+            
+            
             services.AddCors();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddScoped<ICloudinaryService, CloudinaryService>();

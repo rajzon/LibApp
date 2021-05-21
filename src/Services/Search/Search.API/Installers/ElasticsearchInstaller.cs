@@ -19,7 +19,8 @@ namespace Search.API.Installers
 
             var client = new ElasticClient(settings);
             services.AddSingleton<IElasticClient>(client);
-            client.Indices.Create(defaultIndex, index => index.Map(x => x.AutoMap()));
+            //Map only 0 level of Child property(no recursion mapping)
+            client.Indices.Create(defaultIndex, index => index.Map(x => x.AutoMap(0)));
 
             return services;
         }

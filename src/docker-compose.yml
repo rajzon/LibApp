@@ -1,13 +1,11 @@
 ﻿version: '3.8'
 
-
-
 services:
   book-service:
     image: ${DOCKER_REGISTRY-}bookservice
     build:
       context: .
-      dockerfile: Book.API/Dockerfile
+      dockerfile: Services/Book/Book.API/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONEMENT=Development
       - ASPNETCORE_HTTPS_PORT=5001
@@ -20,13 +18,16 @@ services:
     volumes:
       - ~/.aspnet/https:/https:ro
     depends_on:
+      - rabbitmq
       - identity-service
-        
+    restart: unless-stopped
+    
+  
   search-service:
     image: ${DOCKER_REGISTRY-}searchservice
     build:
       context: .
-      dockerfile: Search.API/Dockerfile
+      dockerfile: Services/Search/Search.API/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONEMENT=Development
       - ASPNETCORE_HTTPS_PORT=6001
@@ -41,12 +42,13 @@ services:
     depends_on:
       - elasticsearch  
       - identity-service
+      - rabbitmq
 
   identity-service:
     image: ${DOCKER_REGISTRY-}identityservice
     build:
       context: .
-      dockerfile: Identity.API/Dockerfile
+      dockerfile: Services/Identity/Identity.API/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONEMENT=Development
       - ASPNETCORE_HTTPS_PORT=8001
@@ -71,3 +73,10 @@ services:
 #volumes:
 #  esdata:
 #    driver: local
+
+  rabbitmq:
+    image: rabbitmq:3.8.16-management
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672

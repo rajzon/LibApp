@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -7,7 +8,11 @@ using Book.API.Commands.V1;
 using Book.API.Commands.V1.Dtos;
 using Book.API.Data.Repositories;
 using Book.API.Domain;
+using EventBus.Messages.Common;
+using EventBus.Messages.Events;
 using MediatR;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 
 namespace Book.API.Handlers
 {
@@ -18,6 +23,7 @@ namespace Book.API.Handlers
         private readonly IAuthorRepository _authorRepository;
         private readonly IPublisherRepository _publisherRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IModel _channel;
         private readonly IMapper _mapper;
 
 
@@ -26,7 +32,8 @@ namespace Book.API.Handlers
             ILanguageRepository languageRepository,
             IAuthorRepository authorRepository,
             IPublisherRepository publisherRepository,
-            ICategoryRepository categoryRepository)
+            ICategoryRepository categoryRepository, 
+            IModel channel)
         {
             _bookRepository = bookRepository;
             _mapper = mapper;
@@ -34,6 +41,7 @@ namespace Book.API.Handlers
             _authorRepository = authorRepository;
             _publisherRepository = publisherRepository;
             _categoryRepository = categoryRepository;
+            _channel = channel;
         }
         
         public async Task<CreateBookCommandResult> Handle(CreateBookCommand request, CancellationToken cancellationToken)
@@ -61,6 +69,11 @@ namespace Book.API.Handlers
                 return new CreateBookCommandResult(false, new[] {"Error occured during saving Book"});
 
             var bookResult = _mapper.Map<CommandBookDto>(result);
+
+            var bookResultEvent = _mapper.Map<CreateBookEvent>(result);
+            var json = JsonConvert.SerializeObject(bookResultEvent);
+            var body = Encoding.UTF8.GetBytes(json);
+            _channel.BasicPublish(EventBusConstants.CreateBookExchange, EventBusConstants.CreateBookQueue, null, body);
             return new CreateBookCommandResult(true, bookResult);
         }
 

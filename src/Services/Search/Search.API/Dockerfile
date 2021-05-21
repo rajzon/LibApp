@@ -3,9 +3,9 @@ WORKDIR /src
 
 ENV ASPNETCORE_ENVIRONMENT=Development
 
-COPY ["Search.API/Search.API.csproj", "Services/Search/Search.API/"]
+COPY ["Services/Search/Search.API/Search.API.csproj", "Services/Search/Search.API/"]
 RUN dotnet restore "Services/Search/Search.API/"
-COPY [ "Search.API/", "Services/Search/Search.API/"]
+COPY [ "Services/Search/Search.API/", "Services/Search/Search.API/"]
 WORKDIR "Services/Search/Search.API"
 RUN dotnet build "Search.API.csproj" -c Release -o /app --no-restore
 

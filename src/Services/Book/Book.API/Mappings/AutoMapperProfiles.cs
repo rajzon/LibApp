@@ -4,6 +4,7 @@ using Book.API.Commands.V1.Dtos;
 using Book.API.Controllers.V1;
 using Book.API.Domain;
 using Book.API.Queries.V1.Dtos;
+using EventBus.Messages.Events;
 
 namespace Book.API.Mappings
 {
@@ -34,6 +35,11 @@ namespace Book.API.Mappings
 
             //TODO only for test purposes
             CreateMap<Domain.Book, CommandBookDto>()
+                .ForMember(dest => dest.Ean13, opt => opt.MapFrom(src => src.Ean13.Code))
+                .ForMember(dest => dest.Isbn10, opt => opt.MapFrom(src => src.Isbn10.Code))
+                .ForMember(dest => dest.Isbn13, opt => opt.MapFrom(src => src.Isbn13.Code));
+
+            CreateMap<Domain.Book, CreateBookEvent>()
                 .ForMember(dest => dest.Ean13, opt => opt.MapFrom(src => src.Ean13.Code))
                 .ForMember(dest => dest.Isbn10, opt => opt.MapFrom(src => src.Isbn10.Code))
                 .ForMember(dest => dest.Isbn13, opt => opt.MapFrom(src => src.Isbn13.Code));
