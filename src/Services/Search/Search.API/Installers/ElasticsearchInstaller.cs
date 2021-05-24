@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using EventBus.Messages.Commands;
 using EventBus.Messages.Events;
 using Microsoft.Extensions.Configuration;
@@ -23,9 +24,9 @@ namespace Search.API.Installers
                     w.IndexName("create-book-event"));
 
             var client = new ElasticClient(settings);
-            services.AddSingleton<IElasticClient>(client);
             //Map only 0 level of Child property(no recursion mapping)
             client.Indices.Create(defaultIndex, index => index.Map(x => x.AutoMap(0)));
+            services.AddSingleton<IElasticClient>(client);
             return services;
         }
     }
