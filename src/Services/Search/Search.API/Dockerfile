@@ -4,6 +4,8 @@ WORKDIR /src
 ENV ASPNETCORE_ENVIRONMENT=Development
 
 COPY ["Services/Search/Search.API/Search.API.csproj", "Services/Search/Search.API/"]
+COPY ["BuildingBlocks/EventBus.Messages/EventBus.Messages.csproj", "BuildingBlocks/EventBus.Messages/"]
+COPY ["BuildingBlocks/EventBus.Messages/", "BuildingBlocks/EventBus.Messages/"]
 RUN dotnet restore "Services/Search/Search.API/"
 COPY [ "Services/Search/Search.API/", "Services/Search/Search.API/"]
 WORKDIR "Services/Search/Search.API"

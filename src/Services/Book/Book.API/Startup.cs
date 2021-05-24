@@ -1,17 +1,11 @@
-using System;
-using System.Linq;
 using System.Net;
-using System.Reflection;
 using Book.API.AuthHandlers;
 using Book.API.Behaviors;
-using Book.API.Data.Repositories;
-using Book.API.Domain;
 using Book.API.Installers;
 using Book.API.Mappings;
 using Book.API.Middleware;
 using Book.API.Services;
 using Book.API.Settings;
-using EventBus.Messages.Common;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,12 +14,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
-using RabbitMQ.Client;
 using Serilog;
 
 namespace Book.API
@@ -85,7 +75,7 @@ namespace Book.API
             
             services.AddBookDbContextInitializer();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-            
+
             services.AddMediatR(typeof(Startup));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
             
@@ -93,16 +83,7 @@ namespace Book.API
             services.AddApiVersioningInitializer();
             services.AddSwaggerInitializer();
 
-            var factory = new ConnectionFactory
-            {
-                UserName = Configuration["EventBusSettings:UserName"],
-                Password = Configuration["EventBusSettings:Password"],
-                HostName = Configuration["EventBusSettings:HostName"]
-            };
-            IConnection conn = factory.CreateConnection();
-            IModel channel = conn.CreateModel();
-            channel.ExchangeDeclare(EventBusConstants.CreateBookExchange, ExchangeType.Direct);
-            services.AddSingleton<IModel>(sp => channel);
+            services.AddEventBusInitializer(Configuration); 
             
             
             

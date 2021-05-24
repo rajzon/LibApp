@@ -8,6 +8,9 @@ using Book.API.Commands.V1;
 using Book.API.Commands.V1.Dtos;
 using Book.API.Controllers.V1;
 using Book.API.Domain;
+using EventBus.Messages.Commands;
+using EventBus.Messages.Common;
+using MassTransit;
 using MediatR;
 
 namespace Book.API.Handlers
@@ -18,16 +21,25 @@ namespace Book.API.Handlers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
+        private readonly ILanguageRepository _languageRepository;
+        private readonly IPublisherRepository _publisherRepository;
 
         public CreateBookManualCommandHandler(IBookRepository bookRepository,
             ICategoryRepository categoryRepository,
             IAuthorRepository authorRepository,
-            IMapper mapper)
+            IMapper mapper,
+            ISendEndpointProvider sendEndpointProvider,
+            ILanguageRepository languageRepository,
+            IPublisherRepository publisherRepository)
         {
             _bookRepository = bookRepository;
             _categoryRepository = categoryRepository;
             _authorRepository = authorRepository;
             _mapper = mapper;
+            _sendEndpointProvider = sendEndpointProvider;
+            _languageRepository = languageRepository;
+            _publisherRepository = publisherRepository;
         }
         
         public async Task<CreateBookCommandResult> Handle(CreateBookManualCommand request, CancellationToken cancellationToken)
@@ -61,8 +73,23 @@ namespace Book.API.Handlers
             var result = _bookRepository.Add(book);
             if (await _bookRepository.UnitOfWork.SaveChangesAsync(cancellationToken) < 1)
                 return new CreateBookCommandResult(false, new[] {"Error occured during saving Book"});
-
+            
+            
             var bookResult = _mapper.Map<CommandBookDto>(result);
+            
+            var bookResultEvent = _mapper.Map<CreateBook>(result);
+            bookResultEvent.Language = result.LanguageId > 0
+                ? _mapper.Map<LanguageDto>(await _languageRepository.FindByIdAsync(result.LanguageId ?? 0))
+                : null;
+            bookResultEvent.Publisher = result.LanguageId > 0
+                ? _mapper.Map<PublisherDto>(await _publisherRepository.FindByIdAsync(result.PublisherId ?? 0))
+                : null;
+            
+            
+            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{EventBusConstants.CreateBookQueue}"));
+            
+            await endpoint.Send(bookResultEvent, cancellationToken);
+            
             return new CreateBookCommandResult(true, bookResult);
 
         }

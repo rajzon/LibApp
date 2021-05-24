@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -8,8 +9,10 @@ using Book.API.Commands.V1;
 using Book.API.Commands.V1.Dtos;
 using Book.API.Data.Repositories;
 using Book.API.Domain;
+using EventBus.Messages.Commands;
 using EventBus.Messages.Common;
 using EventBus.Messages.Events;
+using MassTransit;
 using MediatR;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -23,7 +26,7 @@ namespace Book.API.Handlers
         private readonly IAuthorRepository _authorRepository;
         private readonly IPublisherRepository _publisherRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IModel _channel;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
         private readonly IMapper _mapper;
 
 
@@ -33,7 +36,7 @@ namespace Book.API.Handlers
             IAuthorRepository authorRepository,
             IPublisherRepository publisherRepository,
             ICategoryRepository categoryRepository, 
-            IModel channel)
+            ISendEndpointProvider sendEndpointProvider)
         {
             _bookRepository = bookRepository;
             _mapper = mapper;
@@ -41,7 +44,7 @@ namespace Book.API.Handlers
             _authorRepository = authorRepository;
             _publisherRepository = publisherRepository;
             _categoryRepository = categoryRepository;
-            _channel = channel;
+            _sendEndpointProvider = sendEndpointProvider;
         }
         
         public async Task<CreateBookCommandResult> Handle(CreateBookCommand request, CancellationToken cancellationToken)
@@ -70,13 +73,18 @@ namespace Book.API.Handlers
 
             var bookResult = _mapper.Map<CommandBookDto>(result);
 
-            var bookResultEvent = _mapper.Map<CreateBookEvent>(result);
-            var json = JsonConvert.SerializeObject(bookResultEvent);
-            var body = Encoding.UTF8.GetBytes(json);
-            _channel.BasicPublish(EventBusConstants.CreateBookExchange, EventBusConstants.CreateBookQueue, null, body);
+            var bookResultEvent = _mapper.Map<CreateBook>(result);
+            bookResultEvent.Language = language is not null ? _mapper.Map<LanguageDto>(language) : null;
+            bookResultEvent.Publisher = publisher is not null ? _mapper.Map<PublisherDto>(publisher) : null;
+            
+
+            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{EventBusConstants.CreateBookQueue}"));
+            
+            await endpoint.Send(bookResultEvent, cancellationToken);
+
             return new CreateBookCommandResult(true, bookResult);
         }
-
+        
         private async Task AddAuthorsToBookAsync(Domain.Book book, IEnumerable<string> authorsNames)
         {
             var authors = await _authorRepository.GetAllAsync();
