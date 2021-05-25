@@ -10,7 +10,10 @@ namespace Search.API.Commands
         public string Authors { get; init; }
         public string Languages { get; init; }
         public string Publishers { get; init; }
-        public bool Visibility { get; init; }
+        public bool? Visibility { get; init; }
+        public string SortBy { get; set; }
+        public int FromPage { get; init; }
+        public int PageSize { get; init; }
         public DateTime ModificationDateFrom { get; init; }
         public DateTime ModificationDateTo { get; init; }
         

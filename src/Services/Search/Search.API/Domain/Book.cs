@@ -49,7 +49,7 @@ namespace Search.API.Domain
     public record Author
     {
         public int Id { get; set; }
-        public AuthorNameDto Name { get; set; }
+        public AuthorName Name { get; set; }
     }
 
     public record AuthorName

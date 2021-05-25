@@ -20,8 +20,4 @@
       <ProjectReference Include="..\..\..\BuildingBlocks\EventBus.Messages\EventBus.Messages.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Infrastructure\Data" />
-    </ItemGroup>
-
 </Project>

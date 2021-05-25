@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Search.API.Application.Services;
-using Search.API.Infrastructure;
+using Search.API.Infrastructure.Data;
 using Search.API.Installers;
 using Search.API.Mappings;
 
