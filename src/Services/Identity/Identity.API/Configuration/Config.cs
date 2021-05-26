@@ -33,13 +33,18 @@ namespace Identity.API.Configuration
                 {
                     UserClaims = {JwtClaimTypes.Role, "book_privilege"},
                     Scopes = { "book_api" }
+                },
+                new ApiResource("search_api", "Search API")
+                {
+                    Scopes = { "search_api" }
                 }
             };
 
         public static IEnumerable<ApiScope> GetScopes() =>
             new List<ApiScope>()
             {
-                new ApiScope("book_api")
+                new ApiScope("book_api"),
+                new ApiScope("search_api")
             };
 
         public static IEnumerable<Client> GetClients() => 
@@ -71,7 +76,8 @@ namespace Identity.API.Configuration
                         IdentityServerConstants.StandardScopes.OfflineAccess,
                         "role.scope",
                         "book_privilege.scope",
-                        "book_api"
+                        "book_api",
+                        "search_api"
                         
                     }
                 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
 using Search.API.Application.Services;
@@ -16,6 +17,7 @@ namespace Search.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [ApiController]
+    [Authorize(Roles = "employee")]
     [Route("v{version:apiVersion}/[controller]")]
     public class SearchController : ControllerBase
     {

@@ -1,11 +1,15 @@
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using Search.API.Application.Services;
+using Search.API.AuthHandlers;
 using Search.API.Infrastructure.Data;
 using Search.API.Installers;
 using Search.API.Mappings;
@@ -25,6 +29,28 @@ namespace Search.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ServicePointManager.Expect100Continue = true;
+            IdentityModelEventSource.ShowPII = true;
+            
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", config =>
+                {
+                    config.Authority = "http://identity-service:80";
+                    config.Audience = "search_api";
+                    config.RequireHttpsMetadata = false;
+                    
+                    config.TokenValidationParameters.ValidIssuers = new[]
+                    {
+                        "http://localhost:8000",
+                        "https://localhost:8001",
+                        "http://identity-service:80"
+                    };
+                });
+            
+            services.AddAuthorization();
+            services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
+            
+            
             services.AddElasticsearchInitializer(Configuration);
             
             services.AddScoped<IBookRepository, BookRepository>();
@@ -62,7 +88,9 @@ namespace Search.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
