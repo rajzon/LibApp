@@ -8,6 +8,8 @@ using Search.API.Application.Services;
 using Search.API.Application.Services.Common;
 using Search.API.Commands;
 using Search.API.Domain;
+using Search.API.Extensions;
+using FieldType = Search.API.Application.Services.Common.FieldType;
 
 namespace Search.API.Infrastructure.Data
 {
@@ -15,8 +17,8 @@ namespace Search.API.Infrastructure.Data
     {
         private readonly IElasticClient _client;
         private readonly ILogger<IBookRepository> _logger;
-        private string[] _bookManagementSortAllowedValues => BookRepositorySettings.BOOK_MANAGEMENT_SORT_ALLOWED_VALUES;
-
+        private Dictionary<string, FieldType> _bookManagementSortAllowedValues => BookRepositorySettings.BOOK_MANAGEMENT_SORT_ALLOWED_VALUES;
+        
         public BookRepository(IElasticClient client, ILogger<IBookRepository> logger)
         {
             _client = client;
@@ -66,41 +68,7 @@ namespace Search.API.Infrastructure.Data
                                     .Field(f => f.Visibility)
                                     .Value(command.Visibility))
                         )
-                    ))
-                .Sort(ss =>
-                    {
-                        var sortValue = command.SortBy?.Split(':');
-                        string selectedSortingField = string.Empty;
-
-                        for (int i = 0; i < sortValue?.Length; i++)
-                        {
-
-                            if (i == 0)
-                            {
-                                selectedSortingField = _bookManagementSortAllowedValues.FirstOrDefault(b => b
-                                    .Contains(sortValue[0]));
-                            }
-
-                            if (i == 1)
-                            {
-                                if (selectedSortingField != null && selectedSortingField.Equals("modificationDate"))
-                                {
-                                    ss = sortValue[1].Contains("desc")
-                                        ? ss.Descending(selectedSortingField)
-                                        : ss.Ascending(selectedSortingField);
-                                }
-                                else if (!string.IsNullOrEmpty(selectedSortingField))
-                                {
-                                    ss = sortValue[1].Contains("desc")
-                                        ? ss.Descending(selectedSortingField + ".keyword")
-                                        : ss.Ascending(selectedSortingField + ".keyword");
-                                }
-                            }
-
-                        }
-
-                        return ss;
-                    }
+                    )).Sort(ss => ss.Custom(command.SortBy, _bookManagementSortAllowedValues)
                 ).Aggregations(ag => ag
                     .Terms("categories", t => t
                         .Field(f => f.Categories.First().Name.Suffix("keyword")))
