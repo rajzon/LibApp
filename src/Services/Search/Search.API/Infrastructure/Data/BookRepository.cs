@@ -27,10 +27,15 @@ namespace Search.API.Infrastructure.Data
         
         public async Task<ISearchResponse<Book>> SearchAsync(SearchBookCommand command)
         {
-            //TODO: later on add more logs
-            _logger.LogInformation("TODO: BookRepository: Search - Started");
+            _logger.LogInformation("BookRepository: SearchAsync - Method started with values {@MethodValues}", command);
 
-            return await _client.SearchAsync<Book>(s => s
+            if (command.FromPage.Equals(0))
+                command.FromPage = 1;
+            if (command.PageSize.Equals(0))
+                command.PageSize = BookRepositorySettings.DEFAULT_PAGINATION_PAGE_SIZE;
+            
+
+            var result = await _client.SearchAsync<Book>(s => s
                 .Query(q => q
                     .Bool(b => b
                         .Must(mu => mu
@@ -84,7 +89,12 @@ namespace Search.API.Infrastructure.Data
                 .Size(command.PageSize)
             );
 
-
+            if (! result.IsValid)
+                _logger.LogError("BookRepository: SearchAsync error occured during analyzing query by Elasticsearch, {@MethodValues}", command);
+            
+            
+            _logger.LogInformation("BookRepository: SearchAsync successfully requested data from Elasticsearch");
+            return result;
         }
     }
 }

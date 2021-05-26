@@ -18,8 +18,6 @@ namespace Search.API.Installers
 
             var settings = new ConnectionSettings(new Uri(url))
                 .DefaultIndex(defaultIndex)
-                .DefaultMappingFor<WeatherForecast>(w =>
-                    w.IndexName("weather-forecast"))
                 .DefaultMappingFor<Book>(w =>
                     w.IndexName("create-book-event"));
 

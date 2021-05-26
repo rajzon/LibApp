@@ -38,10 +38,6 @@ namespace Search.API.Controllers.V1
             bool? visibility, string sortBy, short fromPage, short pageSize,
             DateTime modificationDateFrom, DateTime modificationDateTo)
         {
-            //TODO add fluent validation or filter
-            if (fromPage < 1 || pageSize < 1)
-                return BadRequest("at least one pagination parameter is less then 1");
-            
             var response = await _bookRepository.SearchAsync(new SearchBookCommand()
             {
                 SearchTerm = searchTerm,
@@ -59,6 +55,7 @@ namespace Search.API.Controllers.V1
 
             if (! response.IsValid)
                 return NotFound();
+            
 
             return Ok(new BookManagementResponse(response)
             {

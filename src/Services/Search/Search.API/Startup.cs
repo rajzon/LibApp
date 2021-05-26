@@ -9,6 +9,7 @@ using Search.API.Application.Services;
 using Search.API.Infrastructure.Data;
 using Search.API.Installers;
 using Search.API.Mappings;
+using Serilog;
 
 namespace Search.API
 {
@@ -56,6 +57,8 @@ namespace Search.API
             });
 
             app.UseHttpsRedirection();
+            
+            app.UseSerilogRequestLogging();
 
             app.UseRouting();
 

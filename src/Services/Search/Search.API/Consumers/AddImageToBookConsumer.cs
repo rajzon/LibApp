@@ -27,7 +27,7 @@ namespace Search.API.Consumers
         
         public async Task Consume(ConsumeContext<AddImageToBook> context)
         {
-            _logger.LogInformation($"AddImageToBookConsumer: Started Consuming Message {context.MessageId}");
+            _logger.LogInformation("AddImageToBookConsumer: Started Consuming Message {MessageId} : {@Message}",context.MessageId, context.Message);
 
             var updateResult = await _elasticClient.UpdateByQueryAsync<Book>(u =>
                 u.Query(q =>
@@ -38,9 +38,9 @@ namespace Search.API.Consumers
 
 
             if (! updateResult.IsValid)
-                 _logger.LogError($"AddImageToBookConsumer: Message {context.MessageId} failed to insert data to Elasticsearch");
+                 _logger.LogError("AddImageToBookConsumer: Message {MessageId} failed to insert data to Elasticsearch", context.MessageId);
             else
-                 _logger.LogInformation($"AddImageToBookConsumer: Message {context.MessageId} successfully insert data to Elasticsearch");
+                 _logger.LogInformation("AddImageToBookConsumer: Message {MessageId} successfully inserted data to Elasticsearch", context.MessageId);
 
         }
         

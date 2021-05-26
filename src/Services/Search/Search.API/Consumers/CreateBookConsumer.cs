@@ -27,16 +27,16 @@ namespace Search.API.Consumers
         
         public async Task Consume(ConsumeContext<CreateBook> context)
         { 
-           _logger.LogInformation($"CreateBookConsumer: Started Consuming Message {context.MessageId}");
+            _logger.LogInformation("CreateBookConsumer: Started Consuming Message {MessageId} : {@Message}",context.MessageId, context.Message);
 
            var message = _mapper.Map<Book>(context.Message);
            
            var response =  await _elasticClient.IndexDocumentAsync(message);
 
            if (! response.IsValid)
-               _logger.LogError($"CreateBookConsumer: Message {context.MessageId} failed to insert data to Elasticsearch");
+               _logger.LogError("CreateBookConsumer: Message {MessageId} failed to insert data to Elasticsearch", context.MessageId);
            else
-               _logger.LogInformation($"CreateBookConsumer: Message {context.MessageId} successfully insert data to Elasticsearch");
+               _logger.LogInformation("CreateBookConsumer: Message {MessageId} successfully inserted data to Elasticsearch", context.MessageId);
         }
     }
 }

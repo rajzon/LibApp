@@ -12,8 +12,8 @@ namespace Search.API.Commands
         public string Publishers { get; init; }
         public bool? Visibility { get; init; }
         public string SortBy { get; set; }
-        public int FromPage { get; init; }
-        public int PageSize { get; init; }
+        public int FromPage { get; set; }
+        public int PageSize { get; set; }
         public DateTime ModificationDateFrom { get; init; }
         public DateTime ModificationDateTo { get; init; }
         

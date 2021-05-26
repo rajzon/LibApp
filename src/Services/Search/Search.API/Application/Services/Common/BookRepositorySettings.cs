@@ -16,11 +16,10 @@ namespace Search.API.Application.Services.Common
     
     public static class BookRepositorySettings
     {
-        // public static string[] BOOK_MANAGEMENT_SORT_ALLOWED_VALUES = {"title", "modificationDate"};
-
         public static Dictionary<string, FieldType> BOOK_MANAGEMENT_SORT_ALLOWED_VALUES =
-            new Dictionary<string, FieldType> { {"title", FieldType.Keyword}, {"modificationDate", FieldType.NonKeyword} };
+            new() { {"title", FieldType.Keyword}, {"modificationDate", FieldType.NonKeyword} };
 
         public static DefaultSorting DEFAULT_SORTING = DefaultSorting.Descending;
+        public static int DEFAULT_PAGINATION_PAGE_SIZE = 10;
     }
 }
