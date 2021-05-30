@@ -1,0 +1,82 @@
+﻿version: '3.8'
+
+services:
+  book-service:
+    image: ${DOCKER_REGISTRY-}bookservice
+    build:
+      context: .
+      dockerfile: Services/Book/Book.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONEMENT=Development
+      - ASPNETCORE_HTTPS_PORT=5001
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - 5000:80
+      - 5001:443
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    depends_on:
+      - rabbitmq
+      - identity-service
+    restart: unless-stopped
+    
+  
+  search-service:
+    image: ${DOCKER_REGISTRY-}searchservice
+    build:
+      context: .
+      dockerfile: Services/Search/Search.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONEMENT=Development
+      - ASPNETCORE_HTTPS_PORT=6001
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - 6000:80
+      - 6001:443
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    depends_on:
+      - elasticsearch  
+      - identity-service
+      - rabbitmq
+
+  identity-service:
+    image: ${DOCKER_REGISTRY-}identityservice
+    build:
+      context: .
+      dockerfile: Services/Identity/Identity.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONEMENT=Development
+      - ASPNETCORE_HTTPS_PORT=8001
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - 8000:80
+      - 8001:443
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+#    Uncomment for persist data after destroying elasticsearch container
+#    volumes:
+#      -  esdata:/usr/share/elasticsearch/data        
+#volumes:
+#  esdata:
+#    driver: local
+
+  rabbitmq:
+    image: rabbitmq:3.8.16-management
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
