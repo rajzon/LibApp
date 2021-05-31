@@ -1,0 +1,14 @@
+<form #searchForm="ngForm" (ngSubmit)="search()"
+      class="form-inline justify-content-center mt-5">
+  <div class="form-group mr-1">
+    <input type="text"
+           class="form-control search-field"
+           [(ngModel)]="searchTerm"
+           name="searchValue"
+           placeholder="Search field..."
+    >
+  </div>
+  <button type="submit"
+          class="fa fa-search ml-1 search"></button>
+</form>
+

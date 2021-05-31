@@ -16,7 +16,7 @@ import {BookToCreateDto, CreateBookUsingApiDto} from "../../models/create-book-u
 import {IFileUploaderStyle} from "@shared/file-uploader/IFileUploaderStyle";
 import {PaginationDto} from "../../models/pagination-dto";
 import {environment} from "@env";
-import {SearchItemVolume, SearchResultDto} from "../../models/search-result-dto";
+import {GoogleSearchItemVolume, GoogleSearchResultDto} from "../../models/google-search-result-dto";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {createFormControl} from "@shared/helpers/forms/create-form-control.function";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
@@ -31,7 +31,7 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
 
   @Output() addEvent = new EventEmitter<CreateBookUsingApiDto>();
   @Output() changePageEvent = new EventEmitter<PaginationDto>()
-  @Input() searchResult: SearchResultDto;
+  @Input() searchResult: GoogleSearchResultDto;
   @Input() uploaderStyle: IFileUploaderStyle;
   modalRef: BsModalRef;
   bookFieldsSettings = environment.book;
@@ -188,7 +188,7 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
     })
   }
 
-  private registerCategoriesFormArray(volumeInfo: SearchItemVolume, addBookForm: FormGroup) {
+  private registerCategoriesFormArray(volumeInfo: GoogleSearchItemVolume, addBookForm: FormGroup) {
     volumeInfo.categories = volumeInfo.categories ?? new Array<string>();
     const controls = volumeInfo.categories.map(x => {
       return createFormControl(x, this.bookFieldsSettings.categories.name);
@@ -198,7 +198,7 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
         Validators.required: Validators.nullValidator));
   }
 
-  private registerAuthorsFormArray(volumeInfo: SearchItemVolume, addBookForm: FormGroup) {
+  private registerAuthorsFormArray(volumeInfo: GoogleSearchItemVolume, addBookForm: FormGroup) {
     volumeInfo.authors = volumeInfo.authors ?? new Array<string>();
     const controls = volumeInfo.authors.map(x => {
       return new FormGroup({

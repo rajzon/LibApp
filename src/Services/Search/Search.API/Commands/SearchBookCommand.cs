@@ -14,8 +14,8 @@ namespace Search.API.Commands
         public string SortBy { get; set; }
         public int FromPage { get; set; }
         public int PageSize { get; set; }
-        public DateTime ModificationDateFrom { get; init; }
-        public DateTime ModificationDateTo { get; init; }
+        public DateTime? ModificationDateFrom { get; init; }
+        public DateTime? ModificationDateTo { get; init; }
         
     }
 }

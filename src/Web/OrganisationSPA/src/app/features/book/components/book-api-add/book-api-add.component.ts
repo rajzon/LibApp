@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SearchDto} from "../../models/search-dto";
+import {GoogleSearchDto} from "../../models/google-search-dto";
 import {environment} from "@env";
 
 @Component({
@@ -9,7 +9,7 @@ import {environment} from "@env";
 })
 export class BookApiAddComponent implements OnInit {
 
-  @Output() searchEvent = new EventEmitter<SearchDto>()
+  @Output() searchEvent = new EventEmitter<GoogleSearchDto>()
   @Output() clearSearchResultEvent = new EventEmitter<boolean>();
 
   searchValue: string;
@@ -20,7 +20,7 @@ export class BookApiAddComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  search(value: SearchDto) {
+  search(value: GoogleSearchDto) {
     this.clearSearchResultEvent.emit(true);
     this.searchEvent.emit(value);
   }

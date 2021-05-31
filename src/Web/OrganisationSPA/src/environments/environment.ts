@@ -7,6 +7,7 @@ export const environment = {
   production: false,
   logoImg: 'assets/img/Logo-placeholder.png',
   bookApiUrl: 'https://localhost:5001/',
+  searchApiUrl: 'https://localhost:6001/',
   googleApiUrl: 'https://www.googleapis.com/',
   pagination: {
     itemsPerPageDefault: 10,

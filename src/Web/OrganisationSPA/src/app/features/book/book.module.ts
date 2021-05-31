@@ -10,10 +10,11 @@ import {QuillModule} from "ngx-quill";
 import { BookApiAddComponent } from './components/book-api-add/book-api-add.component';
 import { BookApiSearchResultComponent } from './components/book-api-search-result/book-api-search-result.component';
 import { BookApiEditModalComponent } from './components/book-api-edit-modal/book-api-edit-modal.component';
+import { BookSearchComponent } from './components/book-search/book-search.component';
 
 
 @NgModule({
-  declarations: [BookManagementComponent, BookCreationComponent, BookManualAddComponent, BookApiAddComponent, BookApiSearchResultComponent, BookApiEditModalComponent],
+  declarations: [BookManagementComponent, BookCreationComponent, BookManualAddComponent, BookApiAddComponent, BookApiSearchResultComponent, BookApiEditModalComponent, BookSearchComponent],
   imports: [
     CommonModule,
     routing,

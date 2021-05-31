@@ -2,7 +2,16 @@
 <div class="mb-5 mt-4 border-bottom">
   <h1 class="display-4">Book management</h1>
 </div>
-  <p>book-management works!ddd</p>
-  <button [routerLink]="['/book/create']">Click me!</button>
+<app-book-search (searchEvent)="searchBook($event)"></app-book-search>
+<div class="text-right">
+  <button class="btn btn-primary" [routerLink]="['/book/create']">Add new book</button>
+</div>
+<pre>
+  <code>
+    {{ searchBookResult$ | async | json}}
+  </code>
+</pre>
+
+
 
 

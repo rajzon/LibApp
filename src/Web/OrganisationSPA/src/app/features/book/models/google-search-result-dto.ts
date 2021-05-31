@@ -1,4 +1,4 @@
-﻿export class SearchItemVolume {
+﻿export class GoogleSearchItemVolume {
   title: string;
   //TODO: consider change to array when API will accept collection of authors
   authors: string[]
@@ -12,11 +12,11 @@
   description: string;
 }
 
-export interface SearchItem {
-  volumeInfo: SearchItemVolume
+export interface GoogleSearchItem {
+  volumeInfo: GoogleSearchItemVolume
 }
 
-export interface SearchResultDto {
+export interface GoogleSearchResultDto {
     totalItems: number;
-    items: SearchItem[];
+    items: GoogleSearchItem[];
 }
