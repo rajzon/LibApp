@@ -4,6 +4,7 @@ import {BookManagementFacade} from "../../book-management.facade";
 import {ActivatedRoute} from "@angular/router";
 import {FilterAggregationModel} from "@core/models/filter-aggregation-model";
 import {FilterDateModel} from "@core/models/filter-date-model";
+import {CreateFilterDateRange} from "@shared/helpers/search/create-filter-date-range.function";
 
 @Component({
   selector: 'app-book-search-filters',
@@ -23,13 +24,10 @@ export class BookSearchFiltersComponent implements OnInit {
               private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    console.log(this.bookSearchFilters)
     this.bookManagementFacade.getSearchBookResult$().subscribe(res => {
       console.log(res.aggregations)
       this.initFilters(res.aggregations);
     })
-
-    console.log(this.bookSearchFilters)
 
   }
 
@@ -46,7 +44,6 @@ export class BookSearchFiltersComponent implements OnInit {
 
     this.modificationDateFilter = CreateFilterDateRange(modificationFrom, modificationTo);
 
-    console.log(this.bookSearchFilters)
   }
 
   dateChanged($event: any) {
@@ -67,18 +64,5 @@ export class BookSearchFiltersComponent implements OnInit {
 
 
 
-}
-
-export function CreateFilterDateRange(modificationFrom: string, modificationTo: string ): FilterDateModel {
-  const maxDateAsNumber = 8640000000000000;
-
-  if (modificationFrom && modificationTo)
-    return new FilterDateModel('Modification Date', [new Date(modificationFrom), new Date(modificationTo)])
-  else if (modificationFrom)
-    return new FilterDateModel('Modification Date', [new Date(modificationFrom), new Date(maxDateAsNumber)])
-  else if (modificationTo)
-    return new FilterDateModel('Modification Date', [new Date(null), new Date(modificationTo)])
-  else
-    return new FilterDateModel('Modification Date', [new Date(null), new Date(maxDateAsNumber)])
 }
 
