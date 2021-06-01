@@ -17,16 +17,31 @@ export class BookManagementFacade {
               private messagePopup: MessagePopupService) {
   }
 
+  isAdding$(): Observable<boolean> {
+    return this.bookManagementState.isAdding$();
+  }
+
+  isLoading$(): Observable<boolean> {
+    return this.bookManagementState.isLoading$();
+  }
+
   searchBook$(query: SearchBookQueryDto): Observable<SearchBookResultDto> {
+    this.bookManagementState.setLoading(true);
     return this.searchBookApi.searchBook$(query).pipe(map((res: SearchBookResultDto) => {
       this.bookManagementState.setSearchBookResult(res);
       this.bookManagementState.setBooksInList(res.results);
 
+      this.bookManagementState.setLoading(false);
       return res
     }), catchError((err, caught) => {
       this.messagePopup.displayError(err);
+      this.bookManagementState.setLoading(false);
       return of(err)
     }))
+  }
+
+  getSearchBookResult$(): Observable<SearchBookResultDto> {
+    return this.bookManagementState.getSearchBookResult$();
   }
 
 

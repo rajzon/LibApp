@@ -9,9 +9,28 @@ import {SearchBookResultDto} from "../models/search-book-result-dto";
 })
 export class BookManagementState {
 
+  private adding$ = new BehaviorSubject<boolean>(false);
+  private loading$ = new BehaviorSubject<boolean>(false);
+
   private searchBookResult$ = new BehaviorSubject<SearchBookResultDto>(null);
   private booksInList$ = new BehaviorSubject<Book[]>(null);
   private httpSearchQueryParams$ = new BehaviorSubject<string>(null);
+
+  isAdding$() {
+    return this.adding$.asObservable();
+  }
+
+  setAdding(isAdding: boolean) : void {
+    this.adding$.next(isAdding);
+  }
+
+  isLoading$() {
+    return this.loading$.asObservable();
+  }
+
+  setLoading(isLoading: boolean): void {
+    this.loading$.next(isLoading);
+  }
 
   /////Search
   ///

@@ -6,6 +6,8 @@ import {ActivatedRoute} from "@angular/router";
 import {SearchBookQueryDto} from "../../models/search-book-query-dto";
 import {DatePipe} from "@angular/common";
 import {SearchBookResultDto} from "../../models/search-book-result-dto";
+import {Spinner} from "ngx-spinner/lib/ngx-spinner.enum";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-book-management',
@@ -16,11 +18,23 @@ export class BookManagementComponent implements OnInit {
 
   private searchQueryFromHttp: SearchBookQueryDto
 
+  isAdding$: Observable<boolean>
+  isLoading$: Observable<boolean>
+
+
   searchBookResult$: Observable<SearchBookResultDto>
 
   constructor(private route: ActivatedRoute,
-              private bookManagementFacade: BookManagementFacade) {
+              private bookManagementFacade: BookManagementFacade,
+              private spinner: NgxSpinnerService) {
+    this.isAdding$ = this.bookManagementFacade.isAdding$();
+    this.isLoading$ = this.bookManagementFacade.isLoading$();
 
+
+  }
+
+  ngAfterViewInit(): void {
+    this.spinner.show();
   }
 
   ngOnInit(): void {
