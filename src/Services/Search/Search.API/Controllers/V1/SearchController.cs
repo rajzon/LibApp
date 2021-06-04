@@ -6,8 +6,10 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
+using Newtonsoft.Json;
 using Search.API.Application.Services;
 using Search.API.Commands;
 using Search.API.Contracts.Responses;
@@ -35,9 +37,9 @@ namespace Search.API.Controllers.V1
         [ProducesResponseType(typeof(IReadOnlyCollection<BookManagementResponse>), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         public async Task<IActionResult> BookManagementSearch(string searchTerm,
-            string categories, string authors,
-            string languages, string publishers,
-            bool? visibility, string sortBy, short fromPage, short pageSize,
+            [FromQuery] string[] categories, [FromQuery] string[] authors,
+            [FromQuery] string[] languages, [FromQuery] string[] publishers,
+            [FromQuery] bool?[] visibility, string sortBy, short fromPage, short pageSize,
             DateTime modificationDateFrom, DateTime modificationDateTo)
         {
             var response = await _bookRepository.SearchAsync(new SearchBookCommand()

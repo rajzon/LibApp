@@ -20,7 +20,7 @@ namespace Search.API.Contracts.Responses
             {
                 new AggregationDto()
                 {
-                    Name = "Category",
+                    Name = "categories",
                     Buckets = searchResult.Aggregations.Terms("categories")
                         .Buckets
                         .Select(bucket => new BucketDto() {Key = bucket.Key, Count = bucket.DocCount})
@@ -36,7 +36,7 @@ namespace Search.API.Contracts.Responses
                 },
                 new AggregationDto()
                 {
-                    Name = "author",
+                    Name = "authors",
                     Buckets = searchResult.Aggregations.Terms("authors")
                         .Buckets
                         .Select(bucket => new BucketDto() {Key = bucket.Key, Count = bucket.DocCount})
@@ -44,7 +44,7 @@ namespace Search.API.Contracts.Responses
                 },
                 new AggregationDto()
                 {
-                    Name = "language",
+                    Name = "languages",
                     Buckets = searchResult.Aggregations.Terms("languages")
                         .Buckets
                         .Select(bucket => new BucketDto() {Key = bucket.Key, Count = bucket.DocCount})
@@ -52,7 +52,7 @@ namespace Search.API.Contracts.Responses
                 },
                 new AggregationDto()
                 {
-                    Name = "publisher",
+                    Name = "publishers",
                     Buckets = searchResult.Aggregations.Terms("publishers")
                         .Buckets
                         .Select(bucket => new BucketDto() {Key = bucket.Key, Count = bucket.DocCount})

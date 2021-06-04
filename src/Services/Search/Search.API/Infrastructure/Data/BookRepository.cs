@@ -53,25 +53,26 @@ namespace Search.API.Infrastructure.Data
                                     .Field(f => f.ModificationDate)
                                     .GreaterThanOrEquals(command.ModificationDateFrom)
                                     .LessThanOrEquals(command.ModificationDateTo)), fi => fi
-                                .Match(t => t
+                                .Terms(t => t
                                     .Field(f => f
-                                        .Authors.Select(a => a.Name).First().FullName)
-                                    .Query(command.Authors)
+                                        .Authors.Select(a => a.Name).First().FullName.Suffix("keyword"))
+                                    .Terms(command.Authors)
                                 ), fi => fi
-                                .Match(t => t
-                                    .Field(f => f.Categories.Select(c => c.Name).First())
-                                    .Query(command.Categories)), fi => fi
-                                .Match(t => t
-                                    .Field(f => f.Language.Name)
-                                    .Query(command.Languages)),
+                                .Terms(t => t
+                                    .Field(f => f.Categories.Select(c => c.Name).First().Suffix("keyword"))
+                                    .Terms(command.Categories)
+                            ), fi => fi
+                                .Terms(t => t
+                                    .Field(f => f.Language.Name.Suffix("keyword"))
+                                    .Terms(command.Languages)),
                             fi => fi
-                                .Match(m => m
-                                    .Field(f => f.Publisher.Name)
-                                    .Query(command.Publishers)),
+                                .Terms(m => m
+                                    .Field(f => f.Publisher.Name.Suffix("keyword"))
+                                    .Terms(command.Publishers)),
                             fi => fi
-                                .Term(t => t
+                                .Terms(t => t
                                     .Field(f => f.Visibility)
-                                    .Value(command.Visibility))
+                                    .Terms(command.Visibility))
                         )
                     )).Sort(ss => ss.Custom(command.SortBy, _bookManagementSortAllowedValues)
                 ).Aggregations(ag => ag
