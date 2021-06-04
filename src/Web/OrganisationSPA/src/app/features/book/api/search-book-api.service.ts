@@ -22,11 +22,25 @@ export class SearchBookApiService {
     let params = new HttpParams()
 
     params = query.searchTerm ? params.append('searchTerm', query.searchTerm): params
-    params = query.categories ? params.append('categories', query.categories): params
-    params = query.authors ? params.append('authors', query.authors): params
-    params =  query.languages ? params.append('languages', query.languages): params
-    params =  query.publishers ? params.append('publishers', query.publishers): params
-    params =  query.visibility !== undefined && query.visibility !== null ? params.append('visibility', query.visibility.toString()): params
+    for (let i = 0; i < query.categories?.length; i++) {
+      params = params.append('categories', query.categories[i])
+    }
+
+    for (let i = 0; i < query.authors?.length; i++) {
+      params = params.append('authors', query.authors[i])
+    }
+
+    for (let i = 0; i < query.languages?.length; i++) {
+      params = params.append('languages', query.languages[i])
+    }
+
+    for (let i = 0; i < query.publishers?.length; i++) {
+      params = params.append('publishers', query.publishers[i])
+    }
+
+    for (let i = 0; i < query.visibility?.length; i++) {
+      params = params.append('visibility', query.visibility[i].toString())
+    }
 
     params = query.sortBy ? params.append('sortBy', query.sortBy): params
     params = query.fromPage ? params.append('fromPage', query.fromPage.toString()): params

@@ -9,6 +9,7 @@ export const environment = {
   bookApiUrl: 'https://localhost:5001/',
   searchApiUrl: 'https://localhost:6001/',
   googleApiUrl: 'https://www.googleapis.com/',
+  timeFormat: 'dd-MM-yyyy',
   pagination: {
     itemsPerPageDefault: 10,
     itemsPerPageOpts: [10,20,40]

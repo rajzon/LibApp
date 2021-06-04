@@ -16,7 +16,7 @@
   </div>
   <div class="row">
     <div class=" col-sm-4 col-xl-3">
-      <app-book-search-filters></app-book-search-filters>
+      <app-book-search-filters (searchEvent)="searchBook($event)"></app-book-search-filters>
     </div>
     <div class="col-sm-8 col-xl-9">
     <pre>

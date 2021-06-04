@@ -8,20 +8,20 @@ export class SearchBookQueryDto {
   }
 
   readonly searchTerm: string
-  readonly categories: string
-  readonly authors: string
-  readonly languages: string
-  readonly publishers: string
-  readonly visibility: boolean
+  readonly categories: string[]
+  readonly authors: string[]
+  readonly languages: string[]
+  readonly publishers: string[]
+  readonly visibility: boolean[]
 
   readonly sortBy: string
   readonly fromPage: number
   readonly modificationDateFrom: Date
   readonly modificationDateTo: Date
 
-  constructor(searchTerm?: string, categories?: string,
-              authors?: string, languages?: string,
-              publishers?: string, visibility?: boolean,
+  constructor(searchTerm?: string, categories?: string[],
+              authors?: string[], languages?: string[],
+              publishers?: string[], visibility?: boolean[],
               sortBy?: string, fromPage?: number,
               pageSize?: number, modificationDateFrom?: Date,
               modificationDateTo?: Date) {

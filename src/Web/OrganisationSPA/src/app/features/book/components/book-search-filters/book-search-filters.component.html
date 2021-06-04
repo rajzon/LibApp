@@ -15,6 +15,7 @@
                    placeholder="Daterangepicker"
                    class="form-control"
                    [(ngModel)]="modificationDateFilter.value"
+                   (ngModelChange)="dateChanged()"
                    bsDaterangepicker>
           </div>
 
@@ -27,7 +28,9 @@
 
 
             <div  *ngIf="isBelowMaxInitialBuckets(i) else more_content_btn" class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="below-{{j}}-{{i}}">
+              <input class="form-check-input" type="checkbox"
+                      [(ngModel)]="bucket.isKeySelected"
+                     [ngModelOptions]="{standalone: true}" id="below-{{j}}-{{i}}">
               <label class="form-check-label" for="below-{{j}}-{{i}}">
                 {{bucket.key}} ({{bucket.count}})
               </label>
@@ -35,14 +38,16 @@
 
 
             <div *ngIf="isAboveMaxInitialBuckets(i) && filter.moreClicked" class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="above-{{j}}-{{i}}">
+              <input class="form-check-input" type="checkbox"
+                      [(ngModel)]="bucket.isKeySelected"
+                     [ngModelOptions]="{standalone: true}" id="above-{{j}}-{{i}}">
               <label class="form-check-label" for="above-{{j}}-{{i}}">
                 {{bucket.key}} ({{bucket.count}})
               </label>
             </div>
 
             <ng-template #more_content_btn>
-              <div *ngIf="! filter.moreClicked">
+              <div *ngIf="! filter.moreClicked && isAtMaxInitialBucket(i)">
                 <a [routerLink]=""
                    queryParamsHandling="preserve"
                    (click)="filter.moreClicked = true">more >

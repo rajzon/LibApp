@@ -6,6 +6,8 @@
 export class Bucket {
   key: string
   count: number
+
+  isKeySelected: boolean
 }
 
 
