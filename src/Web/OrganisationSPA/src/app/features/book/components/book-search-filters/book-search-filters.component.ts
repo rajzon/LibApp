@@ -1,111 +1,114 @@
-import {Component, Inject, LOCALE_ID, OnInit, Output, EventEmitter} from '@angular/core';
-import {Aggregation} from "@core/models/aggregation";
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChildren
+} from '@angular/core';
 import {BookManagementFacade} from "../../book-management.facade";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FilterAggregationModel} from "@core/models/filter-aggregation-model";
 import {FilterDateModel} from "@core/models/filter-date-model";
-import {CreateFilterDateRange} from "@shared/helpers/search/create-filter-date-range.function";
-import {formatDate} from "@angular/common";
 import {environment} from "@env";
 import {SearchBookQueryDto} from "../../models/search-book-query-dto";
+import {fromEvent, Observable, Subscription} from "rxjs";
+import {debounceTime} from "rxjs/operators";
+import {initFiltersForView} from "@shared/helpers/search/init-filters.function";
+
 
 @Component({
   selector: 'app-book-search-filters',
   templateUrl: './book-search-filters.component.html',
-  styleUrls: ['./book-search-filters.component.sass']
+  styleUrls: ['./book-search-filters.component.sass'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BookSearchFiltersComponent implements OnInit {
+export class BookSearchFiltersComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Output() searchEvent = new EventEmitter<SearchBookQueryDto>();
+  @ViewChildren('checkbox') checkboxes:  QueryList<ElementRef>;
+  @ViewChildren('moreBtn') moreButtons:  QueryList<ElementRef>;
 
+  searchSubscription: Subscription
+  clickedCheckbox$: Observable<Event>;
+
+
+  //Models
   bookSearchFilters: FilterAggregationModel[];
   modificationDateFilter: FilterDateModel;
 
+  //Configs
   positionOfModificationDateFilter: number = 2
   maxInitialBucketsPerFilter: number = 5
+  debounceTimeToSearch: number = 2000;
   timeFormat = environment.timeFormat;
 
 
-
-  constructor(@Inject(LOCALE_ID) private locale: string,
-              private bookManagementFacade: BookManagementFacade,
+  constructor(private bookManagementFacade: BookManagementFacade,
               private router: Router,
               private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.bookManagementFacade.getSearchBookResult$().subscribe(res => {
+    this.searchSubscription = this.bookManagementFacade.getSearchBookResult$().subscribe(res => {
       console.log(res.aggregations)
-      this.initFilters(res.aggregations);
+
+      let modificationDateRange = new Map<string, string>()
+      modificationDateRange.set("modificationDateFrom", "modificationDateTo")
+      const filters = initFiltersForView(res.aggregations, this.activatedRoute, modificationDateRange);
+      this.bookSearchFilters = filters[0]
+      this.modificationDateFilter = filters[1]
     })
 
   }
 
-  initFilters(aggregations: Aggregation[]) {
-    console.log(this.bookSearchFilters)
-    this.bookSearchFilters = new Array<FilterAggregationModel>();
-    for (let i = 0; i < aggregations.length; i++) {
-      let selectedFilterBuckets = this.activatedRoute.snapshot.queryParamMap.getAll(aggregations[i].name)
-
-      if (aggregations[i].name === 'visibility') {
-        const visibility1 = aggregations[i].buckets.find(f => f.key === '1');
-        if (visibility1)
-          aggregations[i].buckets.find(f => f.key === '1').key = 'true'
-
-        const visibility0 = aggregations[i].buckets.find(f => f.key === '0');
-        if (visibility0)
-          aggregations[i].buckets.find(f => f.key === '0').key = 'false'
-
-        // aggregations[i].buckets.find(f => f.key === '0').key = 'false'
-        // console.log('fired')
-
-
-        // selectedFilterBuckets.map(v => {
-        //    //v = v? (v === '1'? 'true': 'false') : null;
-        //   console.log(v)
-        //   return v === '1'? 'true' : 'false';
-        // })
-      }
-      this.bookSearchFilters.push(new FilterAggregationModel(aggregations[i].name,
-        aggregations[i].buckets, selectedFilterBuckets));
-
-
-    }
-
-    const modificationFrom = this.activatedRoute.snapshot.queryParamMap.get('modificationDateFrom')
-    const modificationTo = this.activatedRoute.snapshot.queryParamMap.get('modificationDateTo')
-
-    this.modificationDateFilter = CreateFilterDateRange(modificationFrom, modificationTo);
-
+  ngOnDestroy(): void {
+    this.searchSubscription.unsubscribe();
   }
 
-  dateChanged() {
-    console.log(this.modificationDateFilter.value);
-    console.log(this.locale);
-    const modificationFrom = formatDate(this.modificationDateFilter.value[0], this.timeFormat, this.locale)
-    const modificationTo = formatDate(this.modificationDateFilter.value[1], this.timeFormat, this.locale)
-    console.log(modificationFrom);
-    console.log(modificationTo);
-    var searchQuery = this.initSearchBookQueryDto()
+  ngAfterViewInit(): void  {
+    this.initFiltersSelectionListener()
+  }
+
+  searchBooks(): void {
+    const searchQuery = this.initSearchBookQueryDto(this.activatedRoute, this.bookSearchFilters, this.modificationDateFilter)
     console.log(searchQuery);
     this.searchEvent.emit(searchQuery);
-    //this.initSearchBookQueryDto(this.activatedRoute, this.modificationDateFilter)
-    // this.searchEvent.emit(new SearchBookQueryDto(this.activatedRoute.snapshot.queryParamMap.get('searchTerm'),
-    //   this.bookSearchFilters.find(f => f.name === 'categories').buckets.filter(b => b.selectedKey).map(b => b.selectedKey),
-    //   ))
   }
 
-  initSearchBookQueryDto(activatedRoute?: ActivatedRoute, bookSearchFilters?: FilterAggregationModel, modificationDateFilter?: FilterDateModel): SearchBookQueryDto {
-    return new SearchBookQueryDto(this.activatedRoute.snapshot.queryParamMap.get('searchTerm'),
-      this.bookSearchFilters.find(f => f.name === 'categories').buckets.filter(b => b.isKeySelected).map(b => b.key),
-      this.bookSearchFilters.find(f => f.name === 'authors').buckets.filter(b => b.isKeySelected).map(b => b.key),
-      this.bookSearchFilters.find(f => f.name === 'languages').buckets.filter(b => b.isKeySelected).map(b => b.key),
-      this.bookSearchFilters.find(f => f.name === 'publishers').buckets.filter(b => b.isKeySelected).map(b => b.key),
-      <boolean[]><any[]>this.bookSearchFilters.find(f => f.name === 'visibility').buckets.filter(b => b.isKeySelected).map(b => b.key),
-      this.activatedRoute.snapshot.queryParamMap.get('sortBy'),
-      <number><any>this.activatedRoute.snapshot.queryParamMap.get('fromPage'),
-      <number><any>this.activatedRoute.snapshot.queryParamMap.get('pageSize'),
-      this.modificationDateFilter.value[0], this.modificationDateFilter.value[1]
+  initSearchBookQueryDto(activatedRoute: ActivatedRoute, bookSearchFilters: FilterAggregationModel[], modificationDateFilter: FilterDateModel): SearchBookQueryDto {
+    return new SearchBookQueryDto(activatedRoute.snapshot.queryParamMap.get('searchTerm'),
+      bookSearchFilters.find(f => f.name === 'categories').buckets.filter(b => b.isKeySelected).map(b => b.key),
+      bookSearchFilters.find(f => f.name === 'authors').buckets.filter(b => b.isKeySelected).map(b => b.key),
+      bookSearchFilters.find(f => f.name === 'languages').buckets.filter(b => b.isKeySelected).map(b => b.key),
+      bookSearchFilters.find(f => f.name === 'publishers').buckets.filter(b => b.isKeySelected).map(b => b.key),
+      <boolean[]><any[]>bookSearchFilters.find(f => f.name === 'visibility').buckets.filter(b => b.isKeySelected).map(b => b.key),
+      activatedRoute.snapshot.queryParamMap.get('sortBy'),
+      <number><any>activatedRoute.snapshot.queryParamMap.get('fromPage'),
+      <number><any>activatedRoute.snapshot.queryParamMap.get('pageSize'),
+      modificationDateFilter.value[0], modificationDateFilter.value[1]
       )
+  }
+
+  initFiltersSelectionListener(): void  {
+    if (this.checkboxes.length > 0) {
+      console.log(this.checkboxes.toArray().map(c => c.nativeElement))
+      this.clickedCheckbox$ = fromEvent(this.checkboxes.map(c => c.nativeElement), 'click');
+      this.clickedCheckbox$.pipe(debounceTime(this.debounceTimeToSearch))
+        .subscribe(r => this.searchBooks())
+    }
+
+    if (this.moreButtons.length > 0) {
+      let moreButtonsClicked$ : Observable<any> = fromEvent(this.moreButtons.map(m => m.nativeElement), 'click')
+      moreButtonsClicked$.subscribe(r => {
+        this.clickedCheckbox$ = fromEvent(this.checkboxes.map(c => c.nativeElement), 'click')
+        this.clickedCheckbox$.pipe(debounceTime(this.debounceTimeToSearch))
+          .subscribe(r => this.searchBooks())
+      })
+    }
   }
 
   isModificationDatePosition(i: number): boolean {
@@ -123,7 +126,6 @@ export class BookSearchFiltersComponent implements OnInit {
   isAboveMaxInitialBuckets(i: number): boolean {
     return i >= this.maxInitialBucketsPerFilter;
   }
-
 
 
 }

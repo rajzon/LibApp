@@ -14,7 +14,6 @@ export class BookManagementState {
 
   private searchBookResult$ = new BehaviorSubject<SearchBookResultDto>(null);
   private booksInList$ = new BehaviorSubject<Book[]>(null);
-  private httpSearchQueryParams$ = new BehaviorSubject<string>(null);
 
   isAdding$() {
     return this.adding$.asObservable();
@@ -42,15 +41,6 @@ export class BookManagementState {
     return this.searchBookResult$.asObservable();
   }
 
-  /////HttpSearchQueryParams
-  ///
-  setHttpSearchQueryParams(searchQueryParams: string): void {
-    this.httpSearchQueryParams$.next(searchQueryParams);
-  }
-
-  getHttpSearchQueryParams(): Observable<string> {
-    return this.httpSearchQueryParams$.asObservable();
-  }
 
   /////Book
   ///

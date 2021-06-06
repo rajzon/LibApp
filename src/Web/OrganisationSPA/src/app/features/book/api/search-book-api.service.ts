@@ -50,7 +50,10 @@ export class SearchBookApiService {
 
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
-      queryParams: {'searchTerm' : params.get('searchTerm'), 'fromPage': params.get('fromPage'), 'pageSize': params.get('pageSize')},
+      queryParams: {'searchTerm' : params.get('searchTerm'), 'fromPage': params.get('fromPage'), 'pageSize': params.get('pageSize'),
+      'sortBy': params.get('sortBy'), 'categories': params.getAll('categories'), 'authors': params.getAll('authors'), 'languages': params.getAll('languages'),
+        'publishers': params.getAll('publishers'), 'visibility': params.getAll('visibility'), 'modificationDateFrom': params.get('modificationDateFrom'), 'modificationDateTo': params.get('modificationDateTo'),
+      },
       queryParamsHandling: "merge"
     });
     return this.http.get<SearchBookResultDto>(this.API, {params: params});

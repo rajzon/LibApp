@@ -43,14 +43,4 @@ export class BookManagementFacade {
   getSearchBookResult$(): Observable<SearchBookResultDto> {
     return this.bookManagementState.getSearchBookResult$();
   }
-
-
-  setHttpQueryParams(searchQueryParams: string): void {
-    this.bookManagementState.setHttpSearchQueryParams(searchQueryParams);
-  }
-
-
-  getHttpQueryParams(): Observable<string> {
-    return this.bookManagementState.getHttpSearchQueryParams();
-  }
 }
