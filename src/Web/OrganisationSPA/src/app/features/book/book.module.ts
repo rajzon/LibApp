@@ -12,10 +12,11 @@ import { BookApiSearchResultComponent } from './components/book-api-search-resul
 import { BookApiEditModalComponent } from './components/book-api-edit-modal/book-api-edit-modal.component';
 import { BookSearchComponent } from './components/book-search/book-search.component';
 import { BookSearchFiltersComponent } from './components/book-search-filters/book-search-filters.component';
+import { BookSearchResultComponent } from './components/book-search-result/book-search-result.component';
 
 
 @NgModule({
-  declarations: [BookManagementComponent, BookCreationComponent, BookManualAddComponent, BookApiAddComponent, BookApiSearchResultComponent, BookApiEditModalComponent, BookSearchComponent, BookSearchFiltersComponent],
+  declarations: [BookManagementComponent, BookCreationComponent, BookManualAddComponent, BookApiAddComponent, BookApiSearchResultComponent, BookApiEditModalComponent, BookSearchComponent, BookSearchFiltersComponent, BookSearchResultComponent],
   imports: [
     CommonModule,
     routing,

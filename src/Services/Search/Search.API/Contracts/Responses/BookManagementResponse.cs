@@ -113,16 +113,11 @@ namespace Search.API.Contracts.Responses
     public record AuthorResponseDto
     {
         public int Id { get; set; }
-        public AuthorNameResponseDto Name { get; set; }
-    }
-
-    public record AuthorNameResponseDto
-    {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get; set; }
     }
-    
+
     public record LanguageResponseDto
     {
         public int Id { get; set; }

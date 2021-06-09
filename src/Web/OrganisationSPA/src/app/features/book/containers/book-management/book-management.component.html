@@ -15,15 +15,11 @@
     <button class="btn btn-primary" [routerLink]="['/book/create']">Add new book</button>
   </div>
   <div class="row">
-    <div class=" col-sm-4 col-xl-3">
+    <div class=" col-sm-4 col-xl-2">
       <app-book-search-filters (searchEvent)="searchBook($event)"></app-book-search-filters>
     </div>
-    <div class="col-sm-8 col-xl-9">
-    <pre>
-      <code>
-        {{ searchResult | json}}
-      </code>
-    </pre>
+    <div class="col-sm-8 col-xl-10">
+      <app-book-search-result [searchResult]="searchResult"></app-book-search-result>
     </div>
   </div>
 </div>

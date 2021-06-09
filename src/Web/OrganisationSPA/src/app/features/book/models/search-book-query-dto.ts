@@ -37,8 +37,12 @@ export class SearchBookQueryDto {
 
     this.sortBy = sortBy;
     this.fromPage = fromPage?? 1;
-    this.modificationDateFrom = modificationDateFrom;
-    this.modificationDateTo = modificationDateTo;
+
+    const currentDate = new Date()
+    this.modificationDateFrom = modificationDateFrom?? new Date(Date.UTC(2015, 0, 1))
+    this.modificationDateTo = modificationDateTo?? new Date(currentDate.getUTCFullYear()
+      ,currentDate.getUTCMonth(), currentDate.getUTCMinutes(),
+      23, 59, 59)
     console.log(this.modificationDateFrom)
 
     this.initPageSize(pageSize);

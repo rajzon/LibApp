@@ -1,0 +1,96 @@
+<div class="table-responsive">
+  <table class="table table-striped mt-3">
+    <thead>
+    <tr>
+      <th scope="col">Image</th>
+      <th scope="col">Book Description</th>
+      <th scope="col">Publisher</th>
+      <th scope="col">EAN Code</th>
+      <!--    TODO not in MVP currently-->
+      <th scope="col">Localization</th>
+      <th scope="col">Visibility & Availability</th>
+      <th scope="col">Actions</th>
+      <th scope="col">Modification Date</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr *ngFor="let book of searchResult.results">
+      <td class="image-row"><img class="img-fluid"
+                                 [src]="selectMainImage(book)"
+                                 alt=""></td>
+      <td>
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <p class="font-weight-bold text-capitalize"> {{book.title}}</p>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-12 book-description">
+              Authors:
+              <div class="d-inline author" *ngFor="let author of book.authors">
+                {{author.fullName}}
+              </div>
+            </div>
+          </div>
+          <!--        TODO rating not in MVP-->
+          <!--        <p></p>-->
+          <!--        TODO add "Book Borrowed Times"-->
+          <!--        <p></p>-->
+
+          <div class="row mt-4">
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold">Category:</div>
+              <div class="d-inline font-weight-bold" *ngFor="let category of book.categories">
+                {{category.name}}
+              </div>
+            </div>
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold">Language: </div>
+              <div class="d-inline">{{book.language?.name}}</div>
+            </div>
+            <!--          -->
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold">ISBN10: </div>
+              <div class="d-inline">{{book.isbn10}}</div>
+            </div>
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold">Page Count: </div>
+              <div class="d-inline">{{book.pageCount}}</div>
+            </div>
+            <!--          -->
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold">ISBN13: </div>
+              <div class="d-inline">{{book.isbn13}}</div>
+            </div>
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold ">Published Date: </div>
+              <div class="d-inline">{{book.publishedDate | date}}</div>
+            </div>
+
+          </div>
+
+        </div>
+      </td>
+      <td class="font-weight-bold publisher align-items-center"><div>{{book.publisher?.name}}</div></td>
+      <td class="font-weight-bold ean">{{book.ean13}}</td>
+      <!--    TODO not in MVP currently-->
+      <td></td>
+      <td>
+        <div [class.bg-success]="book.visibility"
+             [class.bg-danger]="! book.visibility"
+             class="badge">
+          {{visibilityAsMeaningfulText(book.visibility)}}
+        </div>
+      </td>
+      <td><button type="button"
+                  [disabled]="true"
+                  class="fa fa-edit ml-1 mr-2"></button></td>
+      <td class="font-weight-bold modificationDate">{{book.modificationDate}}</td>
+
+    </tr>
+    </tbody>
+  </table>
+</div>

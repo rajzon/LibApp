@@ -22,10 +22,13 @@ namespace Search.API.Mappings
             CreateMap<Category, CategoryResponseDto>();
             CreateMap<Language, LanguageResponseDto>();
             CreateMap<Publisher, PublisherResponseDto>();
-            CreateMap<AuthorName, AuthorNameResponseDto>();
-            CreateMap<Author, AuthorResponseDto>();
+            CreateMap<Author, AuthorResponseDto>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Name.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Name.LastName))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Name.FullName));
+                
             CreateMap<Image, ImageResponseDto>();
-            
+
             CreateMap<Book, BookManagementResponseDto>();
         }
     }
