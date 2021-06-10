@@ -6,6 +6,7 @@ import {catchError, map} from "rxjs/operators";
 import {MessagePopupService} from "@core/services/message-popup.service";
 import {SearchBookQueryDto} from "./models/search-book-query-dto";
 import {SearchBookResultDto} from "./models/search-book-result-dto";
+import {AllowedSorting, SearchSettingsApiService} from "./api/search-settings-api.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ import {SearchBookResultDto} from "./models/search-book-result-dto";
 export class BookManagementFacade {
 
   constructor(private searchBookApi: SearchBookApiService,
+              private searchSettingsApi: SearchSettingsApiService,
               private bookManagementState: BookManagementState,
               private messagePopup: MessagePopupService) {
   }
@@ -42,5 +44,9 @@ export class BookManagementFacade {
 
   getSearchBookResult$(): Observable<SearchBookResultDto> {
     return this.bookManagementState.getSearchBookResult$();
+  }
+
+  getBookManagementSearchAllowedSorting$(): Observable<AllowedSorting[]> {
+    return this.searchSettingsApi.getBookManagementSearchAllowedSorting$();
   }
 }

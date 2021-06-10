@@ -10,6 +10,7 @@ export const environment = {
   searchApiUrl: 'https://localhost:6001/',
   googleApiUrl: 'https://www.googleapis.com/',
   timeFormat: 'dd-MM-yyyy',
+  defaultSortingField: 'modificationDate:desc',
   pagination: {
     itemsPerPageDefault: 10,
     itemsPerPageOpts: [10,20,40]

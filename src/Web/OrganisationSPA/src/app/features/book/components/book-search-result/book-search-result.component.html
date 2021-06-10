@@ -1,3 +1,23 @@
+
+<div class="mb-5 mt-5 border-bottom">
+  <div class="row">
+    <div class="col-7">
+      <h3 class="">Found: {{searchResult.total}} results</h3>
+    </div>
+    <div class="col-2 text-right mx-0">
+      <label class="text-capitalize font-weight-bold mt-1"  for="sorting">sorted by:</label>
+    </div>
+    <div class="col-3 mx-0">
+      <ng-select id="sorting"  [items]="allowedSorting"
+                 bindLabel="description" bindValue="combinedValue"
+                 [(ngModel)]="selectedSorting"  (change)="sortAndSearch()">
+      </ng-select>
+    </div>
+
+  </div>
+
+</div>
+
 <div class="table-responsive">
   <table class="table table-striped mt-3">
     <thead>
@@ -93,4 +113,32 @@
     </tr>
     </tbody>
   </table>
+</div>
+<div class="row mt-5" style="height: 10rem">
+  <div class="col-9">
+    <pagination class="justify-content-center"
+                [boundaryLinks]="true"
+                [totalItems]="searchResult?.total"
+                [itemsPerPage]="selectedMaxResult"
+                [(ngModel)]="currentPageNumber"
+                (pageChanged)="pageChanged($event)"
+                [maxSize]="5"
+                previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+    </pagination>
+  </div>
+  <div class="col-3">
+    <div class="row">
+      <div class="col-2">
+        <label class="float-right font-weight-bold mt-1">Show:</label>
+      </div>
+      <div class="col-10">
+        <ng-select class="w-75"
+                   [items]="itemsPerPageOptions"
+                   [searchable]="false"
+                   [clearable]="false"
+                   [(ngModel)]="selectedMaxResult"
+                   (change)="onMaxResultsChanged($event)"></ng-select>
+      </div>
+    </div>
+  </div>
 </div>

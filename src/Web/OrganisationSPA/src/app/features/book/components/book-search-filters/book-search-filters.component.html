@@ -24,7 +24,7 @@
         <div [class.filter-apply-border]="isModificationDatePosition(j)"
              [class.pb-2]="isModificationDatePosition(j)">
           <div class="filter-header text-capitalize font-weight-bold p-2">{{filter.name}}</div>
-          <div class="container" *ngFor="let bucket of filter?.buckets; let i = index; let last = last">
+          <div class="container filter-buckets" *ngFor="let bucket of filter?.buckets; let i = index; let last = last">
 
 
             <div *ngIf="isBelowMaxInitialBuckets(i) else more_content_btn" class="form-check">

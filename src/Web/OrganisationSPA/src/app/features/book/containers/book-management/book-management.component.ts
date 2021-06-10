@@ -8,6 +8,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {getBoolFilterFromHttpQuery} from "@shared/helpers/search/get-bool-filter-from-httpQuery";
 import {map} from "rxjs/operators";
 import {formatDate} from "@angular/common";
+import {environment} from "@env";
 
 @Component({
   selector: 'app-book-management',
@@ -18,13 +19,16 @@ export class BookManagementComponent implements OnInit, AfterViewInit {
 
   private searchQueryFromHttp: SearchBookQueryDto
 
+
   isAdding$: Observable<boolean>
   isLoading$: Observable<boolean>
-
+  defaultSorting: string = environment.defaultSortingField
+  selectedMaxResult: number
+  currentPageNumber: number
 
   searchBookResult$: Observable<SearchBookResultDto>
 
-  constructor(@Inject(LOCALE_ID) private locale: string,
+    constructor(@Inject(LOCALE_ID) private locale: string,
               private route: ActivatedRoute,
               private bookManagementFacade: BookManagementFacade,
               private spinner: NgxSpinnerService) {
@@ -44,7 +48,8 @@ export class BookManagementComponent implements OnInit, AfterViewInit {
       this.route.snapshot.queryParamMap.getAll('authors'), this.route.snapshot.queryParamMap.getAll('languages'),
       this.route.snapshot.queryParamMap.getAll('publishers'),
       getBoolFilterFromHttpQuery('visibility', this.route),
-      this.route.snapshot.queryParamMap.get('sortBy'), JSON.parse(this.route.snapshot.queryParamMap.get('fromPage')),
+      this.route.snapshot.queryParamMap.get('sortBy')?? this.defaultSorting,
+      JSON.parse(this.route.snapshot.queryParamMap.get('fromPage')),
       JSON.parse(this.route.snapshot.queryParamMap.get('pageSize')),
       this.route.snapshot.queryParamMap.get('modificationDateFrom')? new Date (this.route.snapshot.queryParamMap.get('modificationDateFrom')): null,
       this.route.snapshot.queryParamMap.get('modificationDateTo')? new Date (this.route.snapshot.queryParamMap.get('modificationDateTo')): null);
@@ -60,6 +65,8 @@ export class BookManagementComponent implements OnInit, AfterViewInit {
     console.log(this.route.snapshot.queryParamMap.get('categories'))
 
     this.searchBookResult$ = this.bookManagementFacade.searchBook$(query).pipe(map(res => {
+      this.currentPageNumber = Number(this.route.snapshot.queryParamMap.get('fromPage'))
+      this.selectedMaxResult = Number(this.route.snapshot.queryParamMap.get('pageSize'))
       res.results.map(r => {
         r.modificationDate = formatDate(r.modificationDate, 'dd-MM-yyyy', this.locale)
       })

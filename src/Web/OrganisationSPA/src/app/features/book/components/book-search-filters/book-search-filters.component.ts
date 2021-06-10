@@ -49,12 +49,10 @@ export class BookSearchFiltersComponent implements OnInit, OnDestroy, AfterViewI
 
 
   constructor(private bookManagementFacade: BookManagementFacade,
-              private router: Router,
               private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.searchSubscription = this.bookManagementFacade.getSearchBookResult$().subscribe(res => {
-      console.log(res.aggregations)
 
       let modificationDateRange = new Map<string, string>()
       modificationDateRange.set("modificationDateFrom", "modificationDateTo")
@@ -75,7 +73,6 @@ export class BookSearchFiltersComponent implements OnInit, OnDestroy, AfterViewI
 
   searchBooks(): void {
     const searchQuery = this.initSearchBookQueryDto(this.activatedRoute, this.bookSearchFilters, this.modificationDateFilter)
-    console.log(searchQuery);
     this.searchEvent.emit(searchQuery);
   }
 
@@ -95,7 +92,6 @@ export class BookSearchFiltersComponent implements OnInit, OnDestroy, AfterViewI
 
   initFiltersSelectionListener(): void  {
     if (this.checkboxes.length > 0) {
-      console.log(this.checkboxes.toArray().map(c => c.nativeElement))
       this.clickedCheckbox$ = fromEvent(this.checkboxes.map(c => c.nativeElement), 'click');
       this.clickedCheckbox$.pipe(debounceTime(this.debounceTimeToSearch))
         .subscribe(r => this.searchBooks())
