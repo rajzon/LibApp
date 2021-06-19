@@ -8,12 +8,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Nest;
 using Newtonsoft.Json;
 using Search.API.Application.Services;
 using Search.API.Commands;
 using Search.API.Contracts.Responses;
-using Search.API.Domain;
 
 namespace Search.API.Controllers.V1
 {
@@ -67,5 +65,23 @@ namespace Search.API.Controllers.V1
                 Results = _mapper.Map<IReadOnlyCollection<BookManagementResponseDto>>(response.Documents)
             });
         }
+
+        [HttpGet("suggest/book/management/{searchSuggestValue}")]
+        public async Task<IActionResult> BookManagementSuggest(string searchSuggestValue)
+        {
+            var result = await _bookRepository.SuggestAsync(new SuggestBookCommand
+                {SearchSuggestValue = searchSuggestValue});
+
+            if (!result.IsValid)
+                return NotFound();
+            
+            var response = (from suggests in result.Suggest.Values 
+                from suggest in suggests 
+                from option in suggest.Options 
+                select new SuggestBookManagementResult(option)).ToList();
+            
+            return Ok(response);
+        }
     }
+    
 }

@@ -15,7 +15,7 @@ import {ToastrModule} from "ngx-toastr";
 import {ModalModule} from "ngx-bootstrap/modal";
 import {PaginationModule} from "ngx-bootstrap/pagination";
 import {EmptyToNullDirective} from "@shared/directives/empty-to-null/empty-to-null.directive";
-
+import {TypeaheadModule} from "ngx-bootstrap/typeahead";
 
 
 @NgModule({
@@ -45,7 +45,8 @@ import {EmptyToNullDirective} from "@shared/directives/empty-to-null/empty-to-nu
     NgxSpinnerModule,
     ToastrModule.forRoot(),
     ModalModule.forRoot(),
-    PaginationModule.forRoot()
+    PaginationModule.forRoot(),
+    TypeaheadModule.forRoot()
   ]
 })
 export class SharedModule { }

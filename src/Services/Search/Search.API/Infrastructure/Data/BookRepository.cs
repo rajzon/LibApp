@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.Configuration;
+using Elasticsearch.Net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Nest;
 using Search.API.Application.Services;
@@ -17,12 +18,14 @@ namespace Search.API.Infrastructure.Data
     {
         private readonly IElasticClient _client;
         private readonly ILogger<IBookRepository> _logger;
+        private readonly IConfiguration _configuration;
         private Dictionary<string, FieldType> _bookManagementSortAllowedValues => BookRepositorySettings.BOOK_MANAGEMENT_SORT_ALLOWED_VALUES;
         
-        public BookRepository(IElasticClient client, ILogger<IBookRepository> logger)
+        public BookRepository(IElasticClient client, ILogger<IBookRepository> logger, IConfiguration configuration)
         {
             _client = client;
             _logger = logger;
+            _configuration = configuration;
         }
         
         public async Task<ISearchResponse<Book>> SearchAsync(SearchBookCommand command)
@@ -36,6 +39,7 @@ namespace Search.API.Infrastructure.Data
             
 
             var result = await _client.SearchAsync<Book>(s => s
+                .Index(_configuration["elasticsearch:bookIndexName"])
                 .Query(q => q
                     .Bool(b => b
                         .Must(mu => mu
@@ -90,11 +94,51 @@ namespace Search.API.Infrastructure.Data
                 .Size(command.PageSize)
             );
 
-            if (! result.IsValid)
+            if (!result.IsValid)
+            {
                 _logger.LogError("BookRepository: SearchAsync error occured during analyzing query by Elasticsearch, {@MethodValues}", command);
+                return result;
+            }
             
             
             _logger.LogInformation("BookRepository: SearchAsync successfully requested data from Elasticsearch");
+            return result;
+        }
+
+        public async Task<ISearchResponse<Book>> SuggestAsync(SuggestBookCommand command)
+        {
+            _logger.LogInformation("BookRepository: SuggestAsync - Method started with values {@MethodValues}", command);
+
+            var result = await _client.SearchAsync<Book>(s => s
+                .Index(_configuration["elasticsearch:bookIndexName"])
+                .Suggest(ss => ss
+                    .Completion("title-completion", c => c
+                        .Field(f => f.TitleSuggest)
+                        .Prefix(command.SearchSuggestValue)
+                        .Size(1000)
+                        .Fuzzy(f => f
+                            .Fuzziness(Fuzziness.Auto)
+                            .UnicodeAware()))
+                    .Completion("author-completion", c => c
+                        .Field(f => f.AuthorSuggest)
+                        .Prefix(command.SearchSuggestValue)
+                        .Size(1000)
+                        .Fuzzy(f => f
+                            .Fuzziness(Fuzziness.Auto)
+                            .UnicodeAware()))
+                    .Completion("ean-completion", c => c
+                        .Field(f => f.EanSuggest)
+                        .Prefix(command.SearchSuggestValue)
+                        .Size(1000)
+                    )));
+
+            if (!result.IsValid)
+            {
+                _logger.LogError("BookRepository: SuggestAsync error occured during analyzing suggest query by Elasticsearch, {@MethodValues}", command);
+                return result;
+            }
+                
+            _logger.LogInformation("BookRepository: SuggestAsync successfully requested data from Elasticsearch");   
             return result;
         }
     }

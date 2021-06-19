@@ -67,7 +67,7 @@ export class BookManagementComponent implements OnInit, AfterViewInit {
     this.searchBookResult$ = this.bookManagementFacade.searchBook$(query).pipe(map(res => {
       this.currentPageNumber = Number(this.route.snapshot.queryParamMap.get('fromPage'))
       this.selectedMaxResult = Number(this.route.snapshot.queryParamMap.get('pageSize'))
-      res.results.map(r => {
+      res.results?.map(r => {
         r.modificationDate = formatDate(r.modificationDate, 'dd-MM-yyyy', this.locale)
       })
       return res;

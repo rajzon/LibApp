@@ -5,6 +5,8 @@ import {FilterDateModel} from "@core/models/filter-date-model";
 import {CreateFilterDateRange} from "@shared/helpers/search/create-filter-date-range.function";
 
 export function initFiltersForView(aggregations: Aggregation[], activatedRoute: ActivatedRoute, dateRange?: Map<string, string>): [FilterAggregationModel[], FilterDateModel] {
+    if (! aggregations) return [[], null];
+
     let bookSearchFilters = new Array<FilterAggregationModel>();
 
     for (let i = 0; i < aggregations.length; i++) {

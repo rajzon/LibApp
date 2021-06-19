@@ -56,7 +56,7 @@ export class BookSearchFiltersComponent implements OnInit, OnDestroy, AfterViewI
 
       let modificationDateRange = new Map<string, string>()
       modificationDateRange.set("modificationDateFrom", "modificationDateTo")
-      const filters = initFiltersForView(res.aggregations, this.activatedRoute, modificationDateRange);
+      const filters = initFiltersForView(res?.aggregations, this.activatedRoute, modificationDateRange);
       this.bookSearchFilters = filters[0]
       this.modificationDateFilter = filters[1]
     })

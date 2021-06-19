@@ -13,6 +13,7 @@ import { BookApiEditModalComponent } from './components/book-api-edit-modal/book
 import { BookSearchComponent } from './components/book-search/book-search.component';
 import { BookSearchFiltersComponent } from './components/book-search-filters/book-search-filters.component';
 import { BookSearchResultComponent } from './components/book-search-result/book-search-result.component';
+import {TypeaheadModule} from "ngx-bootstrap/typeahead";
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { BookSearchResultComponent } from './components/book-search-result/book-
   imports: [
     CommonModule,
     routing,
-    SharedModule
+    SharedModule,
+    TypeaheadModule,
   ]
 })
 export class BookModule { }

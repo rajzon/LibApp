@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {SearchBookQueryDto} from "../models/search-book-query-dto";
 import {ActivatedRoute, Router} from "@angular/router";
 import {SearchBookResultDto} from "../models/search-book-result-dto";
+import {BookManagementSuggestion} from "../components/book-search/book-search.component";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ import {SearchBookResultDto} from "../models/search-book-result-dto";
 export class SearchBookApiService {
 
   readonly API: string = environment.searchApiUrl + 'v1/Search/book/management';
+  readonly APISuggest: string = environment.searchApiUrl + 'v1/Search/suggest/book/management/';
 
   constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute) { }
 
@@ -57,6 +59,11 @@ export class SearchBookApiService {
       queryParamsHandling: "merge"
     });
     return this.http.get<SearchBookResultDto>(this.API, {params: params});
+  }
+
+
+  getSuggestions$(suggestTerm: string): Observable<BookManagementSuggestion[]> {
+    return this.http.get<BookManagementSuggestion[]>(this.APISuggest + suggestTerm);
   }
 
 

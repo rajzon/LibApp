@@ -7,6 +7,7 @@ import {MessagePopupService} from "@core/services/message-popup.service";
 import {SearchBookQueryDto} from "./models/search-book-query-dto";
 import {SearchBookResultDto} from "./models/search-book-result-dto";
 import {AllowedSorting, SearchSettingsApiService} from "./api/search-settings-api.service";
+import {BookManagementSuggestion} from "./components/book-search/book-search.component";
 
 @Injectable({
   providedIn: 'root'
@@ -48,5 +49,9 @@ export class BookManagementFacade {
 
   getBookManagementSearchAllowedSorting$(): Observable<AllowedSorting[]> {
     return this.searchSettingsApi.getBookManagementSearchAllowedSorting$();
+  }
+
+  getSuggestionBook$(suggestTerm: string) : Observable<BookManagementSuggestion[]> {
+    return this.searchBookApi.getSuggestions$(suggestTerm);
   }
 }
