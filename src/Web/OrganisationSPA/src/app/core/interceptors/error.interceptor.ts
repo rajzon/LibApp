@@ -18,8 +18,8 @@ export class ErrorInterceptor implements HttpInterceptor {
       .pipe(catchError(error => {
         if (error instanceof HttpErrorResponse) {
 
-          const serverError = error.error;
-          if(serverError.errors && typeof serverError.errors === 'object') {
+          const serverError = error?.error;
+          if(serverError?.errors && typeof serverError?.errors === 'object') {
             console.log(serverError.errors);
             return throwError(serverError.errors);
           }

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.Configuration;
+using Elasticsearch.Net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Nest;
 using Search.API.Application.Services;
@@ -17,12 +18,14 @@ namespace Search.API.Infrastructure.Data
     {
         private readonly IElasticClient _client;
         private readonly ILogger<IBookRepository> _logger;
+        private readonly IConfiguration _configuration;
         private Dictionary<string, FieldType> _bookManagementSortAllowedValues => BookRepositorySettings.BOOK_MANAGEMENT_SORT_ALLOWED_VALUES;
         
-        public BookRepository(IElasticClient client, ILogger<IBookRepository> logger)
+        public BookRepository(IElasticClient client, ILogger<IBookRepository> logger, IConfiguration configuration)
         {
             _client = client;
             _logger = logger;
+            _configuration = configuration;
         }
         
         public async Task<ISearchResponse<Book>> SearchAsync(SearchBookCommand command)
@@ -36,6 +39,7 @@ namespace Search.API.Infrastructure.Data
             
 
             var result = await _client.SearchAsync<Book>(s => s
+                .Index(_configuration["elasticsearch:bookIndexName"])
                 .Query(q => q
                     .Bool(b => b
                         .Must(mu => mu
@@ -53,25 +57,26 @@ namespace Search.API.Infrastructure.Data
                                     .Field(f => f.ModificationDate)
                                     .GreaterThanOrEquals(command.ModificationDateFrom)
                                     .LessThanOrEquals(command.ModificationDateTo)), fi => fi
-                                .Match(t => t
+                                .Terms(t => t
                                     .Field(f => f
-                                        .Authors.Select(a => a.Name).First().FullName)
-                                    .Query(command.Authors)
+                                        .Authors.Select(a => a.Name).First().FullName.Suffix("keyword"))
+                                    .Terms(command.Authors)
                                 ), fi => fi
-                                .Match(t => t
-                                    .Field(f => f.Categories.Select(c => c.Name).First())
-                                    .Query(command.Categories)), fi => fi
-                                .Match(t => t
-                                    .Field(f => f.Language.Name)
-                                    .Query(command.Languages)),
+                                .Terms(t => t
+                                    .Field(f => f.Categories.Select(c => c.Name).First().Suffix("keyword"))
+                                    .Terms(command.Categories)
+                            ), fi => fi
+                                .Terms(t => t
+                                    .Field(f => f.Language.Name.Suffix("keyword"))
+                                    .Terms(command.Languages)),
                             fi => fi
-                                .Match(m => m
-                                    .Field(f => f.Publisher.Name)
-                                    .Query(command.Publishers)),
+                                .Terms(m => m
+                                    .Field(f => f.Publisher.Name.Suffix("keyword"))
+                                    .Terms(command.Publishers)),
                             fi => fi
-                                .Term(t => t
+                                .Terms(t => t
                                     .Field(f => f.Visibility)
-                                    .Value(command.Visibility))
+                                    .Terms(command.Visibility))
                         )
                     )).Sort(ss => ss.Custom(command.SortBy, _bookManagementSortAllowedValues)
                 ).Aggregations(ag => ag
@@ -89,11 +94,51 @@ namespace Search.API.Infrastructure.Data
                 .Size(command.PageSize)
             );
 
-            if (! result.IsValid)
+            if (!result.IsValid)
+            {
                 _logger.LogError("BookRepository: SearchAsync error occured during analyzing query by Elasticsearch, {@MethodValues}", command);
+                return result;
+            }
             
             
             _logger.LogInformation("BookRepository: SearchAsync successfully requested data from Elasticsearch");
+            return result;
+        }
+
+        public async Task<ISearchResponse<Book>> SuggestAsync(SuggestBookCommand command)
+        {
+            _logger.LogInformation("BookRepository: SuggestAsync - Method started with values {@MethodValues}", command);
+
+            var result = await _client.SearchAsync<Book>(s => s
+                .Index(_configuration["elasticsearch:bookIndexName"])
+                .Suggest(ss => ss
+                    .Completion("title-completion", c => c
+                        .Field(f => f.TitleSuggest)
+                        .Prefix(command.SearchSuggestValue)
+                        .Size(1000)
+                        .Fuzzy(f => f
+                            .Fuzziness(Fuzziness.Auto)
+                            .UnicodeAware()))
+                    .Completion("author-completion", c => c
+                        .Field(f => f.AuthorSuggest)
+                        .Prefix(command.SearchSuggestValue)
+                        .Size(1000)
+                        .Fuzzy(f => f
+                            .Fuzziness(Fuzziness.Auto)
+                            .UnicodeAware()))
+                    .Completion("ean-completion", c => c
+                        .Field(f => f.EanSuggest)
+                        .Prefix(command.SearchSuggestValue)
+                        .Size(1000)
+                    )));
+
+            if (!result.IsValid)
+            {
+                _logger.LogError("BookRepository: SuggestAsync error occured during analyzing suggest query by Elasticsearch, {@MethodValues}", command);
+                return result;
+            }
+                
+            _logger.LogInformation("BookRepository: SuggestAsync successfully requested data from Elasticsearch");   
             return result;
         }
     }

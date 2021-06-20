@@ -21,6 +21,7 @@ export class BookState {
   private publishers$ = new BehaviorSubject<Publisher[]>(null);
   private newlyAddedBook$ = new BehaviorSubject<Book>(null);
 
+
   private googleBooks = new BehaviorSubject<any[]>(null);
 
   isAdding$() {
@@ -43,6 +44,7 @@ export class BookState {
   getNewlyAddedBook$() {
     return this.newlyAddedBook$.asObservable();
   }
+
 
   setBook(book: Book): void {
     this.newlyAddedBook$.next(book);

@@ -1,8 +1,37 @@
+<ngx-spinner *ngIf="isAdding$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Adding...</h3>
+</ngx-spinner>
+<ngx-spinner *ngIf="isLoading$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
 
-<div class="mb-5 mt-4 border-bottom">
-  <h1 class="display-4">Book management</h1>
+
+<div *ngIf="searchBookResult$ | async as searchResult">
+  <div class="mb-5 mt-4 border-bottom">
+    <h1 class="display-4">Book management</h1>
+  </div>
+  <app-book-search (searchEvent)="searchBook($event)"></app-book-search>
+
+  <div class="text-right">
+    <button class="btn btn-primary" [routerLink]="['/book/create']">Add new book</button>
+  </div>
+  <div class="row">
+    <div class=" col-sm-4 col-xl-2">
+      <app-book-search-filters (searchEvent)="searchBook($event)"></app-book-search-filters>
+    </div>
+    <div class="col-sm-8 col-xl-10">
+      <app-book-search-result (searchEvent)="searchBook($event)"
+                              [defaultSorting]="defaultSorting"
+                              [selectedMaxResult]="selectedMaxResult"
+                              [currentPageNumber]="currentPageNumber"
+                              [searchResult]="searchResult"></app-book-search-result>
+    </div>
+  </div>
 </div>
-  <p>book-management works!ddd</p>
-  <button [routerLink]="['/book/create']">Click me!</button>
+
+
+
+
+
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EventBus.Messages.Commands;
+using Nest;
 
 namespace Search.API.Domain
 {
@@ -31,6 +32,13 @@ namespace Search.API.Domain
         public DateTime? PublishedDate { get; set; }
         public DateTime ModificationDate { get; set; }
         public DateTime CreationDate { get; set; }
+
+        [Completion(Analyzer = "simple")]
+        public CompletionField TitleSuggest { get; set; }
+        [Completion(Analyzer = "simple")]
+        public CompletionField AuthorSuggest { get; set; }
+        [Completion(Analyzer = "standard")]
+        public CompletionField EanSuggest { get; set; }  
         
     }
     

@@ -1,0 +1,44 @@
+<form #searchForm="ngForm" (ngSubmit)="search()"
+      class="form-inline justify-content-center mt-5">
+  <div class="form-group mr-1">
+    <input type="text"
+           class="form-control search-field"
+           [(ngModel)]="searchTerm"
+           [typeahead]="suggestions$"
+           [typeaheadAsync]="true"
+           (typeaheadLoading)="changeTypeaheadLoading($event)"
+           (typeaheadNoResults)="changeTypeaheadHasSuggestions($event)"
+           (typeaheadOnSelect)="onSelectOpt($event)"
+           [optionsListTemplate]="bookManagementSuggestionTemplate"
+           [typeaheadOptionsLimit]="10"
+           typeaheadWaitMs="500"
+           name="searchValue"
+           placeholder="Search field..."
+           autocomplete="off"
+    >
+  </div>
+  <button type="submit"
+          class="fa fa-search ml-1 search"></button>
+</form>
+
+  <ng-template #bookManagementSuggestionTemplate  let-matches="matches" let-query="query"
+               let-typeaheadTemplateMethods>
+    <div *ngIf="hasSuggestions" class="list-group w-100">
+      <a [routerLink]=""
+         routerLinkActive="active" skipLocationChange="true"
+         *ngFor="let match of matches"
+         class="list-group-item list-group-item-action"
+         [class.active]="typeaheadTemplateMethods.isActive(match)"
+         (click)="typeaheadTemplateMethods.selectMatch(match, $event)"
+         (mouseenter)="typeaheadTemplateMethods.selectActive(match)"
+         >
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{match.item.title}}</h5>
+        </div>
+        <p class="mb-1">{{match.item.authors}}</p>
+        <small>{{match.item.categories}}</small>
+      </a>
+    </div>
+  </ng-template>
+
+

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EventBus.Messages.Commands;
+using GreenPipes.Internals.Extensions;
 using Nest;
 using Search.API.Domain;
 using Search.API.Infrastructure.Data;
@@ -20,7 +21,8 @@ namespace Search.API.Contracts.Responses
             {
                 new AggregationDto()
                 {
-                    Name = "Category",
+                    Name = "categories",
+                    Type = "System.String",
                     Buckets = searchResult.Aggregations.Terms("categories")
                         .Buckets
                         .Select(bucket => new BucketDto() {Key = bucket.Key, Count = bucket.DocCount})
@@ -29,6 +31,7 @@ namespace Search.API.Contracts.Responses
                 new AggregationDto()
                 {
                     Name = "visibility",
+                    Type = "System.Boolean",
                     Buckets = searchResult.Aggregations.Terms("visibility")
                         .Buckets
                         .Select(bucket => new BucketDto() {Key = bucket.Key, Count = bucket.DocCount})
@@ -36,7 +39,8 @@ namespace Search.API.Contracts.Responses
                 },
                 new AggregationDto()
                 {
-                    Name = "author",
+                    Name = "authors",
+                    Type = "System.String",
                     Buckets = searchResult.Aggregations.Terms("authors")
                         .Buckets
                         .Select(bucket => new BucketDto() {Key = bucket.Key, Count = bucket.DocCount})
@@ -44,7 +48,8 @@ namespace Search.API.Contracts.Responses
                 },
                 new AggregationDto()
                 {
-                    Name = "language",
+                    Name = "languages",
+                    Type = "System.String",
                     Buckets = searchResult.Aggregations.Terms("languages")
                         .Buckets
                         .Select(bucket => new BucketDto() {Key = bucket.Key, Count = bucket.DocCount})
@@ -52,7 +57,8 @@ namespace Search.API.Contracts.Responses
                 },
                 new AggregationDto()
                 {
-                    Name = "publisher",
+                    Name = "publishers",
+                    Type = "System.String",
                     Buckets = searchResult.Aggregations.Terms("publishers")
                         .Buckets
                         .Select(bucket => new BucketDto() {Key = bucket.Key, Count = bucket.DocCount})
@@ -107,16 +113,11 @@ namespace Search.API.Contracts.Responses
     public record AuthorResponseDto
     {
         public int Id { get; set; }
-        public AuthorNameResponseDto Name { get; set; }
-    }
-
-    public record AuthorNameResponseDto
-    {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get; set; }
     }
-    
+
     public record LanguageResponseDto
     {
         public int Id { get; set; }

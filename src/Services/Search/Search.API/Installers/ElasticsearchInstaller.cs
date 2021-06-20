@@ -17,13 +17,13 @@ namespace Search.API.Installers
             var defaultIndex = configuration["elasticsearch:index"];
 
             var settings = new ConnectionSettings(new Uri(url))
-                .DefaultIndex(defaultIndex)
-                .DefaultMappingFor<Book>(w =>
-                    w.IndexName("create-book-event"));
+                .DefaultIndex(defaultIndex);
 
             var client = new ElasticClient(settings);
             //Map only 0 level of Child property(no recursion mapping)
-            client.Indices.Create(defaultIndex, index => index.Map(x => x.AutoMap(0)));
+            var a =client.Indices.Create(defaultIndex, index => index.Map(x => x.AutoMap(0)));
+            client.Indices.Create(configuration["elasticsearch:bookIndexName"], c => c
+                .Map<Book>(m => m.AutoMap(0)));
             services.AddSingleton<IElasticClient>(client);
             return services;
         }

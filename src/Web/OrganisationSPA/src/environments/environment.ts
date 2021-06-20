@@ -7,7 +7,10 @@ export const environment = {
   production: false,
   logoImg: 'assets/img/Logo-placeholder.png',
   bookApiUrl: 'https://localhost:5001/',
+  searchApiUrl: 'https://localhost:6001/',
   googleApiUrl: 'https://www.googleapis.com/',
+  timeFormat: 'dd-MM-yyyy',
+  defaultSortingField: 'modificationDate:desc',
   pagination: {
     itemsPerPageDefault: 10,
     itemsPerPageOpts: [10,20,40]
