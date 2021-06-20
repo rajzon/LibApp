@@ -46,6 +46,7 @@ export class BookSearchResultComponent implements OnInit, OnDestroy {
 
   initSortingDesc(sorting: AllowedSorting[]): void {
     this.allowedSorting = new Array<AllowedSorting>()
+    this.allowedSorting.push(new AllowedSorting("", "desc", "Most accurate"))
     sorting.forEach(s => {
       let ascFieldDesc;
       let descFieldDesc;
