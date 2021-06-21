@@ -60,6 +60,23 @@ services:
       - 8001:443
     volumes:
       - ~/.aspnet/https:/https:ro
+        
+  stock-delivery-service:
+    image: ${DOCKER_REGISTRY-}stockdeliveryservice
+    build:
+      context: .
+      dockerfile: Services/StockDelivery/StockDelivery.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONEMENT=Development
+      - ASPNETCORE_HTTPS_PORT=7001
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - 7000:80
+      - 7001:443
+    volumes:
+      - ~/.aspnet/https:/https:ro
   
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
