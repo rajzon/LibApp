@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Nest;
 using Search.API.Commands;
+using Search.API.Commands.V1;
 using Search.API.Domain;
 using Search.API.Infrastructure.Data;
 

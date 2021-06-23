@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Search.API.Application.Services;
 using Search.API.Commands;
+using Search.API.Commands.V1;
 using Search.API.Contracts.Responses;
 
 namespace Search.API.Controllers.V1

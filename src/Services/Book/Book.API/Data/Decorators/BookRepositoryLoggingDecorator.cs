@@ -70,6 +70,18 @@ namespace Book.API.Data.Decorators
             return result;
         }
 
+        public async Task<bool> IsAllExistsAsync(Dictionary<int, string> booksIdsWithEans)
+        {
+            _logger.LogInfoMethodStarted<Domain.Book>(BookRepositoryType, nameof(FindByIdWithPhotoAsync), new object[] {booksIdsWithEans});
+
+
+            var result = await _bookRepository.IsAllExistsAsync(booksIdsWithEans);
+            
+            
+            _logger.LogInfoMethodEnded(BookRepositoryType, nameof(FindByIdWithPhotoAsync), result);
+            return result;
+        }
+
         public async Task<IEnumerable<Domain.Book>> GetAllAsync()
         {
             _logger.LogInfoMethodStarted<IEnumerable<Domain.Book>>(BookRepositoryType, nameof(GetAllAsync), methodParams: null);

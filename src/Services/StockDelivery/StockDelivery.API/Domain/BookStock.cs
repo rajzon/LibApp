@@ -8,7 +8,7 @@ namespace StockDelivery.API.Domain
     {
         public StockId StockId { get; private set; }
         //TODO BookEan should came from Book service and from instance of Book Domain
-        public BookEan BookEan { get; private set; }
+        public BookEan13 BookEan13 { get; private set; }
         //TODO Book should came from Book service and from instance of Book Domain
         public int BookId { get; private set; }
         

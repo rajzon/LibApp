@@ -24,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Commands\V1\Common" />
       <Folder Include="Infrastructure\Data\Common" />
     </ItemGroup>
 

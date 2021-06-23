@@ -31,6 +31,9 @@ namespace Search.API.Installers
                         c.ConfigureConsumer<AddImageToBookConsumer>(context);
                     });
                 });
+                
+                x.AddRequestClient<CheckBooksExsitance>();
+                
             });
             return services.AddMassTransitHostedService();
         }

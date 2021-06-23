@@ -44,6 +44,15 @@ namespace Book.API.Data.Repositories
             return result;
         }
 
+        public async Task<bool> IsAllExistsAsync(Dictionary<int, string> booksIdsWithEans)
+        {
+            var result = await _bookContext.Books.AllAsync(b => 
+                booksIdsWithEans.ContainsKey(b.Id) &&
+                booksIdsWithEans.ContainsValue(b.Ean13.Code));
+
+            return result;
+        }
+
         //TODO: Consider some sort of builder for building Book with related tables
         public async Task<IEnumerable<Domain.Book>> GetAllAsync()
         {

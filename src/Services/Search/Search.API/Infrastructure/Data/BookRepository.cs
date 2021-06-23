@@ -8,6 +8,7 @@ using Nest;
 using Search.API.Application.Services;
 using Search.API.Application.Services.Common;
 using Search.API.Commands;
+using Search.API.Commands.V1;
 using Search.API.Domain;
 using Search.API.Extensions;
 using FieldType = Search.API.Application.Services.Common.FieldType;

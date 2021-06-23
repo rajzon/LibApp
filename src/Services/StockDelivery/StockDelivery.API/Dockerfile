@@ -4,6 +4,8 @@ WORKDIR /src
 ENV ASPNETCORE_ENVIRONMENT=Development
 
 COPY ["Services/StockDelivery/StockDelivery.API/StockDelivery.API.csproj", "Services/StockDelivery/StockDelivery.API/"]
+COPY ["BuildingBlocks/EventBus.Messages/EventBus.Messages.csproj", "BuildingBlocks/EventBus.Messages/"]
+COPY ["BuildingBlocks/EventBus.Messages/", "BuildingBlocks/EventBus.Messages/"]
 RUN dotnet restore "Services/StockDelivery/StockDelivery.API/"
 COPY [ "Services/StockDelivery/StockDelivery.API/", "Services/StockDelivery/StockDelivery.API/"]
 WORKDIR "Services/StockDelivery/StockDelivery.API"

@@ -1,11 +1,9 @@
-﻿using Book.API.Consumers;
-using EventBus.Messages.Commands;
-using EventBus.Messages.Common;
-using Microsoft.Extensions.DependencyInjection;
+﻿using EventBus.Messages.Commands;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Book.API.Installers
+namespace StockDelivery.API.Installers
 {
     public static class EventBusInstaller
     {
@@ -13,16 +11,11 @@ namespace Book.API.Installers
         {
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<CheckBooksExistanceConsumer>();
                 
                 x.AddRequestClient<CheckBooksExsitance>();
-
+                
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.ReceiveEndpoint(EventBusConstants.CheckBooksExistance, e =>
-                    {
-                        e.ConfigureConsumer<CheckBooksExistanceConsumer>(context);
-                    });
                     cfg.Host(configuration["EventBusSettings:HostUrl"]);
                 });
             });

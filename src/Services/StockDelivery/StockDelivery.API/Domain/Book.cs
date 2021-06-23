@@ -10,7 +10,7 @@ namespace StockDelivery.API.Domain
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public BookEan Ean13 { get; private set; }
+        public BookEan13 Ean13 { get; private set; }
         public string Isbn10 { get; set; }
         public string Isbn13 { get; set; }
         public ushort? PageCount { get; set; }

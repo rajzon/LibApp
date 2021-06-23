@@ -9,6 +9,7 @@ namespace Book.API.Domain
         Book Add(Book book);
         Task<Book> FindByIdAsync(int id);
         Task<Book> FindByIdWithPhotoAsync(int id);
+        Task<bool> IsAllExistsAsync(Dictionary<int,string> booksIdsWithEans);
         Task<IEnumerable<Book>> GetAllAsync();
 
     }
