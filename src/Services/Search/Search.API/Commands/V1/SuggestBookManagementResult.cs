@@ -3,7 +3,7 @@ using System.Linq;
 using Nest;
 using Search.API.Domain;
 
-namespace Search.API.Commands
+namespace Search.API.Commands.V1
 {
     public class SuggestBookManagementResult
     {
