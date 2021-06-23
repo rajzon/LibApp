@@ -1,6 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using StockDelivery.API.Commands.V1.Dtos;
 using StockDelivery.API.Domain;
+using StockDelivery.API.Queries.V1.Dtos;
 
 namespace StockDelivery.API.Mappings
 {
@@ -12,6 +14,15 @@ namespace StockDelivery.API.Mappings
                 .ForMember(dest => dest.BookEan,
                     opt => opt.MapFrom(src => src.BookEan.Code));
             CreateMap<ActiveDelivery, CommandActiveDeliveryDto>();
+
+
+            CreateMap<ActiveDelivery, ActiveDeliveryDto>()
+                .ForMember(dest => dest.BooksCount,
+                    opt => opt.MapFrom(src => src.Items.Count))
+                // .ForMember(dest => dest.ItemsCount,
+                //     opt => opt.MapFrom(src => src.Items.Aggregate(0, (total, next) => total + next.ItemsCount)))
+                .ForMember(dest => dest.ItemsCount,
+                    opt => opt.MapFrom(src => src.Items.Sum(i => i.ItemsCount)));
         }
     }
 }

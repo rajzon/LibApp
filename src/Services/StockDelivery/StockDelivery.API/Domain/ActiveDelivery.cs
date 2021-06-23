@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using StockDelivery.API.Domain.Common;
 
@@ -35,7 +36,13 @@ namespace StockDelivery.API.Domain
 
         public void AddDeliveryItem(int bookId, string bookEan, short itemsCount)
         {
+            if (_items is null)
+                return;
+            
             _items.Add(new ActiveDeliveryItem(bookId, bookEan, itemsCount));
+            ModificationDate = _items.LastOrDefault() is not null
+                ? _items.LastOrDefault().ModificationDate
+                : ModificationDate;
         }
 
     }
