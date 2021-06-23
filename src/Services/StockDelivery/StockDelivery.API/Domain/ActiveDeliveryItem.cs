@@ -21,11 +21,11 @@ namespace StockDelivery.API.Domain
         public DateTime CreationDate { get; private set; }
 
 
-        public ActiveDeliveryItem(KeyValuePair<int,string> bookIdWithEan)
+        public ActiveDeliveryItem(int bookId, string bookEan, short itemsCount = 1)
         {
-            BookId = bookIdWithEan.Key;
-            BookEan = new BookEan13(bookIdWithEan.Value);
-            ItemsCount = 1;
+            BookId = bookId;
+            BookEan = new BookEan13(bookEan);
+            ItemsCount = itemsCount.Equals(0)? (short) 1: itemsCount;
             
             ModificationDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;

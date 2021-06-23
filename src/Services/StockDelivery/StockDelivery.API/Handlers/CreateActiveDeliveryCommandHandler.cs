@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using EventBus.Messages.Commands;
@@ -28,13 +29,16 @@ namespace StockDelivery.API.Handlers
         
         public async Task<CreateActiveDeliveryCommandResult> Handle(CreateActiveDeliveryCommand request, CancellationToken cancellationToken)
         {
-            var resultExistance = await _client.GetResponse<BooksExitanceResult>(new { BooksIdsWithEans = request.BooksIdsWithEans});
+            var resultExistance = await _client.GetResponse<BooksExitanceResult>(
+                new { BooksIdsWithEans = request.ItemsInfo
+                .ToDictionary(key => key.BookId, value => value.BookEan) });
 
             if(! resultExistance.Message.IsAllExists)
                 return new CreateActiveDeliveryCommandResult(false, 
                     new []{ "Some of requested books not exists or they Ids do not match with corresponding Eans" });
 
-            var delivery = new ActiveDelivery(request.Name, request.BooksIdsWithEans);
+            var delivery = new ActiveDelivery(request.Name);
+            AddDeliveryItems(delivery, request);
 
             var deliveryResult = _activeDeliveryRepository.Add(delivery);
 
@@ -44,6 +48,17 @@ namespace StockDelivery.API.Handlers
             var result = _mapper.Map<CommandActiveDeliveryDto>(deliveryResult);
             
             return new CreateActiveDeliveryCommandResult(true, result);
+        }
+
+        public void AddDeliveryItems(ActiveDelivery delivery, CreateActiveDeliveryCommand command)
+        {
+            if (delivery is null || command is null)
+                return;
+
+            foreach (var itemInfo in command.ItemsInfo)
+            {
+                delivery.AddDeliveryItem(itemInfo.BookId, itemInfo.BookEan, itemInfo.ItemsCount);
+            }
         }
     }
 }

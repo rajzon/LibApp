@@ -18,8 +18,7 @@ namespace StockDelivery.API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ActiveDeliveryConfiguration());
-            modelBuilder.ApplyConfiguration(new ActiveDeliveryItemConfiguration());
-            
+
             base.OnModelCreating(modelBuilder);
         }
 

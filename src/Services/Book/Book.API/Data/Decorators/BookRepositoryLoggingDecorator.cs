@@ -72,13 +72,13 @@ namespace Book.API.Data.Decorators
 
         public async Task<bool> IsAllExistsAsync(Dictionary<int, string> booksIdsWithEans)
         {
-            _logger.LogInfoMethodStarted<Domain.Book>(BookRepositoryType, nameof(FindByIdWithPhotoAsync), new object[] {booksIdsWithEans});
+            _logger.LogInfoMethodStarted<Domain.Book>(BookRepositoryType, nameof(IsAllExistsAsync), new object[] {booksIdsWithEans});
 
 
             var result = await _bookRepository.IsAllExistsAsync(booksIdsWithEans);
             
             
-            _logger.LogInfoMethodEnded(BookRepositoryType, nameof(FindByIdWithPhotoAsync), result);
+            _logger.LogInfoMethodEnded(BookRepositoryType, nameof(IsAllExistsAsync), result);
             return result;
         }
 

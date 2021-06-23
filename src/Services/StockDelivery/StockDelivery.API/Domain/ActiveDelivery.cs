@@ -18,13 +18,11 @@ namespace StockDelivery.API.Domain
         private readonly List<ActiveDeliveryItem> _items;
         public IReadOnlyCollection<IDeliveryItem> Items => _items;
         
-        public ActiveDelivery(string name, Dictionary<int, string> booksIdsWithEans)
+        public ActiveDelivery(string name)
         {
             Name = name;
             _items ??= new List<ActiveDeliveryItem>();
-            
-            AddDeliveryItems(booksIdsWithEans);
-            
+
             DeliveryStatus = DeliveryStatus.Active;
             ModificationDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;
@@ -35,12 +33,9 @@ namespace StockDelivery.API.Domain
         {
         }
 
-        public void AddDeliveryItems(Dictionary<int, string> booksIdsWithEans)
+        public void AddDeliveryItem(int bookId, string bookEan, short itemsCount)
         {
-            foreach (var bookIdWithEan in booksIdsWithEans)
-            {
-                _items.Add(new ActiveDeliveryItem(bookIdWithEan));
-            }
+            _items.Add(new ActiveDeliveryItem(bookId, bookEan, itemsCount));
         }
 
     }

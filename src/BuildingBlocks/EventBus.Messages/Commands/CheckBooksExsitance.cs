@@ -6,4 +6,6 @@ namespace EventBus.Messages.Commands
     {
         public Dictionary<int,string> BooksIdsWithEans { get; init; }
     }
+
+
 }
