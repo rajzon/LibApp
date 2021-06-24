@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StockDelivery.API.Commands.V1;
 using StockDelivery.API.Commands.V1.Dtos;
@@ -13,6 +14,7 @@ namespace StockDelivery.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [ApiController]
+    [Authorize(Roles = "employee")]
     [Route("v{version:apiVersion}/[controller]")]
     public class DeliveryController : ControllerBase
     {
@@ -39,6 +41,7 @@ namespace StockDelivery.API.Controllers.V1
 
 
         [HttpPost("active/create")]
+        [Authorize(Policy = "delivery-create-delete")]
         [ProducesResponseType(typeof(CommandActiveDeliveryDto), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -59,6 +62,7 @@ namespace StockDelivery.API.Controllers.V1
 
 
         [HttpDelete("active/delete/{deliveryId}")]
+        [Authorize(Policy = "delivery-create-delete")]
         [ProducesResponseType(typeof(DeleteActiveDeliveryCommandResult), (int) HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]

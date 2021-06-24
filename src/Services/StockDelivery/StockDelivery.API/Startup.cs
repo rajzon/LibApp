@@ -1,11 +1,15 @@
+using System.Net;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using Serilog;
+using StockDelivery.API.AuthHandler;
 using StockDelivery.API.Installers;
 using StockDelivery.API.Mappings;
 
@@ -23,7 +27,39 @@ namespace StockDelivery.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ServicePointManager.Expect100Continue = true;
+            IdentityModelEventSource.ShowPII = true;
+            
+            
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", config =>
+                {
+                    config.Authority = "http://identity-service:80";
+                    config.Audience = "stock_delivery_api";
+                    config.RequireHttpsMetadata = false;
+                    
+                    config.TokenValidationParameters.ValidIssuers = new[]
+                    {
+                        "http://localhost:8000",
+                        "https://localhost:8001",
+                        "http://identity-service:80"
+                    };
+                });
+            
+            services.AddAuthorization(config =>
+            {
+                config.AddPolicy("delivery-create-delete", policyBuilder =>
+                {
+                    policyBuilder.RequireRole("employee")
+                        .RequireClaim("delivery_privilege", "create-delete");
+                });
 
+            });
+            
+            services.AddAuthorization();
+            services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
+            
+            
             services.AddApiVersioningInitializer();
             services.AddSwaggerInitializer();
             services.AddEventBusInitializer(Configuration);
@@ -59,6 +95,7 @@ namespace StockDelivery.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

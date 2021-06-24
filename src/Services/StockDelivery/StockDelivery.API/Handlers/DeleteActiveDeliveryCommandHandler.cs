@@ -20,6 +20,11 @@ namespace StockDelivery.API.Handlers
         {
             var activeDelivery = await _activeDeliveryRepository.FindByIdAsync(request.DeliveryId);
 
+            if (activeDelivery is null)
+                return new DeleteActiveDeliveryCommandResult(false,
+                    new[] {$"Could not find Delivery with id {request.DeliveryId}"});
+            
+
             if (activeDelivery.IsAnyDeliveryItemsScanned)
                 return new DeleteActiveDeliveryCommandResult(false, new[] {"At least 1 delivery item is scanned"});
                 
