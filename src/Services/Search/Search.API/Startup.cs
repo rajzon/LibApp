@@ -46,7 +46,7 @@ namespace Search.API
                         "http://identity-service:80"
                     };
                 });
-            
+
             services.AddAuthorization();
             services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
             

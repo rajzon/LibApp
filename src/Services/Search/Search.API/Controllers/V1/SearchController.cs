@@ -67,7 +67,26 @@ namespace Search.API.Controllers.V1
             });
         }
 
+
+        [HttpGet("book/delivery")]
+        [ProducesResponseType(typeof(BookDeliveryResponse), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> BookEanSearch(string searchTerm)
+        {
+            var result =
+                await _bookRepository.SearchByEanAsync(new SearchBookByEanCommand() {SearchTerm = searchTerm});
+
+            if (! result.Documents.Any())
+                return NotFound();
+
+            var response = _mapper.Map<BookDeliveryResponse>(result.Documents.FirstOrDefault());
+
+            return Ok(response);
+        }
+
         [HttpGet("suggest/book/management/{searchSuggestValue}")]
+        [ProducesResponseType(typeof(List<SuggestBookManagementResult>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
         public async Task<IActionResult> BookManagementSuggest(string searchSuggestValue)
         {
             var result = await _bookRepository.SuggestAsync(new SuggestBookCommand

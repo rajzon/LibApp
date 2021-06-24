@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using EventBus.Messages.Commands;
 using Search.API.Contracts.Responses;
 using Search.API.Domain;
@@ -30,6 +31,8 @@ namespace Search.API.Mappings
             CreateMap<Image, ImageResponseDto>();
 
             CreateMap<Book, BookManagementResponseDto>();
+            CreateMap<Book, BookDeliveryResponse>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Images.FirstOrDefault(i => i.IsMain)));
         }
     }
 }
