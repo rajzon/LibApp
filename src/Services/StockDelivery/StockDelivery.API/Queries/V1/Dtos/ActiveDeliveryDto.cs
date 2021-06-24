@@ -10,6 +10,7 @@ namespace StockDelivery.API.Queries.V1.Dtos
         public short BooksCount { get; set; }
         public short ItemsCount { get; set; }
         public bool IsAllDeliveryItemsScanned { get; set; }
+        public bool IsAnyDeliveryItemsScanned { get; set; }
         
         public DeliveryStatus DeliveryStatus { get; set; }
         public DateTime ModificationDate { get; set; }

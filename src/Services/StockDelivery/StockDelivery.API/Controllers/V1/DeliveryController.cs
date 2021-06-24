@@ -24,7 +24,7 @@ namespace StockDelivery.API.Controllers.V1
         }
 
 
-        [HttpGet]
+        [HttpGet("active")]
         [ProducesResponseType(typeof(ActiveDeliveryDto), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetAll([FromQuery] short currentPage, [FromQuery] short pageSize)
@@ -38,11 +38,11 @@ namespace StockDelivery.API.Controllers.V1
         }
 
 
-        [HttpPost("create")]
+        [HttpPost("active/create")]
         [ProducesResponseType(typeof(CommandActiveDeliveryDto), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateDelivery(CreateActiveDeliveryCommand command)
+        public async Task<IActionResult> CreateActiveDelivery(CreateActiveDeliveryCommand command)
         {
             var result = await _mediator.Send(command);
             
@@ -55,6 +55,24 @@ namespace StockDelivery.API.Controllers.V1
 
 
             return Ok(result.ActiveDelivery);
+        }
+
+
+        [HttpDelete("active/delete/{deliveryId}")]
+        [ProducesResponseType(typeof(DeleteActiveDeliveryCommandResult), (int) HttpStatusCode.NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> DeleteActiveDelivery(int deliveryId)
+        {
+            var result = await _mediator.Send(new DeleteActiveDeliveryCommand() {DeliveryId = deliveryId});
+
+            if (! result.Succeeded)
+                return result.Errors.Any()? BadRequest(new ErrorResponse
+                {
+                    Errors =  result.Errors
+                }): BadRequest();
+
+            return NoContent();
         }
     }
 }

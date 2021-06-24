@@ -26,6 +26,18 @@ namespace StockDelivery.API.Data.Repositories
             return response;
         }
 
+        public void Remove(ActiveDelivery activeDelivery)
+        {
+            _context.ActiveDeliveries.Remove(activeDelivery);
+        }
+
+        public async Task<ActiveDelivery> FindByIdAsync(int activeDeliveryId)
+        {
+            var response = await _context.ActiveDeliveries.FindAsync(activeDeliveryId);
+
+            return response;
+        }
+
         public async Task<PagedList<ActiveDelivery>> GetAllAsync(PaginationParams paginationParams)
         {
             var response = _context.ActiveDeliveries.AsQueryable();

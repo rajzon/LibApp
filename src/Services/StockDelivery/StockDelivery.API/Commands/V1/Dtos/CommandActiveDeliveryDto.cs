@@ -9,6 +9,7 @@ namespace StockDelivery.API.Commands.V1.Dtos
         public int Id { get; init; }
         public string Name { get; init; }
         public bool IsAllDeliveryItemsScanned { get; init; }
+        public bool IsAnyDeliveryItemsScanned { get; init; }
         
         public DeliveryStatus DeliveryStatus { get; init; }
         public DateTime ModificationDate { get; init; }

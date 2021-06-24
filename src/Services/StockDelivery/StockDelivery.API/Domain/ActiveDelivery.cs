@@ -10,6 +10,7 @@ namespace StockDelivery.API.Domain
     {
         public string Name { get; private set; }
         public bool IsAllDeliveryItemsScanned { get; private set; }
+        public bool IsAnyDeliveryItemsScanned { get; private set; }
 
         public DeliveryStatus DeliveryStatus { get; }
         public DateTime ModificationDate { get; private set; }
