@@ -32,9 +32,9 @@ export class AuthService {
       });
 
     //disabled for Dev only
-    // this.oauthService.events
-    //   .pipe(filter(e => ['token_refresh_error'].includes(e.type)))
-    //   .subscribe(e => this.oauthService.logOut());
+    this.oauthService.events
+      .pipe(filter(e => ['token_refresh_error'].includes(e.type)))
+      .subscribe(e => this.oauthService.logOut());
 
     this.oauthService.events
       .pipe(filter(e => ['token_refreshed'].includes(e.type)))

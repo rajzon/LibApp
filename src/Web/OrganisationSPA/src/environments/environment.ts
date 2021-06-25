@@ -8,6 +8,7 @@ export const environment = {
   logoImg: 'assets/img/Logo-placeholder.png',
   bookApiUrl: 'https://localhost:5001/',
   searchApiUrl: 'https://localhost:6001/',
+  stockDeliveryApiUrl: 'https://localhost:7001/',
   googleApiUrl: 'https://www.googleapis.com/',
   timeFormat: 'dd-MM-yyyy',
   defaultSortingField: 'modificationDate:desc',

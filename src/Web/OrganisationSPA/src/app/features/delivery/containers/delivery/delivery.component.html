@@ -1,0 +1,18 @@
+<ngx-spinner *ngIf="isLoading$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
+
+
+<div class="mt-5">
+  <tabset>
+    <tab heading="Currently Pending Deliveries" id="tab1">
+      <div class="mt-5" *ngIf="activeDeliveries$ | async as activeDeliveries">
+        <app-delivery-pending-list [deliveryResult]="activeDeliveries"
+                                   (reloadDeliveriesEvent)="reloadDeliveries($event)"></app-delivery-pending-list>
+      </div>
+
+    </tab>
+    <tab heading="Delivery History"></tab>
+  </tabset>
+</div>
+

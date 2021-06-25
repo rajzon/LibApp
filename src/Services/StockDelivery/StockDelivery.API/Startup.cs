@@ -94,9 +94,11 @@ namespace StockDelivery.API
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
+            app.UseCors(x => x.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("http://localhost:4200"));
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
