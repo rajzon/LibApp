@@ -1,6 +1,7 @@
 ﻿import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ActiveDeliveriesResultDto} from "../models/active-deliveries-result-dto";
+import {ActiveDelivery} from "../models/active-delivery-dto";
 
 
 @Injectable({
@@ -28,5 +29,12 @@ export class ActiveDeliveryState {
 
   getActiveDeliveries$() : Observable<ActiveDeliveriesResultDto> {
     return this.deliveriesResult$.asObservable();
+  }
+
+  removeActiveDelivery(activeDelivery: ActiveDelivery) {
+    const currDeliveries = this.deliveriesResult$.getValue()
+    currDeliveries.result = currDeliveries.result.filter(d => d.id !== activeDelivery.id)
+    this.deliveriesResult$.next(currDeliveries)
+
   }
 }

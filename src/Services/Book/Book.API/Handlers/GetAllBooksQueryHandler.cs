@@ -24,7 +24,7 @@ namespace Book.API.Handlers
         public async Task<IEnumerable<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
         {
             var books = await _bookRepository.GetAllAsync();
-            
+
             return _mapper.Map<IEnumerable<BookDto>>(books);
         }
     }

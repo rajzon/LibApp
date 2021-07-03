@@ -12,6 +12,7 @@ export const environment = {
   googleApiUrl: 'https://www.googleapis.com/',
   timeFormat: 'dd-MM-yyyy',
   defaultSortingField: 'modificationDate:desc',
+  deleteActiveDeliveryFunctionalityName: "deleteActiveDelivery",
   pagination: {
     itemsPerPageDefault: 10,
     itemsPerPageOpts: [10,20,40]

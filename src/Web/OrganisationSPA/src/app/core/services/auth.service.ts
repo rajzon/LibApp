@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import {OAuthErrorEvent, OAuthService, UserInfo} from "angular-oauth2-oidc";
+import {OAuthService, UserInfo} from "angular-oauth2-oidc";
 import {authConfig} from "@core/services/auth-config";
 import {BehaviorSubject, Observable} from "rxjs";
-import {filter} from "rxjs/operators";
+import {filter, map} from "rxjs/operators";
+import {ActivatedRoute} from "@angular/router";
 
 
 @Injectable({
@@ -61,6 +62,7 @@ export class AuthService {
 
   //UserInfo Observable
   getUserInfo$(): Observable<UserInfo> {
+    console.log('FIRED')
     return this.userInfo$.asObservable();
   }
 
@@ -74,6 +76,7 @@ export class AuthService {
   }
 
   login(): void {
+    console.log('FIRED LOGIN')
     this.oauthService.loadDiscoveryDocumentAndLogin().then(_ => {
       if(! this.oauthService.hasValidIdToken() || ! this.oauthService.hasValidAccessToken()) {
         console.log('Trying to Login: Id Token or Access Token is invalid')
@@ -88,7 +91,9 @@ export class AuthService {
         console.log("after initLoginFlow id token: ", this.oauthService.getIdToken());
         console.log("after initLoginFlow IdTokenClaims: ", this.oauthService.getIdentityClaims());
         console.log("after initLoginFlow UserProfileClaims: ", this.oauthService.loadUserProfile());
-
+        this.getUserProfile().then((res: UserInfo) => {
+          this.setUserInfo(res);
+        })
       }
     });
   }
@@ -117,6 +122,37 @@ export class AuthService {
   hasValidIdTokenAndAccessToken(): boolean {
     return this.oauthService.hasValidIdToken() &&
       this.oauthService.hasValidAccessToken()
+  }
+
+  hasUserHaveRightsToAccess$(functionalityName: string, route: ActivatedRoute): Observable<boolean> {
+    return this.getUserInfo$().pipe(map((userClaims: UserInfo) => {
+      const allowedClaims = route.snapshot.data[functionalityName + 'Claims'] as Array<any>;
+      const allowedRoles = route.snapshot.data[functionalityName + 'Roles'] as Array<string>;
+
+      if (userClaims?.role === 'admin' && allowedRoles.includes(userClaims?.role))
+        return true;
+
+      if (AuthService.hasAllRequiredClaims(allowedClaims, userClaims))
+        return true;
+
+    }));
+
+
+  }
+
+  private static hasAllRequiredClaims(allowedClaims: any[], userClaims: UserInfo): boolean {
+    for (let i = 0; i < allowedClaims.length; i++){
+      let x = allowedClaims[i];
+      for (let [key, values] of Object.entries(x)) {
+        console.log(`Key: ${key} Value:${values}`)
+        // if (! userClaimsNames.includes(key))
+        //   return false;
+        console.log(`User has claim ( ${key}: ${userClaims[key]} ) which value is included in:${(<string>values)} : `,(<string>values).includes(userClaims[key]));
+        if (! (<string>values).includes(userClaims[key]))
+          return false;
+      }
+    }
+    return true;
   }
 
 }

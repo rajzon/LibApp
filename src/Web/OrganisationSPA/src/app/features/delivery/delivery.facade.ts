@@ -7,6 +7,7 @@ import {DeliveryApiService} from "./api/delivery-api.service";
 import {catchError, map} from "rxjs/operators";
 import {MessagePopupService} from "@core/services/message-popup.service";
 import {ActiveDeliveriesResultDto} from "./models/active-deliveries-result-dto";
+import {ActiveDelivery} from "./models/active-delivery-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,18 @@ export class DeliveryFacade {
 
   getActiveDeliveries$(): Observable<ActiveDeliveriesResultDto> {
     return this.activeDeliveryState.getActiveDeliveries$()
+  }
+
+  deleteActiveDelivery$(activeDelivery: ActiveDelivery): Observable<any> {
+    this.activeDeliveryState.setLoading(true)
+    return this.deliveryApi.deleteActiveDelivery$(activeDelivery.id).pipe(map(r => {
+      this.activeDeliveryState.removeActiveDelivery(activeDelivery)
+      this.activeDeliveryState.setLoading(false)
+    }), catchError( (err => {
+      this.messagePopup.displayError(err)
+      this.activeDeliveryState.setLoading(false);
+      return of(err)
+    })));
   }
 
 }

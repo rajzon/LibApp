@@ -26,7 +26,11 @@
         <td class="font-weight-bold delivery-property text-center">{{delivery.name}}</td>
         <td class="font-weight-bold delivery-property text-center">{{delivery.booksCount}}</td>
         <td class="font-weight-bold delivery-property text-center">{{delivery.itemsCount}}</td>
-        <td></td>
+        <td>
+          <button type="button"
+                  [disabled]="!hasRightsToAccess"
+                    class="fa fa-trash ml-1 mr-2" (click)="deleteDelivery(delivery)"></button>
+        </td>
         <td class="font-weight-bold delivery-property text-center">{{delivery.modificationDate}}</td>
         <td class="font-weight-bold delivery-property text-center">{{delivery.modificationDate}}</td>
 

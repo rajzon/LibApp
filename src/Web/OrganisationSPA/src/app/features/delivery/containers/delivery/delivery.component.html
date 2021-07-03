@@ -8,7 +8,8 @@
     <tab heading="Currently Pending Deliveries" id="tab1">
       <div class="mt-5" *ngIf="activeDeliveries$ | async as activeDeliveries">
         <app-delivery-pending-list [deliveryResult]="activeDeliveries"
-                                   (reloadDeliveriesEvent)="reloadDeliveries($event)"></app-delivery-pending-list>
+                                   (reloadDeliveriesEvent)="reloadDeliveries($event)"
+                                   (deleteDeliveryEvent)="deleteActiveDelivery($event)"></app-delivery-pending-list>
       </div>
 
     </tab>

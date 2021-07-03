@@ -21,4 +21,8 @@ export class DeliveryApiService {
 
     return this.httpClient.get<ActiveDeliveriesResultDto>(this.API + "/active", {params: params});
   }
+
+  deleteActiveDelivery$(deliveryId: number): Observable<any> {
+    return this.httpClient.delete<any>(this.API + `/active/delete/${deliveryId}`)
+  }
 }
