@@ -13,6 +13,7 @@ namespace StockDelivery.API.Installers
             {
                 
                 x.AddRequestClient<CheckBooksExsitance>();
+                x.AddRequestClient<GetBooksInfo>();
                 
                 x.UsingRabbitMq((context, cfg) =>
                 {

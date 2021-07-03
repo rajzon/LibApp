@@ -14,14 +14,22 @@ namespace Book.API.Installers
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<CheckBooksExistanceConsumer>();
+                x.AddConsumer<GetBooksInfoConsumer>();
                 
                 x.AddRequestClient<CheckBooksExsitance>();
+                x.AddRequestClient<GetBooksInfo>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.ReceiveEndpoint(EventBusConstants.CheckBooksExistance, e =>
                     {
                         e.ConfigureConsumer<CheckBooksExistanceConsumer>(context);
+                        
+                    });
+                    
+                    cfg.ReceiveEndpoint(EventBusConstants.GetBooksInfo, e =>
+                    {
+                        e.ConfigureConsumer<GetBooksInfoConsumer>(context);
                     });
                     cfg.Host(configuration["EventBusSettings:HostUrl"]);
                 });

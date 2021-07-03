@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -34,6 +35,19 @@ namespace StockDelivery.API.Controllers.V1
             var result = await _mediator.Send(new GetAllActiveDeliveriesQuery(currentPage, pageSize));
 
             if (!result.Result.Any())
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpGet("active/{id}")]
+        [ProducesResponseType(typeof(ActiveDeliveryWithItemsDto), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> Get(int id)
+        {
+            var result = await _mediator.Send(new GetActiveDeliveryQuery(id));
+
+            if (result is null || !result.Items.Any() || result.ActiveDeliveryInfo is null)
                 return NotFound();
 
             return Ok(result);

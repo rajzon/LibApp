@@ -53,6 +53,17 @@ namespace Book.API.Data.Repositories
             return result;
         }
 
+        public async Task<IEnumerable<Domain.Book>> GetAllByIds(List<int> booksIds)
+        {
+            var result = await _bookContext.Books
+                .Include(b => b.Categories)
+                .Include(b => b.Authors).Where(b => booksIds.Contains(b.Id))
+                .Include(b => b.Images)
+                .ToListAsync();
+
+            return result;
+        }
+
         //TODO: Consider some sort of builder for building Book with related tables
         public async Task<IEnumerable<Domain.Book>> GetAllAsync()
         {

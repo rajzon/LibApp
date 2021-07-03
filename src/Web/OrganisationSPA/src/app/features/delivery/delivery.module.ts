@@ -4,11 +4,12 @@ import { DeliveryComponent } from './containers/delivery/delivery.component';
 import { DeliveryPendingListComponent } from './components/delivery-pending-list/delivery-pending-list.component';
 import {SharedModule} from "@shared/shared.module";
 import {routing} from "./delivery.routing";
+import { DeliveryCreateComponent } from './components/delivery-create/delivery-create.component';
 
 
 
 @NgModule({
-  declarations: [DeliveryComponent, DeliveryPendingListComponent],
+  declarations: [DeliveryComponent, DeliveryPendingListComponent, DeliveryCreateComponent],
   imports: [
     CommonModule,
     routing,

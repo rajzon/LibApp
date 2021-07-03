@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using AutoMapper;
+using EventBus.Messages.Results;
 using StockDelivery.API.Commands.V1.Dtos;
 using StockDelivery.API.Domain;
 using StockDelivery.API.Queries.V1.Dtos;
@@ -14,6 +15,15 @@ namespace StockDelivery.API.Mappings
                 .ForMember(dest => dest.BookEan,
                     opt => opt.MapFrom(src => src.BookEan.Code));
             CreateMap<ActiveDelivery, CommandActiveDeliveryDto>();
+            CreateMap<ActiveDeliveryItem, ActiveDeliveryItemDto>()
+                .ForMember(dest => dest.BookEan,
+                    opt => opt.MapFrom(src => src.BookEan.Code));
+
+            CreateMap<CategoryBusResponseDto, CategoryResponseDto>();
+            CreateMap<PublisherBusResponseDto, PublisherResponseDto>();
+            CreateMap<ImageBusResponseDto, ImageResponseDto>();
+            CreateMap<AuthorBusResponseDto, AuthorResponseDto>();
+            CreateMap<BookInfoDto, ActiveDeliveryItemDescDto>();
 
 
             CreateMap<ActiveDelivery, ActiveDeliveryDto>()

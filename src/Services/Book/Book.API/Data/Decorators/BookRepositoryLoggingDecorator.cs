@@ -82,6 +82,19 @@ namespace Book.API.Data.Decorators
             return result;
         }
 
+        public async Task<IEnumerable<Domain.Book>> GetAllByIds(List<int> booksIds)
+        {
+            _logger.LogInfoMethodStarted<IEnumerable<Domain.Book>>(BookRepositoryType, nameof(GetAllByIds), new object[] {booksIds});
+            
+            var result = await _bookRepository.GetAllByIds(booksIds);
+
+            if (! result.Any())
+                _logger.LogWarningNotFound<IEnumerable<Domain.Book>>(BookRepositoryType, nameof(GetAllByIds), new object[] {booksIds});
+
+            _logger.LogInfoMethodEnded(BookRepositoryType, nameof(GetAllByIds), result);
+            return result;
+        }
+
         public async Task<IEnumerable<Domain.Book>> GetAllAsync()
         {
             _logger.LogInfoMethodStarted<IEnumerable<Domain.Book>>(BookRepositoryType, nameof(GetAllAsync), methodParams: null);
