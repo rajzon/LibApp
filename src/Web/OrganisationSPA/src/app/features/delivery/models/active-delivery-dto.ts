@@ -3,8 +3,8 @@
     name: string
     booksCount: number
     itemsCount: number
-    IsAllDeliveryItemsScanned: boolean
-    IsAnyDeliveryItemsScanned: boolean
+    isAllDeliveryItemsScanned: boolean
+    isAnyDeliveryItemsScanned: boolean
 
     deliveryStatus: number
     modificationDate: Date | string

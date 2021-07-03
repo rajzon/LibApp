@@ -28,7 +28,7 @@
         <td class="font-weight-bold delivery-property text-center">{{delivery.itemsCount}}</td>
         <td>
           <button type="button"
-                  [disabled]="!hasRightsToAccess"
+                  [disabled]="!hasRightsToAccess || delivery.isAnyDeliveryItemsScanned"
                     class="fa fa-trash ml-1 mr-2" (click)="deleteDelivery(delivery)"></button>
         </td>
         <td class="font-weight-bold delivery-property text-center">{{delivery.modificationDate}}</td>
@@ -68,5 +68,3 @@
   </div>
 
 </div>
-
-
