@@ -10,6 +10,7 @@ import {ActiveDeliveryItemForCreationDto, CreateActiveDeliveryCommand} from "../
 import {environment} from "@env";
 import {Router} from "@angular/router";
 import {ActiveDeliveryResultFromSearch} from "../../models/active-delivery-result-from-search";
+import {AddNewDeliveryConfirmationBoxModalComponent} from "../add-new-delivery-confirmation-box-modal/add-new-delivery-confirmation-box-modal.component";
 
 @Component({
   selector: 'app-delivery-create',
@@ -79,12 +80,19 @@ export class DeliveryCreateComponent implements OnInit, AfterViewInit {
   }
 
   addDelivery(): void {
-    for (let i = 0; i < this.deliveryItems.length; i++) {
-      const deliveryItemSrc = this.deliveryItems[i];
-      this.dataNeededToAddDelivery.itemsInfo[i] = new ActiveDeliveryItemForCreationDto(deliveryItemSrc.id, deliveryItemSrc.ean13, deliveryItemSrc.itemsCount);
-    }
-    console.log(this.dataNeededToAddDelivery);
-    this.deliveryFacade.addNewActiveDelivery(this.dataNeededToAddDelivery).subscribe();
+    this.modalRef = this.modalService.show(AddNewDeliveryConfirmationBoxModalComponent)
+    this.modalRef.content.onClose$.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        for (let i = 0; i < this.deliveryItems.length; i++) {
+          const deliveryItemSrc = this.deliveryItems[i];
+          this.dataNeededToAddDelivery.itemsInfo[i] = new ActiveDeliveryItemForCreationDto(deliveryItemSrc.id, deliveryItemSrc.ean13, deliveryItemSrc.itemsCount);
+        }
+        console.log(this.dataNeededToAddDelivery);
+        this.deliveryFacade.addNewActiveDelivery(this.dataNeededToAddDelivery).subscribe();
+      }
+    })
+
+
   }
 
 

@@ -13,6 +13,7 @@ export const environment = {
   timeFormat: 'dd-MM-yyyy',
   defaultSortingField: 'modificationDate:desc',
   deleteActiveDeliveryFunctionalityName: "deleteActiveDelivery",
+  addDeliveryFunctionalityName: "addNewDelivery",
   pagination: {
     itemsPerPageDefault: 10,
     itemsPerPageOpts: [10,20,40]

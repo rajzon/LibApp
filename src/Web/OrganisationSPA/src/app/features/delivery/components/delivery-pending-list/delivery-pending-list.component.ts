@@ -21,13 +21,16 @@ export class DeliveryPendingListComponent implements OnInit, AfterViewInit {
   selectedMaxResult: number = environment.pagination.itemsPerPageDefault
   currentPage: number = 1;
   deleteFunctionalityName = environment.deleteActiveDeliveryFunctionalityName;
+  addDeliveryFunctionalityName = environment.addDeliveryFunctionalityName;
 
-  hasRightsToAccess: boolean
+  accessModel: {hasRightsToDeleteDelivery: boolean, hasRightsToAddDelivery: boolean}
 
   constructor(private authService: AuthService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.accessModel = {hasRightsToDeleteDelivery: false, hasRightsToAddDelivery: false};
     this.canUserAccess(this.deleteFunctionalityName)
+    this.canUserAccess(this.addDeliveryFunctionalityName)
   }
 
   pageChanged(event: any): void {
@@ -52,7 +55,10 @@ export class DeliveryPendingListComponent implements OnInit, AfterViewInit {
   }
 
   canUserAccess(functionalityName: string): void{
-     this.authService.hasUserHaveRightsToAccess$(functionalityName, this.route).subscribe(res => this.hasRightsToAccess = res);
+    if (functionalityName === this.deleteFunctionalityName)
+      this.authService.hasUserHaveRightsToAccess$(functionalityName, this.route).subscribe(res => this.accessModel.hasRightsToDeleteDelivery = res);
+    if (functionalityName === this.addDeliveryFunctionalityName)
+      this.authService.hasUserHaveRightsToAccess$(functionalityName, this.route).subscribe(res => this.accessModel.hasRightsToAddDelivery = res);
   }
 
 }

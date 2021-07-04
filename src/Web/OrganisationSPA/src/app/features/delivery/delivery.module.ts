@@ -6,11 +6,12 @@ import {SharedModule} from "@shared/shared.module";
 import {routing} from "./delivery.routing";
 import { DeliveryCreateComponent } from './components/delivery-create/delivery-create.component';
 import { DeliveryEditItemCountModalComponent } from './components/delivery-edit-item-count-modal/delivery-edit-item-count-modal.component';
+import { AddNewDeliveryConfirmationBoxModalComponent } from './components/add-new-delivery-confirmation-box-modal/add-new-delivery-confirmation-box-modal.component';
 
 
 
 @NgModule({
-  declarations: [DeliveryComponent, DeliveryPendingListComponent, DeliveryCreateComponent, DeliveryEditItemCountModalComponent],
+  declarations: [DeliveryComponent, DeliveryPendingListComponent, DeliveryCreateComponent, DeliveryEditItemCountModalComponent, AddNewDeliveryConfirmationBoxModalComponent],
   imports: [
     CommonModule,
     routing,
