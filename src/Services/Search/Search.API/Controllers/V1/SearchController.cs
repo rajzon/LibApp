@@ -68,7 +68,7 @@ namespace Search.API.Controllers.V1
         }
 
 
-        [HttpGet("book/delivery")]
+        [HttpGet("book/delivery/{searchTerm}")]
         [ProducesResponseType(typeof(BookDeliveryResponse), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         public async Task<IActionResult> BookEanSearch(string searchTerm)

@@ -46,7 +46,7 @@ namespace Book.API.Data.Repositories
 
         public async Task<bool> IsAllExistsAsync(Dictionary<int, string> booksIdsWithEans)
         {
-            var result = await _bookContext.Books.AllAsync(b => 
+            var result = await _bookContext.Books.AnyAsync(b => 
                 booksIdsWithEans.ContainsKey(b.Id) &&
                 booksIdsWithEans.ContainsValue(b.Ean13.Code));
 

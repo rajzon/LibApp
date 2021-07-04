@@ -5,11 +5,12 @@ import { DeliveryPendingListComponent } from './components/delivery-pending-list
 import {SharedModule} from "@shared/shared.module";
 import {routing} from "./delivery.routing";
 import { DeliveryCreateComponent } from './components/delivery-create/delivery-create.component';
+import { DeliveryEditItemCountModalComponent } from './components/delivery-edit-item-count-modal/delivery-edit-item-count-modal.component';
 
 
 
 @NgModule({
-  declarations: [DeliveryComponent, DeliveryPendingListComponent, DeliveryCreateComponent],
+  declarations: [DeliveryComponent, DeliveryPendingListComponent, DeliveryCreateComponent, DeliveryEditItemCountModalComponent],
   imports: [
     CommonModule,
     routing,

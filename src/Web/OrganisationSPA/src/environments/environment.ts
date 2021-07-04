@@ -17,6 +17,16 @@ export const environment = {
     itemsPerPageDefault: 10,
     itemsPerPageOpts: [10,20,40]
   },
+  delivery: {
+    name: {
+      required: true
+    },
+    ean13: {
+      minLength: 13,
+      maxLength: 13,
+      pattern: '^[0-9]+$'
+    }
+  },
   book: {
     title: {
       required: true,

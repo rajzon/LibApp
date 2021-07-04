@@ -10,8 +10,10 @@ import {ActiveDelivery} from "../models/active-delivery-dto";
 export class ActiveDeliveryState {
 
   private loading$ = new BehaviorSubject<boolean>(false);
+  private adding$ = new BehaviorSubject<boolean>(false);
 
   private deliveriesResult$ = new BehaviorSubject<ActiveDeliveriesResultDto>(null);
+
 
 
   isLoading$() {
@@ -20,6 +22,14 @@ export class ActiveDeliveryState {
 
   setLoading(isLoading: boolean): void {
     this.loading$.next(isLoading);
+  }
+
+  isAdding$() {
+    return this.adding$.asObservable();
+  }
+
+  setAdding(isAdding: boolean): void {
+    this.adding$.next(isAdding);
   }
 
 

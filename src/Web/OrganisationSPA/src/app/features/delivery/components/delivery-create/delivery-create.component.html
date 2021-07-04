@@ -1,15 +1,165 @@
+<ngx-spinner *ngIf="isLoading$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
+<ngx-spinner *ngIf="isAdding$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
+
+
+
 <div class="mb-5 mt-4 border-bottom">
   <h1 class="display-4">Add new delivery</h1>
 </div>
 
 <div class="row">
+  <div class="col-4">
+
+  </div>
+  <div class="col-4">
+    <div class="row">
+      <div class="col-12">
+        <form #searchForm="ngForm" (ngSubmit)="search()"
+              class="form-inline justify-content-center mt-5">
+          <div class="form-group mr-1">
+            <input type="text"
+                   class="form-control search-field"
+                   [(ngModel)]="searchTerm"
+                   name="searchValue"
+                   placeholder="Search field..."
+                   [minlength]="deliveryConfigs.ean13.minLength"
+                   [maxLength]="deliveryConfigs.ean13.maxLength"
+                   [pattern]="deliveryConfigs.ean13.pattern"
+                   [required]="true">
+            <button type="submit"
+                    [disabled]="searchForm.invalid"
+                    class="fa fa-search ml-1 search"></button>
+          </div>
+
+        </form>
+      </div>
+      <div class="col-12 mt-1">
+        <div class="font-weight-bold">Insert EAN Book Code</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-4">
+
+  </div>
+</div>
+<div class="mt-5 text-right container">
+  <button class="btn btn-light action-btn"
+          [routerLink]="['/delivery']"
+          (click)="addDelivery()">Close</button>
+</div>
+
+<!---------------------------------------------------------------------------------------------------------------------------------->
+<form #addForm="ngForm"
+      (ngSubmit)="addDelivery()">
+<div class="row container">
   <div class="col-3">
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <span class="input-group-text">Delivery name</span>
       </div>
-      <input type="text" class="form-control" aria-describedby="basic-addon3">
+      <input type="text"
+             class="form-control"
+             name="delivery-name"
+             [required]="deliveryConfigs.name.required"
+             [(ngModel)]="dataNeededToAddDelivery.name"
+             aria-describedby="basic-addon3">
     </div>
 
   </div>
 </div>
+
+<div *ngIf="deliveryItems" class="table-responsive mt-5 container">
+  <table class="table table-striped mt-3">
+    <thead>
+    <tr>
+      <th scope="col">Image</th>
+      <th scope="col">Book Description</th>
+      <th scope="col">EAN Code</th>
+      <th scope="col">Items Count</th>
+      <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr *ngFor="let item of deliveryItems">
+      <td class="image-row"><img class="img-fluid"
+                                 [src]="item.image?.url"
+                                 alt=""></td>
+      <td>
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <p class="font-weight-bold text-capitalize"> {{item.title}}</p>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-12 book-description">
+              Authors:
+              <div class="d-inline author" *ngFor="let author of item.authors">
+                {{author.fullName}}
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-4">
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold">Category:</div>
+              <div class="d-inline font-weight-bold" *ngFor="let category of item.categories">
+                {{category.name}}
+              </div>
+            </div>
+            <!--          -->
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold ">Publisher: </div>
+              <div class="d-inline">{{item.publisher?.name}}</div>
+            </div>
+            <!--          -->
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold">ISBN10: </div>
+              <div class="d-inline">{{item.isbn10}}</div>
+            </div>
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold ">Published Date: </div>
+              <div class="d-inline">{{item.publishedDate | date}}</div>
+            </div>
+            <div class="col-6 book-description">
+              <div class="d-inline font-weight-bold">ISBN13: </div>
+              <div class="d-inline">{{item.isbn13}}</div>
+            </div>
+
+          </div>
+
+        </div>
+      </td>
+      <td class="font-weight-bold ean">{{item.ean13}}</td>
+      <td> {{item.itemsCount}}</td>
+      <td class="justify-content-center align-items-center text-center p-1">
+        <div class="row w-75 mt-3">
+          <div class="col-12">
+            <button type="button"
+                    (click)="editItemCount(item)"
+                    class="fa fa-edit ml-1 mr-2"></button>
+          </div>
+          <div class="col-12 mt-2">
+            <button type="button"
+                    (click)="deleteItem(item)"
+                    class="fa fa-trash ml-1 mr-2"></button>
+          </div>
+        </div>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+  <div class="mt-5 text-right action-btn">
+    <button class="btn btn-success" [disabled]="addForm.invalid || !isAllDeliveryItemsAreCorrect">Save Changes</button>
+  </div>
+</div>
+</form>
+
