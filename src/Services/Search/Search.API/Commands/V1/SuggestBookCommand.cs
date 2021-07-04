@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Search.API.Commands
+﻿namespace Search.API.Commands.V1
 {
     public class SuggestBookCommand
     {

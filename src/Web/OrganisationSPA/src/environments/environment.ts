@@ -8,12 +8,25 @@ export const environment = {
   logoImg: 'assets/img/Logo-placeholder.png',
   bookApiUrl: 'https://localhost:5001/',
   searchApiUrl: 'https://localhost:6001/',
+  stockDeliveryApiUrl: 'https://localhost:7001/',
   googleApiUrl: 'https://www.googleapis.com/',
   timeFormat: 'dd-MM-yyyy',
   defaultSortingField: 'modificationDate:desc',
+  deleteActiveDeliveryFunctionalityName: "deleteActiveDelivery",
+  addDeliveryFunctionalityName: "addNewDelivery",
   pagination: {
     itemsPerPageDefault: 10,
     itemsPerPageOpts: [10,20,40]
+  },
+  delivery: {
+    name: {
+      required: true
+    },
+    ean13: {
+      minLength: 13,
+      maxLength: 13,
+      pattern: '^[0-9]+$'
+    }
   },
   book: {
     title: {

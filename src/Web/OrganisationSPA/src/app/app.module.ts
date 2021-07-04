@@ -8,6 +8,7 @@ import { CoreModule } from "@core/core.module";
 import { routing } from "./app.routing";
 import {BookModule} from "./features/book/book.module";
 import {HttpClientModule} from "@angular/common/http";
+import {DeliveryModule} from "./features/delivery/delivery.module";
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import {HttpClientModule} from "@angular/common/http";
     CoreModule,
     routing,
     BookModule,
+    DeliveryModule,
     HttpClientModule
   ],
   providers: [],

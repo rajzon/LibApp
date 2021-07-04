@@ -9,6 +9,10 @@ export const routes: Routes = [
     path: 'book',
     loadChildren: './features/book/book.module#BookModule'
   },
+  {
+    path: 'delivery',
+    loadChildren: './features/delivery/delivery.module#DeliveryModule'
+  },
   { path: '**', redirectTo: 'home'},
 ]
 

@@ -25,10 +25,14 @@ export class MessagePopupService {
   }
 
   public displayInfo(message: string): void {
-    this.toastr.info(message);
+    this.toastr.info(message, '', {
+      positionClass: "toast-top-full-width"
+    });
   }
 
   public displaySuccess(message: string): void {
-    this.toastr.success(message);
+    this.toastr.success(message, '', {
+      positionClass: "toast-top-full-width"
+    });
   }
 }

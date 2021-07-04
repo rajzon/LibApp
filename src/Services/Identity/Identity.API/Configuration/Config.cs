@@ -23,6 +23,11 @@ namespace Identity.API.Configuration
                 {
                     Name = "book_privilege.scope",
                     UserClaims = { "book_privilege" },
+                },
+                new IdentityResource()
+                {
+                    Name = "delivery_privilege.scope",
+                    UserClaims = { "delivery_privilege" }
                 }
             };
 
@@ -37,6 +42,11 @@ namespace Identity.API.Configuration
                 new ApiResource("search_api", "Search API")
                 {
                     Scopes = { "search_api" }
+                },
+                new ApiResource("stock_delivery_api", "Stock Delivery API")
+                {
+                    UserClaims = {JwtClaimTypes.Role, "delivery_privilege"},
+                    Scopes = { "stock_delivery_api" }
                 }
             };
 
@@ -44,7 +54,8 @@ namespace Identity.API.Configuration
             new List<ApiScope>()
             {
                 new ApiScope("book_api"),
-                new ApiScope("search_api")
+                new ApiScope("search_api"),
+                new ApiScope("stock_delivery_api")
             };
 
         public static IEnumerable<Client> GetClients() => 
@@ -61,8 +72,8 @@ namespace Identity.API.Configuration
                     AllowOfflineAccess = true,
                     RefreshTokenUsage = TokenUsage.ReUse,
                     RefreshTokenExpiration = TokenExpiration.Absolute,
-                    AbsoluteRefreshTokenLifetime = 30,
-                    AccessTokenLifetime = 20,
+                    AbsoluteRefreshTokenLifetime = 360,
+                    AccessTokenLifetime = 340,
                     RedirectUris = { "http://localhost:4200" },
                     PostLogoutRedirectUris = { "https://localhost:8001/auth/login" },
                     AllowedCorsOrigins = { "http://localhost:4200" },
@@ -76,8 +87,10 @@ namespace Identity.API.Configuration
                         IdentityServerConstants.StandardScopes.OfflineAccess,
                         "role.scope",
                         "book_privilege.scope",
+                        "delivery_privilege.scope",
                         "book_api",
-                        "search_api"
+                        "search_api",
+                        "stock_delivery_api"
                         
                     }
                 }

@@ -8,6 +8,7 @@ using Nest;
 using Search.API.Application.Services;
 using Search.API.Application.Services.Common;
 using Search.API.Commands;
+using Search.API.Commands.V1;
 using Search.API.Domain;
 using Search.API.Extensions;
 using FieldType = Search.API.Application.Services.Common.FieldType;
@@ -102,6 +103,28 @@ namespace Search.API.Infrastructure.Data
             
             
             _logger.LogInformation("BookRepository: SearchAsync successfully requested data from Elasticsearch");
+            return result;
+        }
+
+        public async Task<ISearchResponse<Book>> SearchByEanAsync(SearchBookByEanCommand command)
+        {
+            _logger.LogInformation("BookRepository: SearchByEanAsync - Method started with values {@MethodValues}", command);
+
+            var result = await _client.SearchAsync<Book>(s => s
+                .Index(_configuration["elasticsearch:bookIndexName"])
+                .Query(q => q
+                    .Terms(t => t
+                        .Field(f => f.Ean13.Suffix("keyword"))
+                        .Terms(command.SearchTerm)))
+            );
+            
+            if (!result.IsValid)
+            {
+                _logger.LogError("BookRepository: SearchByEanAsync error occured during analyzing query by Elasticsearch, {@MethodValues}", command);
+                return result;
+            }
+            
+            _logger.LogInformation("BookRepository: SearchByEanAsync successfully requested data from Elasticsearch");
             return result;
         }
 

@@ -33,11 +33,11 @@ namespace Search.API.Domain
         public DateTime ModificationDate { get; set; }
         public DateTime CreationDate { get; set; }
 
-        [Completion(Analyzer = "simple")]
+        [Completion(Analyzer = "simple", SearchAnalyzer = "simple")]
         public CompletionField TitleSuggest { get; set; }
-        [Completion(Analyzer = "simple")]
+        [Completion(Analyzer = "simple",  SearchAnalyzer = "simple")]
         public CompletionField AuthorSuggest { get; set; }
-        [Completion(Analyzer = "standard")]
+        [Completion(Analyzer = "standard",  SearchAnalyzer = "standard")]
         public CompletionField EanSuggest { get; set; }  
         
     }

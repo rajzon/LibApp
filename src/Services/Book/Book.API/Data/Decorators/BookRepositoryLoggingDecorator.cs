@@ -70,6 +70,31 @@ namespace Book.API.Data.Decorators
             return result;
         }
 
+        public async Task<bool> IsAllExistsAsync(Dictionary<int, string> booksIdsWithEans)
+        {
+            _logger.LogInfoMethodStarted<Domain.Book>(BookRepositoryType, nameof(IsAllExistsAsync), new object[] {booksIdsWithEans});
+
+
+            var result = await _bookRepository.IsAllExistsAsync(booksIdsWithEans);
+            
+            
+            _logger.LogInfoMethodEnded(BookRepositoryType, nameof(IsAllExistsAsync), result);
+            return result;
+        }
+
+        public async Task<IEnumerable<Domain.Book>> GetAllByIds(List<int> booksIds)
+        {
+            _logger.LogInfoMethodStarted<IEnumerable<Domain.Book>>(BookRepositoryType, nameof(GetAllByIds), new object[] {booksIds});
+            
+            var result = await _bookRepository.GetAllByIds(booksIds);
+
+            if (! result.Any())
+                _logger.LogWarningNotFound<IEnumerable<Domain.Book>>(BookRepositoryType, nameof(GetAllByIds), new object[] {booksIds});
+
+            _logger.LogInfoMethodEnded(BookRepositoryType, nameof(GetAllByIds), result);
+            return result;
+        }
+
         public async Task<IEnumerable<Domain.Book>> GetAllAsync()
         {
             _logger.LogInfoMethodStarted<IEnumerable<Domain.Book>>(BookRepositoryType, nameof(GetAllAsync), methodParams: null);

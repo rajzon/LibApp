@@ -95,7 +95,8 @@ namespace Identity.API
             if (! userResult.Succeeded)
                 return;
             userManager.AddToRoleAsync(user, "employee").GetAwaiter().GetResult();
-            userManager.AddClaimAsync(user, new Claim("book_privilege", "write")).GetAwaiter().GetResult();
+            userManager.AddClaimsAsync(user, new []{ new Claim("book_privilege", "write"),
+                new Claim("delivery_privilege", "create-delete") }).GetAwaiter().GetResult();
         }
         
         
