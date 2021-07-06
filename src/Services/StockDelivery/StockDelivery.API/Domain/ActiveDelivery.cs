@@ -39,11 +39,40 @@ namespace StockDelivery.API.Domain
         {
             if (_items is null)
                 return;
-            
+
+            if (_items.Any(i => i.BookId.Equals(bookId)))
+                return;
+
             _items.Add(new ActiveDeliveryItem(bookId, bookEan, itemsCount));
             ModificationDate = _items.LastOrDefault() is not null
                 ? _items.LastOrDefault().ModificationDate
                 : ModificationDate;
+        }
+
+        public void EditDeliveryItemsCount(int itemId, short itemsCount)
+        {
+           var item = _items.FirstOrDefault(i => i.Id.Equals(itemId));
+           
+           item?.EditItemsCount(itemsCount);
+        }
+
+        /// <summary>
+        /// It will delete Deliver that exist in Db and DO NOT exist in passed argument collection
+        /// </summary>
+        /// <param name="itemIdsThatPotentiallyMissIds"></param>
+        public void DeleteMissingDeliveryItems(IEnumerable<int> itemIdsThatPotentiallyMissIds)
+        {
+            var itemsToRemove = GetItemsThatAreMissingInArg(itemIdsThatPotentiallyMissIds).ToList();
+            foreach (var item in itemsToRemove)
+            {
+                _items.Remove(item);
+            }
+        }
+
+        private IEnumerable<ActiveDeliveryItem> GetItemsThatAreMissingInArg(
+            IEnumerable<int> itemIdsThatPotentiallyMissIds)
+        {
+            return _items.Where(i => !itemIdsThatPotentiallyMissIds.Contains(i.Id));
         }
 
     }

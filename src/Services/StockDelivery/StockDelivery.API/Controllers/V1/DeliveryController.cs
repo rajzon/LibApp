@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StockDelivery.API.Commands.V1;
+using StockDelivery.API.Commands.V1.Common;
 using StockDelivery.API.Commands.V1.Dtos;
 using StockDelivery.API.Contracts.Responses;
 using StockDelivery.API.Queries.V1;
@@ -74,6 +75,24 @@ namespace StockDelivery.API.Controllers.V1
             return Ok(result.ActiveDelivery);
         }
 
+        [HttpPut("active/{id}")]
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> EditActiveDelivery(EditActiveDeliveryCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (!result.Succeeded)
+                return result.Errors.Any()
+                    ? BadRequest(new ErrorResponse
+                    {
+                        Errors = result.Errors
+                    }) : BadRequest();
+
+            return Ok();
+        }
+
 
         [HttpDelete("active/delete/{deliveryId}")]
         [Authorize(Policy = "delivery-create-delete")]
@@ -91,6 +110,34 @@ namespace StockDelivery.API.Controllers.V1
                 }): BadRequest();
 
             return NoContent();
+        }
+    }
+
+    public class EditActiveDeliveryCommand : IRequest<EditActiveDeliveryCommandResult>
+    {
+        [FromRoute]
+        public int Id { get; init; }
+        public IEnumerable<ActiveDeliveryItemForEditDto> Items { get; init; }
+    }
+
+    public class ActiveDeliveryItemForEditDto
+    {
+        public int ItemId { get; init; }
+        public int BookId { get; init; }
+        public string BookEan { get; init; }
+        public short ItemsCount { get; init; }
+    }
+    
+    public class EditActiveDeliveryCommandResult : BaseCommandResult
+    {
+        public EditActiveDeliveryCommandResult(bool succeeded) 
+            : base(succeeded)
+        {
+        }
+
+        public EditActiveDeliveryCommandResult(bool succeeded, IReadOnlyCollection<string> errors = default) 
+            : base(succeeded, errors)
+        {
         }
     }
 }

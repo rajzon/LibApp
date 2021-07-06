@@ -31,6 +31,11 @@ namespace StockDelivery.API.Domain
             CreationDate = DateTime.UtcNow;
             
         }
+
+        public void EditItemsCount(short itemsCount)
+        {
+            ItemsCount = itemsCount;
+        }
         
         protected ActiveDeliveryItem()
         {
