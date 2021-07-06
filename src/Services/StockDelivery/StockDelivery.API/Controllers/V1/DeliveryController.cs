@@ -76,6 +76,7 @@ namespace StockDelivery.API.Controllers.V1
         }
 
         [HttpPut("active/{id}")]
+        [Authorize(Policy = "delivery-edit")]
         [ProducesResponseType((int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]

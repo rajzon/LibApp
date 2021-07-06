@@ -51,7 +51,12 @@ namespace StockDelivery.API
                 config.AddPolicy("delivery-create-delete", policyBuilder =>
                 {
                     policyBuilder.RequireRole("employee")
-                        .RequireClaim("delivery_privilege", "create-delete");
+                        .RequireClaim("delivery_privilege", "create-delete", "full");
+                });
+                config.AddPolicy("delivery-edit", policyBuilder =>
+                {
+                    policyBuilder.RequireRole("employee")
+                        .RequireClaim("delivery_privilege", "edit", "create-delete", "full");
                 });
 
             });

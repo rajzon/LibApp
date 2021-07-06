@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Identity.API.Data;
@@ -85,18 +86,45 @@ namespace Identity.API
             if (! roleResult.Succeeded)
                 return;
 
-            var user = new AppUser
-            {
-                UserName = "employee",
-                Email = "employee@example.com"
+            // var user = new AppUser
+            // {
+            //     UserName = "employee",
+            //     Email = "employee@example.com"
+            // };
+            var users = new List<AppUser>() {
+                new ()
+                {
+                    UserName = "employee",
+                    Email = "employee@example.com"
+                },
+                new()
+                {
+                    UserName = "employee2",
+                    Email = "employee2@example.com"
+                },
+                new ()
+                {
+                    UserName = "employee3",
+                    Email = "employee3@example.com"
+                } 
             };
-            
-            var userResult = userManager.CreateAsync(user, "Password1!").GetAwaiter().GetResult();
-            if (! userResult.Succeeded)
-                return;
-            userManager.AddToRoleAsync(user, "employee").GetAwaiter().GetResult();
-            userManager.AddClaimsAsync(user, new []{ new Claim("book_privilege", "write"),
+
+            foreach (var user in users)
+            {
+                var userResult = userManager.CreateAsync(user, "Password1!").GetAwaiter().GetResult();
+                if (! userResult.Succeeded)
+                    return;
+                userManager.AddToRoleAsync(user, "employee").GetAwaiter().GetResult();
+                
+            }
+            userManager.AddClaimsAsync(users.ElementAt(0), new []{ new Claim("book_privilege", "write"),
                 new Claim("delivery_privilege", "create-delete") }).GetAwaiter().GetResult();
+            userManager.AddClaimsAsync(users.ElementAt(1), new []{ new Claim("book_privilege", "full"),
+                new Claim("delivery_privilege", "edit") }).GetAwaiter().GetResult();
+            userManager.AddClaimsAsync(users.ElementAt(2), new []{ new Claim("book_privilege", "write"),
+                new Claim("delivery_privilege", "full") }).GetAwaiter().GetResult();
+            
+            
         }
         
         
