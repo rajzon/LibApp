@@ -8,6 +8,7 @@ namespace StockDelivery.API.Data
     public class DeliveryStockDbContext : DbContext, IUnitOfWork
     {
         public DbSet<ActiveDelivery> ActiveDeliveries { get; set; }
+        public DbSet<CancelledDelivery> CancelledDeliveries { get; set; }
 
 
         public DeliveryStockDbContext(DbContextOptions<DeliveryStockDbContext> options)
@@ -18,6 +19,7 @@ namespace StockDelivery.API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ActiveDeliveryConfiguration());
+            modelBuilder.ApplyConfiguration(new CancelledDeliveryConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

@@ -100,9 +100,9 @@ namespace StockDelivery.API.Controllers.V1
         [ProducesResponseType(typeof(DeleteActiveDeliveryCommandResult), (int) HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteActiveDelivery(int deliveryId)
+        public async Task<IActionResult> DeleteActiveDelivery(int deliveryId, string cancellationReason = default)
         {
-            var result = await _mediator.Send(new DeleteActiveDeliveryCommand() {DeliveryId = deliveryId});
+            var result = await _mediator.Send(new DeleteActiveDeliveryCommand() {DeliveryId = deliveryId, CancellationReason = cancellationReason});
 
             if (! result.Succeeded)
                 return result.Errors.Any()? BadRequest(new ErrorResponse
