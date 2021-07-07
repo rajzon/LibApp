@@ -12,6 +12,7 @@ using Serilog;
 using StockDelivery.API.AuthHandler;
 using StockDelivery.API.Installers;
 using StockDelivery.API.Mappings;
+using StockDelivery.API.Services;
 
 namespace StockDelivery.API
 {
@@ -63,6 +64,7 @@ namespace StockDelivery.API
             
             services.AddAuthorization();
             services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
+            services.AddSingleton<IAccessContentService, AccessContentService>();
             
             
             services.AddApiVersioningInitializer();

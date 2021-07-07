@@ -11,6 +11,7 @@ using StockDelivery.API.Commands.V1.Dtos;
 using StockDelivery.API.Contracts.Responses;
 using StockDelivery.API.Queries.V1;
 using StockDelivery.API.Queries.V1.Dtos;
+using StockDelivery.API.Services;
 
 namespace StockDelivery.API.Controllers.V1
 {
@@ -21,10 +22,12 @@ namespace StockDelivery.API.Controllers.V1
     public class DeliveryController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IAccessContentService _accessContentService;
 
-        public DeliveryController(IMediator mediator)
+        public DeliveryController(IMediator mediator, IAccessContentService accessContentService)
         {
             _mediator = mediator;
+            _accessContentService = accessContentService;
         }
 
 
@@ -82,6 +85,14 @@ namespace StockDelivery.API.Controllers.V1
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
         public async Task<IActionResult> EditActiveDelivery(EditActiveDeliveryCommand command)
         {
+            var accessResult = _accessContentService.CanUserAccessContent(HttpContext, command.Id);
+            if (!accessResult.Succeeded)
+                return accessResult.Errors.Any()
+                    ? BadRequest(new ErrorResponse
+                    {
+                        Errors = accessResult.Errors
+                    }) : BadRequest();
+            
             var result = await _mediator.Send(command);
 
             if (!result.Succeeded)
