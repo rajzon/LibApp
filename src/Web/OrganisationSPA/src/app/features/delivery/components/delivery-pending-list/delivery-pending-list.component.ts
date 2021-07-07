@@ -5,6 +5,18 @@ import {ActiveDeliveriesResultDto} from "../../models/active-deliveries-result-d
 import {ActiveDelivery} from "../../models/active-delivery-dto";
 import {AuthService} from "@core/services/auth.service";
 import {ActivatedRoute} from "@angular/router";
+import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
+import {DeleteDeliveryCanncellationReasonModalComponent} from "../delete-delivery-canncellation-reason-modal/delete-delivery-canncellation-reason-modal.component";
+
+export class DeleteActiveDeliveryCommand {
+  cancellationReason: string
+  activeDelivery: ActiveDelivery
+
+  constructor(activeDelivery: ActiveDelivery, cancellationReason: string) {
+    this.activeDelivery = activeDelivery;
+    this.cancellationReason = cancellationReason;
+  }
+}
 
 @Component({
   selector: 'app-delivery-pending-list',
@@ -15,8 +27,9 @@ export class DeliveryPendingListComponent implements OnInit, AfterViewInit {
 
   @Input() deliveryResult: ActiveDeliveriesResultDto
   @Output() reloadDeliveriesEvent = new EventEmitter<ReloadActiveDeliveriesQueryDto>()
-  @Output() deleteDeliveryEvent = new EventEmitter<ActiveDelivery>();
+  @Output() deleteDeliveryEvent = new EventEmitter<DeleteActiveDeliveryCommand>();
 
+  modalRef: BsModalRef
   itemsPerPageOptions = environment.pagination.itemsPerPageOpts
   selectedMaxResult: number = environment.pagination.itemsPerPageDefault
   currentPage: number = 1;
@@ -25,7 +38,8 @@ export class DeliveryPendingListComponent implements OnInit, AfterViewInit {
 
   accessModel: {hasRightsToDeleteDelivery: boolean, hasRightsToAddDelivery: boolean}
 
-  constructor(private authService: AuthService, private route: ActivatedRoute) { }
+  constructor(private authService: AuthService,
+              private route: ActivatedRoute, private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.accessModel = {hasRightsToDeleteDelivery: false, hasRightsToAddDelivery: false};
@@ -51,7 +65,15 @@ export class DeliveryPendingListComponent implements OnInit, AfterViewInit {
   }
 
   deleteDelivery(delivery: ActiveDelivery) {
-    this.deleteDeliveryEvent.emit(delivery);
+    const initialState = {
+      delivery: delivery
+    }
+
+    this.modalRef = this.modalService.show(DeleteDeliveryCanncellationReasonModalComponent, {initialState})
+    this.modalRef.content.onDelete$.subscribe((cancellationReason: string) => {
+      this.deleteDeliveryEvent.emit(new DeleteActiveDeliveryCommand(delivery, cancellationReason));
+    })
+
   }
 
   canUserAccess(functionalityName: string): void{

@@ -8,6 +8,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {ReloadActiveDeliveriesQueryDto} from "../../models/reload-active-deliveries-query-dto";
 import {ActiveDeliveriesResultDto} from "../../models/active-deliveries-result-dto";
 import {ActiveDelivery} from "../../models/active-delivery-dto";
+import {DeleteActiveDeliveryCommand} from "../../components/delivery-pending-list/delivery-pending-list.component";
 
 @Component({
   selector: 'app-delivery',
@@ -45,8 +46,8 @@ export class DeliveryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.activeDeliveriesSubs = this.loadDeliveries(query)
   }
 
-  deleteActiveDelivery(activeDelivery: ActiveDelivery): void {
-    this.deliveryFacade.deleteActiveDelivery$(activeDelivery).subscribe();
+  deleteActiveDelivery(command: DeleteActiveDeliveryCommand): void {
+    this.deliveryFacade.deleteActiveDelivery$(command.activeDelivery, command.cancellationReason).subscribe();
   }
 
   private loadDeliveries(query?: ReloadActiveDeliveriesQueryDto) : Subscription {

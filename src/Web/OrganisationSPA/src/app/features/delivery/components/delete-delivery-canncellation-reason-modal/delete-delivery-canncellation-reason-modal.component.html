@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <h4 class="modal-title">Confirm Deletion for Delivery: {{delivery.name}}: {{delivery.id}}</h4>
+</div>
+<div class="modal-body">
+  <form #editForm="ngForm">
+    <div class="form-group">
+      <label
+        class="text-capitalize font-weight-bold">Canncellation Reason: </label>
+      <input
+        type="text"
+        [(ngModel)]="cancellationReason"
+        name="cancellationReason"
+        class="form-control"
+        placeholder="Add Cancellation Reason">
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button"
+          class="btn btn-default"
+          (click)="bsModalRef.hide()">Cancel</button>
+  <button type="submit"
+          class="btn btn-primary"
+          (click)="delete()"
+          [disabled]="editForm.invalid">Delete</button>
+</div>
