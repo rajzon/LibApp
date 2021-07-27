@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StockDelivery.API.Commands.V1;
-using StockDelivery.API.Commands.V1.Common;
 using StockDelivery.API.Commands.V1.Dtos;
 using StockDelivery.API.Contracts.Responses;
 using StockDelivery.API.Queries.V1;
@@ -108,7 +106,7 @@ namespace StockDelivery.API.Controllers.V1
 
         [HttpDelete("active/delete/{deliveryId}")]
         [Authorize(Policy = "delivery-create-delete")]
-        [ProducesResponseType(typeof(DeleteActiveDeliveryCommandResult), (int) HttpStatusCode.NoContent)]
+        [ProducesResponseType((int) HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteActiveDelivery(int deliveryId, string cancellationReason = default)
@@ -123,33 +121,25 @@ namespace StockDelivery.API.Controllers.V1
 
             return NoContent();
         }
-    }
 
-    public class EditActiveDeliveryCommand : IRequest<EditActiveDeliveryCommandResult>
-    {
-        [FromRoute]
-        public int Id { get; init; }
-        public IEnumerable<ActiveDeliveryItemForEditDto> Items { get; init; }
-    }
-
-    public class ActiveDeliveryItemForEditDto
-    {
-        public int ItemId { get; init; }
-        public int BookId { get; init; }
-        public string BookEan { get; init; }
-        public short ItemsCount { get; init; }
-    }
-    
-    public class EditActiveDeliveryCommandResult : BaseCommandResult
-    {
-        public EditActiveDeliveryCommandResult(bool succeeded) 
-            : base(succeeded)
+        [HttpPost("{id}/scan")]
+        // TODO Policy = "TODO-delivery-redeem"
+        [Authorize]
+        [ProducesResponseType(typeof(object), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> ScanBook(ScanItemDeliveryCommand command)
         {
-        }
+            var result = await _mediator.Send(command);
+            
+            if (!result.Succeeded)
+                return result.Errors.Any()
+                    ? BadRequest(new ErrorResponse
+                    {
+                        Errors = result.Errors
+                    }) : BadRequest();
 
-        public EditActiveDeliveryCommandResult(bool succeeded, IReadOnlyCollection<string> errors = default) 
-            : base(succeeded, errors)
-        {
+            return Ok(new {result.ScanMode});
         }
     }
 }

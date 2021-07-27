@@ -69,6 +69,66 @@ namespace StockDelivery.API.Domain
             }
         }
 
+        public void ScanItem(string ean)
+        {
+            if (string.IsNullOrEmpty(ean))
+                throw new ArgumentException("Ean cannot be empty");
+            if (!_items.Any())
+                throw new ArgumentException("There is none items in Delivery");
+            
+            var itemToScan = _items.FirstOrDefault(i => i.BookEan.Code.Equals(ean));
+            if (itemToScan is null)
+                throw new ArgumentException($"There is no items in Delivery: {Id} with EAN:{ean}");
+            
+            itemToScan.Scan();
+            ChangeScannedItemStatus();
+        }
+
+        public void UnscanItem(string ean)
+        {
+            if (string.IsNullOrEmpty(ean))
+                throw new ArgumentException("Ean cannot be empty");
+            if (!_items.Any())
+                throw new ArgumentException("There is none items in Delivery");
+            
+            var itemToUnscan = _items.FirstOrDefault(i => i.BookEan.Code.Equals(ean));
+            if (itemToUnscan is null)
+                throw new ArgumentException($"There is no items in Delivery: {Id} with EAN:{ean}");
+            
+            itemToUnscan.Unscan();
+            ChangeScannedItemStatus();
+        }
+
+        public bool IsScanOperationAllowed(bool scanMode, string ean, out List<string> errors)
+        {
+            errors = new List<string>();
+            var itemToCheck = _items.FirstOrDefault(i => i.BookEan.Code.Equals(ean));
+            
+            if (scanMode && IsAllDeliveryItemsScanned)
+                errors.Add($"Delivery Item: {Id} have all items scanned");
+            
+            if (!scanMode && !IsAnyDeliveryItemsScanned)
+                errors.Add($"Delivery Item: {Id} do not have any items scanned, so you cannot Unscan");
+
+            if(!itemToCheck.IsScanOperationAllowed(scanMode, out List<string> errors2))
+                errors = errors.Union(errors2).ToList();
+            
+            if (errors.Any())
+                return false;
+
+            return true;
+        }
+
+        private void ChangeScannedItemStatus()
+        {
+            if (!_items.Any())
+                throw new ArgumentException("There is none items in Delivery");
+
+            IsAnyDeliveryItemsScanned = _items.Any(i => i.IsScanned);
+
+            IsAllDeliveryItemsScanned = _items.All(i => i.IsAllScanned);
+        }
+
         private IEnumerable<ActiveDeliveryItem> GetItemsThatAreMissingInArg(
             IEnumerable<int> itemIdsThatPotentiallyMissIds)
         {
