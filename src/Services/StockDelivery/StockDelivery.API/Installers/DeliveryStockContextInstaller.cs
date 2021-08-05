@@ -13,6 +13,8 @@ namespace StockDelivery.API.Installers
             services.AddDbContext<DeliveryStockDbContext>(config => 
                 config.UseInMemoryDatabase("DeliveryStockService"));
             services.AddScoped<ICancelledDeliveryRepository, CancelledDeliveryRepository>();
+            services.AddScoped<IBookStockRepository, BookStockRepository>();
+            services.AddScoped<ICompletedDeliveryRepository, CompletedDeliveryRepository>();
             return services.AddScoped<IActiveDeliveryRepository, ActiveDeliveryRepository>();
         }
     }

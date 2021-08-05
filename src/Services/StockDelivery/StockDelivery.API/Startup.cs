@@ -59,6 +59,11 @@ namespace StockDelivery.API
                     policyBuilder.RequireRole("employee")
                         .RequireClaim("delivery_privilege", "edit", "create-delete", "full");
                 });
+                config.AddPolicy("delivery-redeem", policyBuilder =>
+                {
+                    policyBuilder.RequireRole("employee")
+                        .RequireClaim("delivery_privilege", "redeem", "edit", "create-delete", "full");
+                });
 
             });
             

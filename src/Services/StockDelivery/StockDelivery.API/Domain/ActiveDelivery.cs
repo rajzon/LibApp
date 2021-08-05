@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using StockDelivery.API.Domain.Common;
+using StockDelivery.API.Domain.ValueObjects;
 
 namespace StockDelivery.API.Domain
 {
@@ -118,6 +120,11 @@ namespace StockDelivery.API.Domain
 
             return true;
         }
+        
+        public bool IsRedeemOperationAllowed()
+        {
+            return IsAllDeliveryItemsScanned;
+        }
 
         private void ChangeScannedItemStatus()
         {
@@ -135,5 +142,15 @@ namespace StockDelivery.API.Domain
             return _items.Where(i => !itemIdsThatPotentiallyMissIds.Contains(i.Id));
         }
 
+    }
+
+    public class RedeemedDeliveryDomainEvent : INotification
+    {
+        public Dictionary<BookEan13, short> BookEansWithCount { get; init; }
+
+        public RedeemedDeliveryDomainEvent(Dictionary<BookEan13, short> bookEansWithCount)
+        {
+            BookEansWithCount = bookEansWithCount;
+        }
     }
 }
