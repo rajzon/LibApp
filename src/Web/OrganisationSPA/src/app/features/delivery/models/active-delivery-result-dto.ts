@@ -5,3 +5,4 @@ export class ActiveDeliveryResultDto {
     activeDeliveryInfo: ActiveDelivery
     items: ActiveDeliveryItem[]
 }
+

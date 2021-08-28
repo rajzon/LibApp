@@ -14,6 +14,7 @@ export const environment = {
   defaultSortingField: 'modificationDate:desc',
   deleteActiveDeliveryFunctionalityName: "deleteActiveDelivery",
   addDeliveryFunctionalityName: "addNewDelivery",
+  redeemDeliveryFunctionalityName: "redeemDelivery",
   pagination: {
     itemsPerPageDefault: 10,
     itemsPerPageOpts: [10,20,40]

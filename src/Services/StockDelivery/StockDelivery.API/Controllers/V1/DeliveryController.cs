@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using StockDelivery.API.Commands.V1;
 using StockDelivery.API.Commands.V1.Dtos;
 using StockDelivery.API.Contracts.Responses;
+using StockDelivery.API.Domain;
 using StockDelivery.API.Queries.V1;
 using StockDelivery.API.Queries.V1.Dtos;
 using StockDelivery.API.Services;
@@ -50,6 +51,19 @@ namespace StockDelivery.API.Controllers.V1
             var result = await _mediator.Send(new GetActiveDeliveryQuery(id));
 
             if (result is null || !result.Items.Any() || result.ActiveDeliveryInfo is null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        
+        [HttpGet("completed")]
+        [ProducesResponseType(typeof(CompletedDeliveryDto), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetAllCompleted()
+        {
+            var result = await _mediator.Send(new GetAllCompletedDeliveriesQuery());
+
+            if (!result.Any())
                 return NotFound();
 
             return Ok(result);
@@ -123,13 +137,13 @@ namespace StockDelivery.API.Controllers.V1
         }
 
         [HttpPost("{id}/scan")]
-        // TODO Policy = "TODO-delivery-redeem"
-        [Authorize]
+        [Authorize(Policy = "delivery-redeem")]
         [ProducesResponseType(typeof(object), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ScanBook(ScanItemDeliveryCommand command)
+        public async Task<IActionResult> ScanBook(int id, ScanItemDeliveryCommand command)
         {
+            command.Id = id;
             var result = await _mediator.Send(command);
             
             if (!result.Succeeded)
@@ -139,7 +153,24 @@ namespace StockDelivery.API.Controllers.V1
                         Errors = result.Errors
                     }) : BadRequest();
 
-            return Ok(new {result.ScanMode});
+            return Ok(result.Result);
+        }
+
+
+        [HttpDelete("{id}/redeem")]
+        [Authorize(Policy = "delivery-redeem")]
+        public async Task<IActionResult> RedeemDelivery(int id)
+        {
+            var result = await _mediator.Send(new RedeemDeliveryCommand {Id = id});
+            
+            if (!result.Succeeded)
+                return result.Errors.Any()
+                    ? BadRequest(new ErrorResponse
+                    {
+                        Errors = result.Errors
+                    }) : BadRequest();
+
+            return NoContent();
         }
     }
 }

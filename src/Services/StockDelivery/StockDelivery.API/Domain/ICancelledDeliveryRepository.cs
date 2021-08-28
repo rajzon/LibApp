@@ -2,7 +2,7 @@
 {
     public interface ICancelledDeliveryRepository
     {
-        CancelledDelivery Add(CancelledDelivery activeDelivery);
+        CancelledDelivery Add(CancelledDelivery cancelledDelivery);
         void Remove(CancelledDelivery cancelledDelivery);
     }
 }

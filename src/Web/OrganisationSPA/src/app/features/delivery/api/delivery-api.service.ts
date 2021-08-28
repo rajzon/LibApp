@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {environment} from "@env";
 import {ActiveDeliveriesResultDto} from "../models/active-deliveries-result-dto";
 import {ActiveDeliveryResultDto} from "../models/active-delivery-result-dto";
+import {ActiveDeliveryScanResultDto} from "../models/active-delivery-scan-result-dto";
 
 export class ActiveDeliveryItemForCreationDto {
   bookId: number
@@ -20,6 +21,16 @@ export class ActiveDeliveryItemForCreationDto {
 export class CreateActiveDeliveryCommand {
   name: string
   itemsInfo: ActiveDeliveryItemForCreationDto[]
+}
+
+export class ScanItemDeliveryCommand {
+  scanMode: boolean
+  requestedEan: string
+
+  constructor(requestedEan: string, scanMode: boolean) {
+    this.scanMode = scanMode;
+    this.requestedEan = requestedEan;
+  }
 }
 
 @Injectable({
@@ -52,5 +63,13 @@ export class DeliveryApiService {
 
   addNewActiveDelivery(activeDeliveryCommand: CreateActiveDeliveryCommand): Observable<any> {
     return this.httpClient.post<any>(this.API + '/active/create', activeDeliveryCommand)
+  }
+
+  redeemDelivery(id: number): Observable<any> {
+    return this.httpClient.delete(this.API + `/${id}/redeem`);
+  }
+
+  scanDeliveryForRedeem(id: number, command: ScanItemDeliveryCommand) : Observable<ActiveDeliveryScanResultDto> {
+    return this.httpClient.post<ActiveDeliveryScanResultDto>(this.API + `/${id}/scan`, command);
   }
 }

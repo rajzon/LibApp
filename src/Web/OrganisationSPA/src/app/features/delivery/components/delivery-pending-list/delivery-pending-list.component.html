@@ -32,6 +32,9 @@
           <button type="button"
                   [disabled]="!accessModel.hasRightsToDeleteDelivery || delivery.isAnyDeliveryItemsScanned"
                     class="fa fa-trash ml-1 mr-2" (click)="deleteDelivery(delivery)"></button>
+          <button type="button"
+                  [disabled]="!accessModel.hasRightsToRedeemDelivery"
+                  class="fa fa-check ml-1 mr-2" [routerLink]="['/redeem', delivery.id]" [state]="{ deliveryName:delivery.name}"></button>
         </td>
         <td class="font-weight-bold delivery-property text-center">{{delivery.modificationDate}}</td>
         <td class="font-weight-bold delivery-property text-center">{{delivery.modificationDate}}</td>

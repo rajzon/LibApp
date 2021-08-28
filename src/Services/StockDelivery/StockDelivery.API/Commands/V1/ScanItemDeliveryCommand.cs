@@ -6,8 +6,7 @@ namespace StockDelivery.API.Commands.V1
 {
     public class ScanItemDeliveryCommand : IRequest<ScanItemDeliveryCommandResult>
     {
-        [FromRoute]
-        public int Id { get; init; }
+        public int Id { get; set; }
         public bool ScanMode { get; init; } = true;
         public string RequestedEan { get; init; }
     }

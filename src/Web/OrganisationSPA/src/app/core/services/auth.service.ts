@@ -136,8 +136,6 @@ export class AuthService {
         return true;
 
     }));
-
-
   }
 
   private static hasAllRequiredClaims(allowedClaims: any[], userClaims: UserInfo): boolean {

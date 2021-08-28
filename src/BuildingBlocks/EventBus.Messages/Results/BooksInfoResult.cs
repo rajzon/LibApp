@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EventBus.Messages.Results
 {
@@ -14,6 +15,7 @@ namespace EventBus.Messages.Results
         public string Isbn10 { get; init; }
         public string Isbn13 { get; init; }
         public ushort? PageCount { get; init; }
+        public DateTime PublishedDate { get; init; }
         
         public IReadOnlyCollection<CategoryBusResponseDto> Categories { get; set; }
         public IReadOnlyCollection<AuthorBusResponseDto> Authors { get; set; }

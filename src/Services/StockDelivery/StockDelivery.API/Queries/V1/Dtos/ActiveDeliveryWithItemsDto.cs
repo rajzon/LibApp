@@ -35,6 +35,7 @@ namespace StockDelivery.API.Queries.V1.Dtos
         public string Isbn10 { get; init; }
         public string Isbn13 { get; init; }
         public ushort? PageCount { get; init; }
+        public DateTime PublishedDate { get; init; }
         
         public IEnumerable<CategoryResponseDto> Categories { get; init; }
         public IEnumerable<AuthorResponseDto> Authors { get; init; }

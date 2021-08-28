@@ -4,9 +4,12 @@ import {ReloadActiveDeliveriesQueryDto} from "../../models/reload-active-deliver
 import {ActiveDeliveriesResultDto} from "../../models/active-deliveries-result-dto";
 import {ActiveDelivery} from "../../models/active-delivery-dto";
 import {AuthService} from "@core/services/auth.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {DeleteDeliveryCanncellationReasonModalComponent} from "../delete-delivery-canncellation-reason-modal/delete-delivery-canncellation-reason-modal.component";
+import {Observable} from "rxjs";
+import {ActiveDeliveryResultDto} from "../../models/active-delivery-result-dto";
+import {DeliveryFacade} from "../../delivery.facade";
 
 export class DeleteActiveDeliveryCommand {
   cancellationReason: string
@@ -35,16 +38,18 @@ export class DeliveryPendingListComponent implements OnInit, AfterViewInit {
   currentPage: number = 1;
   deleteFunctionalityName = environment.deleteActiveDeliveryFunctionalityName;
   addDeliveryFunctionalityName = environment.addDeliveryFunctionalityName;
+  redeemDeliveryFunctionalityName = environment.redeemDeliveryFunctionalityName;
 
-  accessModel: {hasRightsToDeleteDelivery: boolean, hasRightsToAddDelivery: boolean}
+  accessModel: {hasRightsToDeleteDelivery: boolean, hasRightsToAddDelivery: boolean, hasRightsToRedeemDelivery: boolean}
 
   constructor(private authService: AuthService,
               private route: ActivatedRoute, private modalService: BsModalService) { }
 
   ngOnInit(): void {
-    this.accessModel = {hasRightsToDeleteDelivery: false, hasRightsToAddDelivery: false};
+    this.accessModel = {hasRightsToDeleteDelivery: false, hasRightsToAddDelivery: false, hasRightsToRedeemDelivery: false};
     this.canUserAccess(this.deleteFunctionalityName)
     this.canUserAccess(this.addDeliveryFunctionalityName)
+    this.canUserAccess(this.redeemDeliveryFunctionalityName)
   }
 
   pageChanged(event: any): void {
@@ -81,6 +86,8 @@ export class DeliveryPendingListComponent implements OnInit, AfterViewInit {
       this.authService.hasUserHaveRightsToAccess$(functionalityName, this.route).subscribe(res => this.accessModel.hasRightsToDeleteDelivery = res);
     if (functionalityName === this.addDeliveryFunctionalityName)
       this.authService.hasUserHaveRightsToAccess$(functionalityName, this.route).subscribe(res => this.accessModel.hasRightsToAddDelivery = res);
+    if (functionalityName === this.redeemDeliveryFunctionalityName)
+      this.authService.hasUserHaveRightsToAccess$(functionalityName, this.route).subscribe(res => this.accessModel.hasRightsToRedeemDelivery = res);
   }
 
 }

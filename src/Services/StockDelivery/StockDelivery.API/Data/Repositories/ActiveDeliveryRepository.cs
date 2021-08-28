@@ -31,6 +31,18 @@ namespace StockDelivery.API.Data.Repositories
             _context.ActiveDeliveries.Remove(activeDelivery);
         }
 
+        public bool RedeemDelivery(ActiveDelivery activeDelivery, out string error)
+        {
+            error = string.Empty;
+            if (!activeDelivery.IsRedeemOperationAllowed())
+                error = "Redeem operation is not allowed";
+            if (!string.IsNullOrEmpty(error))
+                return false;
+
+            _context.ActiveDeliveries.Remove(activeDelivery);
+            return true;
+        }
+
         public async Task<ActiveDelivery> FindByIdAsync(int activeDeliveryId)
         {
             var response = await _context.ActiveDeliveries.FindAsync(activeDeliveryId);
