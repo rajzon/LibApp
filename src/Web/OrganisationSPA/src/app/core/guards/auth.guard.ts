@@ -37,7 +37,7 @@ export class AuthGuard implements CanActivate {
         // if (! userClaimsNames.includes(key))
         //   return false;
         console.log(`User has claim ( ${key}: ${userClaims[key]} ) which value is included in:${(<string>values)} : `,(<string>values).includes(userClaims[key]));
-        if (! (<string>values).includes(userClaims[key]))
+        if (! (<string[]>values).includes(userClaims[key]))
           return false;
       }
     }

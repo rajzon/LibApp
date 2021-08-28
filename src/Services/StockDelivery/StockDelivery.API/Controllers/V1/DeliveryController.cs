@@ -141,8 +141,9 @@ namespace StockDelivery.API.Controllers.V1
         [ProducesResponseType(typeof(object), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ScanBook(ScanItemDeliveryCommand command)
+        public async Task<IActionResult> ScanBook(int id, ScanItemDeliveryCommand command)
         {
+            command.Id = id;
             var result = await _mediator.Send(command);
             
             if (!result.Succeeded)
@@ -152,15 +153,15 @@ namespace StockDelivery.API.Controllers.V1
                         Errors = result.Errors
                     }) : BadRequest();
 
-            return Ok(new {result.ScanMode});
+            return Ok(result.Result);
         }
 
 
         [HttpDelete("{id}/redeem")]
         [Authorize(Policy = "delivery-redeem")]
-        public async Task<IActionResult> RedeemDelivery(RedeemDeliveryCommand command)
+        public async Task<IActionResult> RedeemDelivery(int id)
         {
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new RedeemDeliveryCommand {Id = id});
             
             if (!result.Succeeded)
                 return result.Errors.Any()

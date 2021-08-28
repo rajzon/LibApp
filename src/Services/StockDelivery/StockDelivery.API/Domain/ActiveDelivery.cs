@@ -105,6 +105,8 @@ namespace StockDelivery.API.Domain
         {
             errors = new List<string>();
             var itemToCheck = _items.FirstOrDefault(i => i.BookEan.Code.Equals(ean));
+            if (itemToCheck is null)
+                throw new ArgumentException($"Not found any item with ean {ean}");
             
             if (scanMode && IsAllDeliveryItemsScanned)
                 errors.Add($"Delivery Item: {Id} have all items scanned");

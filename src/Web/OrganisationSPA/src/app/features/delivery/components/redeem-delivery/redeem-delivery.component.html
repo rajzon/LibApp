@@ -1,0 +1,152 @@
+<ngx-spinner *ngIf="isLoading$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
+
+<ngx-spinner *ngIf="isLoading$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
+
+
+<div class="mb-5 mt-4 border-bottom">
+  <h1 class="display-4">Redeem Delivery: {{deliveryName}}({{deliveryId}})</h1>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <form #searchForm="ngForm" (ngSubmit)="scan()"
+              class="form-inline justify-content-center mt-5">
+          <div class="form-group search-grp mr-1">
+            <label for="test">
+            <input type="text"
+                   id="test"
+                   class="form-control search-field"
+                   [(ngModel)]="searchTerm"
+                   name="searchValue"
+                   placeholder="Search field..."
+                   [minlength]="deliveryConfigs.ean13.minLength"
+                   [maxLength]="deliveryConfigs.ean13.maxLength"
+                   [pattern]="deliveryConfigs.ean13.pattern"
+                   [required]="true">
+              <span class="font-weight-bold">Insert EAN Book Code</span>
+            </label>
+          </div>
+          <div class="form-group mb-4 search-params-box rounded border">
+            <div class="form-check form-check-inline mr-4">
+              <input type="radio"
+                     id="addingMode"
+                     name="addingMode"
+                     [value]="true"
+                     [(ngModel)]="selectedScanMode"
+                     class="form-check-input">
+              <label class="form-check-label"
+                     for="addingMode">AddingMode</label>
+            </div>
+            <div class="form-check form-check-inline mr-4">
+              <input type="radio"
+                     id="deletingMode"
+                     name="deletingMode"
+                     [value]="false"
+                     [(ngModel)]="selectedScanMode"
+                     class="form-check-input">
+              <label class="form-check-label"
+                     for="deletingMode">Deleting Mode</label>
+            </div>
+          </div>
+          <button type="submit"
+                  [disabled]="searchForm.invalid"
+                  class="fa fa-search ml-1 mb-4 search"></button>
+
+        </form>
+      </div>
+  </div>
+
+</div>
+<div class="mt-5 text-right container">
+  <button class="btn btn-light action-btn"
+          [routerLink]="['/delivery']">Close</button>
+</div>
+<!---------------------------------------------------------------------------------------------------------------------------------->
+<ng-container *ngIf="(deliveryInfo$ | async) as deliveryInfo">
+  <div class="table-responsive mt-5 container">
+    <table class="table table-striped mt-3">
+      <thead>
+      <tr>
+        <th scope="col">Image</th>
+        <th scope="col">Book Description</th>
+        <th scope="col">EAN Code</th>
+        <th scope="col">Items Count</th>
+        <th scope="col">Remaning Items</th>
+        <th scope="col">Creation Date</th>
+        <th scope="col">Modification Date</th>
+      </tr>
+      </thead>
+      <tbody>
+
+      <tr *ngFor="let item of deliveryInfo.items" [class.bg-success]="item?.isAllScanned">
+        <td class="image-row"><img class="img-fluid"
+                                   [src]="item?.itemDescription?.image?.url"
+                                   alt=""></td>
+        <td>
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <p class="font-weight-bold text-capitalize"> {{item?.itemDescription?.title}}</p>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-12 book-description">
+                Authors:
+                <div class="d-inline author" *ngFor="let author of item?.itemDescription?.authors">
+                  {{author?.fullName}}
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-6 book-description">
+                <div class="d-inline font-weight-bold">Category:</div>
+                <div class="d-inline font-weight-bold" *ngFor="let category of item?.itemDescription?.categories">
+                  {{category?.name}}
+                </div>
+              </div>
+              <!--          -->
+              <div class="col-6 book-description">
+                <div class="d-inline font-weight-bold ">Publisher: </div>
+                <div class="d-inline">{{item.itemDescription?.publisher?.name}}</div>
+              </div>
+              <!--          -->
+              <div class="col-6 book-description">
+                <div class="d-inline font-weight-bold">ISBN10: </div>
+                <div class="d-inline">{{item.itemDescription?.isbn10}}</div>
+              </div>
+              <div class="col-6 book-description">
+                <div class="d-inline font-weight-bold ">Published Date: </div>
+                <div class="d-inline">{{item.itemDescription?.publishedDate | date}}</div>
+              </div>
+              <div class="col-6 book-description">
+                <div class="d-inline font-weight-bold">ISBN13: </div>
+                <div class="d-inline">{{item.itemDescription?.isbn13}}</div>
+              </div>
+
+            </div>
+
+          </div>
+        </td>
+        <td class="font-weight-bold ean">{{item?.bookEan}}</td>
+        <td class="font-weight-bold"> {{item?.itemsCount}}</td>
+        <td class="font-weight-bold"> {{item?.itemsCount - item?.scannedCount}}</td>
+        <td class="font-weight-bold dates"> {{item?.creationDate | date}}</td>
+        <td class="font-weight-bold dates"> {{item?.modificationDate | date}}</td>
+
+      </tr>
+      </tbody>
+    </table>
+    <div class="mt-5 text-right action-btn">
+      <button class="btn btn-success" [disabled]="!deliveryInfo.activeDeliveryInfo.isAllDeliveryItemsScanned"
+      (click)="redeemDelivery()">Redeem Delivery</button>
+    </div>
+  </div>
+</ng-container>

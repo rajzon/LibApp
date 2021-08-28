@@ -19,6 +19,10 @@ namespace StockDelivery.API.Mappings
             CreateMap<ActiveDeliveryItem, ActiveDeliveryItemDto>()
                 .ForMember(dest => dest.BookEan,
                     opt => opt.MapFrom(src => src.BookEan.Code));
+            
+            CreateMap<ActiveDeliveryItem, ActiveDeliveryScanItemInfoDto>()
+                .ForMember(dest => dest.BookEan,
+                    opt => opt.MapFrom(src => src.BookEan.Code));
 
             CreateMap<CategoryBusResponseDto, CategoryResponseDto>();
             CreateMap<PublisherBusResponseDto, PublisherResponseDto>();

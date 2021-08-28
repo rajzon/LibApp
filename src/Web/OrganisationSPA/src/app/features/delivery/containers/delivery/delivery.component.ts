@@ -9,6 +9,7 @@ import {ReloadActiveDeliveriesQueryDto} from "../../models/reload-active-deliver
 import {ActiveDeliveriesResultDto} from "../../models/active-deliveries-result-dto";
 import {ActiveDelivery} from "../../models/active-delivery-dto";
 import {DeleteActiveDeliveryCommand} from "../../components/delivery-pending-list/delivery-pending-list.component";
+import {ActiveDeliveryResultDto} from "../../models/active-delivery-result-dto";
 
 @Component({
   selector: 'app-delivery',
@@ -48,6 +49,10 @@ export class DeliveryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   deleteActiveDelivery(command: DeleteActiveDeliveryCommand): void {
     this.deliveryFacade.deleteActiveDelivery$(command.activeDelivery, command.cancellationReason).subscribe();
+  }
+
+  getActiveDelivery(id: number): Observable<ActiveDeliveryResultDto> {
+    return this.deliveryFacade.loadDeliveryForRedeem$(id);
   }
 
   private loadDeliveries(query?: ReloadActiveDeliveriesQueryDto) : Subscription {
