@@ -12,6 +12,7 @@ using Serilog;
 using StockDelivery.API.AuthHandler;
 using StockDelivery.API.Installers;
 using StockDelivery.API.Mappings;
+using StockDelivery.API.Services;
 
 namespace StockDelivery.API
 {
@@ -51,13 +52,19 @@ namespace StockDelivery.API
                 config.AddPolicy("delivery-create-delete", policyBuilder =>
                 {
                     policyBuilder.RequireRole("employee")
-                        .RequireClaim("delivery_privilege", "create-delete");
+                        .RequireClaim("delivery_privilege", "create-delete", "full");
+                });
+                config.AddPolicy("delivery-edit", policyBuilder =>
+                {
+                    policyBuilder.RequireRole("employee")
+                        .RequireClaim("delivery_privilege", "edit", "create-delete", "full");
                 });
 
             });
             
             services.AddAuthorization();
             services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
+            services.AddSingleton<IAccessContentService, AccessContentService>();
             
             
             services.AddApiVersioningInitializer();

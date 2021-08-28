@@ -51,9 +51,9 @@ export class DeliveryFacade {
     return this.activeDeliveryState.getActiveDeliveries$()
   }
 
-  deleteActiveDelivery$(activeDelivery: ActiveDelivery): Observable<any> {
+  deleteActiveDelivery$(activeDelivery: ActiveDelivery, cancellationReason: string): Observable<any> {
     this.activeDeliveryState.setLoading(true)
-    return this.deliveryApi.deleteActiveDelivery$(activeDelivery.id).pipe(map(r => {
+    return this.deliveryApi.deleteActiveDelivery$(activeDelivery.id, cancellationReason).pipe(map(r => {
       this.activeDeliveryState.removeActiveDelivery(activeDelivery)
       this.activeDeliveryState.setLoading(false)
     }), catchError( (err => {

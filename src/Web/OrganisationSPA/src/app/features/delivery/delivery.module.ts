@@ -7,11 +7,12 @@ import {routing} from "./delivery.routing";
 import { DeliveryCreateComponent } from './components/delivery-create/delivery-create.component';
 import { DeliveryEditItemCountModalComponent } from './components/delivery-edit-item-count-modal/delivery-edit-item-count-modal.component';
 import { AddNewDeliveryConfirmationBoxModalComponent } from './components/add-new-delivery-confirmation-box-modal/add-new-delivery-confirmation-box-modal.component';
+import { DeleteDeliveryCanncellationReasonModalComponent } from './components/delete-delivery-canncellation-reason-modal/delete-delivery-canncellation-reason-modal.component';
 
 
 
 @NgModule({
-  declarations: [DeliveryComponent, DeliveryPendingListComponent, DeliveryCreateComponent, DeliveryEditItemCountModalComponent, AddNewDeliveryConfirmationBoxModalComponent],
+  declarations: [DeliveryComponent, DeliveryPendingListComponent, DeliveryCreateComponent, DeliveryEditItemCountModalComponent, AddNewDeliveryConfirmationBoxModalComponent, DeleteDeliveryCanncellationReasonModalComponent],
   imports: [
     CommonModule,
     routing,

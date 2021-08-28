@@ -15,9 +15,18 @@ namespace StockDelivery.API.Domain
         public DateTime CreationDate { get; private set; }
         
         // Creation Date from ActiveDeliveryItem
-        public CancelledDeliveryItem()
+        public CancelledDeliveryItem(int bookId, BookEan13 ean13, short itemsCount)
         {
-            ModificationDate = DateTime.UtcNow;   
-        }    
+            BookId = bookId;
+            BookEan = new BookEan13(ean13.Code);
+            ItemsCount = itemsCount;
+            
+            ModificationDate = DateTime.UtcNow;  
+            CreationDate = DateTime.UtcNow;  
+        }
+        
+        protected CancelledDeliveryItem()
+        {
+        }
     }
 }
