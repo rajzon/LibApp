@@ -83,6 +83,7 @@ namespace Identity.API
                     opt.IssuerUri = "http://identity-service:80";
                 })
                 .AddAspNetIdentity<AppUser>()
+                .AddAspNetIdentity<CustomerUser>()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetResources())
                 .AddInMemoryApiScopes(Config.GetScopes())

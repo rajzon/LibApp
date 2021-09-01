@@ -3,6 +3,7 @@ using AutoMapper;
 using EventBus.Messages.Commands;
 using Search.API.Contracts.Responses;
 using Search.API.Domain;
+using Customer = Search.API.Domain.Customer;
 
 namespace Search.API.Mappings
 {
@@ -18,6 +19,14 @@ namespace Search.API.Mappings
             CreateMap<ImageDto, Image>();
 
             CreateMap<CreateBook, Book>();
+
+            CreateMap<EmailDto, Email>();
+            CreateMap<IdCardDto, IdCard>();
+            CreateMap<PostCodeDto, PostCode>();
+            CreateMap<AddressDto, Address>();
+            CreateMap<AddressCorrespondenceDto, AddressCorrespondence>();
+
+            CreateMap<CustomerDto, Customer>();
             ///
             //////////
             CreateMap<Category, CategoryResponseDto>();

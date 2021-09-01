@@ -80,6 +80,28 @@ services:
     depends_on:
       - rabbitmq
     restart: unless-stopped
+
+
+  user-service:
+    image: ${DOCKER_REGISTRY-}userservice
+    build:
+      context: .
+      dockerfile: Services/User/User/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONEMENT=Development
+      - ASPNETCORE_HTTPS_PORT=10001
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - 10000:80
+      - 10001:443
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    depends_on:
+      - rabbitmq
+      - search-service
+    restart: unless-stopped
   
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
