@@ -9,5 +9,6 @@
         
         public const string CheckBooksExistance = "checkbookexistance-queue";
         public const string GetBooksInfo = "getbooksinfo-queue";
+        public const string GetBookInfo = "getbookinfo-queue";
     }
 }

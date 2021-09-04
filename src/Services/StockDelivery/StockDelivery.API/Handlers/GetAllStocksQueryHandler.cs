@@ -6,6 +6,8 @@ using AutoMapper;
 using MediatR;
 using StockDelivery.API.Controllers.V1;
 using StockDelivery.API.Domain;
+using StockDelivery.API.Queries.V1;
+using StockDelivery.API.Queries.V1.Dtos;
 
 namespace StockDelivery.API.Handlers
 {
