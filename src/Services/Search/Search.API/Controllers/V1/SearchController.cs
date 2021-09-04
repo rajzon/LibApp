@@ -13,6 +13,7 @@ using Search.API.Application.Services;
 using Search.API.Commands;
 using Search.API.Commands.V1;
 using Search.API.Contracts.Responses;
+using Search.API.Helpers.EqualityComparers;
 
 namespace Search.API.Controllers.V1
 {
@@ -101,6 +102,25 @@ namespace Search.API.Controllers.V1
                 select new SuggestBookManagementResult(option)).ToList();
             
             return Ok(response);
+        }
+
+        [HttpGet("suggest/customer/{suggestValue}")]
+        [ProducesResponseType(typeof(List<SuggestCustomerResult>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> CustomersSearch(string suggestValue)
+        {
+            var result = await _bookRepository.SuggestCustomerAsync(new SuggestCustomerCommand()
+                {SuggestValue = suggestValue});
+            
+            if (!result.IsValid)
+                return NotFound();
+            
+            var response = (from suggests in result.Suggest.Values 
+                from suggest in suggests 
+                from option in suggest.Options 
+                select new SuggestCustomerResult(option)).ToList();
+
+            return Ok(response.Distinct(new SuggestCustomerResultEqualityComparer()));
         }
     }
     

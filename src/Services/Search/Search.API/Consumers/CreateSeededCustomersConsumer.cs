@@ -33,6 +33,19 @@ namespace Search.API.Consumers
             
             var messageCustomers = _mapper.Map<IEnumerable<Customer>>(context.Message.Customers);
 
+            foreach (var customer in messageCustomers)
+            {
+                customer.NameSuggest = new CompletionField() {Input = customer.Name.Split()};
+                customer.SurnameSuggest = new CompletionField() {Input = customer.Surname.Split()};
+                customer.EmailSuggest = new CompletionField() {Input = customer.Email.EmailAddress.Split()};
+            }
+            var createIndexDescriptor = new CreateIndexDescriptor(_configuration["elasticsearch:customerIndexName"])
+                .Mappings(ms => ms
+                    .Map<Customer>(m => m
+                        .AutoMap())
+                );
+
+            await _elasticClient.Indices.CreateAsync(createIndexDescriptor);
             var customersSrc = await _elasticClient.SearchAsync<Customer>(s => s
                 .Index(_configuration["elasticsearch:customerIndexName"])
                 .Query(q => q.MatchAll()));

@@ -27,6 +27,11 @@ namespace Search.API.Installers
                 .Map<Book>(m => m.AutoMap(0)));
             client.Indices.Create(configuration["elasticsearch:customerIndexName"], c => c
                 .Map<Customer>(m => m.AutoMap(0)));
+            // client.Indices.Create(configuration["elasticsearch:customerIndexName"], c => c
+            //     .Map<Customer>(m => m.AutoMap(0).Properties(ps => ps
+            //         .Completion(s => s.Name(n => n.NameSuggest))
+            //         .Completion(s => s.Name(n => n.SurnameSuggest))
+            //         .Completion(s => s.Name(n => n.EmailSuggest)))));
             services.AddSingleton<IElasticClient>(client);
             return services;
         }

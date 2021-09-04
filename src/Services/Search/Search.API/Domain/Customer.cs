@@ -1,4 +1,5 @@
 ﻿using System;
+using Nest;
 
 namespace Search.API.Domain
 {
@@ -14,6 +15,15 @@ namespace Search.API.Domain
         
         public Address Address { get; set; }
         public AddressCorrespondence CorrespondenceAddress { get; set; }
+        
+        [Completion(Analyzer = "simple", SearchAnalyzer = "simple",  MaxInputLength = 50, PreserveSeparators = true, PreservePositionIncrements = true)]
+        public CompletionField NameSuggest { get; set; }
+        [Completion(Analyzer = "simple",  SearchAnalyzer = "simple", MaxInputLength = 50, PreserveSeparators = true, PreservePositionIncrements = true)]
+        public CompletionField SurnameSuggest { get; set; }
+        
+        [Completion(Analyzer = "standard",  SearchAnalyzer = "standard")]
+        public CompletionField EmailSuggest { get; set; }  
+        
     }
 
     public class Address
