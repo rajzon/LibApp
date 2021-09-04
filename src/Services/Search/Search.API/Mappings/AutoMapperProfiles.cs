@@ -3,7 +3,8 @@ using AutoMapper;
 using EventBus.Messages.Commands;
 using Search.API.Contracts.Responses;
 using Search.API.Domain;
-using Customer = Search.API.Domain.Customer;
+using AddressCorrespondenceDto = Search.API.Contracts.Responses.AddressCorrespondenceDto;
+using AddressDto = Search.API.Contracts.Responses.AddressDto;
 
 namespace Search.API.Mappings
 {
@@ -23,8 +24,8 @@ namespace Search.API.Mappings
             CreateMap<EmailDto, Email>();
             CreateMap<IdCardDto, IdCard>();
             CreateMap<PostCodeDto, PostCode>();
-            CreateMap<AddressDto, Address>();
-            CreateMap<AddressCorrespondenceDto, AddressCorrespondence>();
+            CreateMap<EventBus.Messages.Commands.AddressDto, Address>();
+            CreateMap<EventBus.Messages.Commands.AddressCorrespondenceDto, AddressCorrespondence>();
 
             CreateMap<CustomerDto, Customer>();
             ///
@@ -42,6 +43,18 @@ namespace Search.API.Mappings
             CreateMap<Book, BookManagementResponseDto>();
             CreateMap<Book, BookDeliveryResponse>()
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Images.FirstOrDefault(i => i.IsMain)));
+            
+            ////
+            //////////
+            CreateMap<Address, AddressDto>()
+                .ForMember(dest => dest.PostCode, opt => opt.MapFrom(src => src.PostCode.Code));
+            CreateMap<AddressCorrespondence, AddressCorrespondenceDto>()
+                .ForMember(dest => dest.PostCode, opt => opt.MapFrom(src => src.PostCode.Code));
+
+            CreateMap<Customer, CustomerResponse>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.EmailAddress))
+                .ForMember(dest => dest.PersonIdCard, opt => opt.MapFrom(src => src.PersonIdCard.Value));
+
         }
     }
 }

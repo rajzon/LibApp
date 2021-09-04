@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -104,10 +105,25 @@ namespace Search.API.Controllers.V1
             return Ok(response);
         }
 
+        [HttpGet("customer/{searchTerm}")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<CustomerResponse>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> CustomerSearch(string searchTerm)
+        {
+            var result = await _bookRepository.SearchCustomersByEmail(new SearchCustomerCommand() {SearchTerm = searchTerm});
+            
+            if (!result.Documents.Any())
+                return NotFound();
+
+            var response = _mapper.Map<CustomerResponse>(result.Documents.FirstOrDefault());
+
+            return Ok(response);
+        }
+
         [HttpGet("suggest/customer/{suggestValue}")]
         [ProducesResponseType(typeof(List<SuggestCustomerResult>), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
-        public async Task<IActionResult> CustomersSearch(string suggestValue)
+        public async Task<IActionResult> CustomersSuggest(string suggestValue)
         {
             var result = await _bookRepository.SuggestCustomerAsync(new SuggestCustomerCommand()
                 {SuggestValue = suggestValue});

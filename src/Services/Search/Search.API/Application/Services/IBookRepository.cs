@@ -14,5 +14,6 @@ namespace Search.API.Application.Services
         Task<ISearchResponse<Book>>SearchByEanAsync(SearchBookByEanCommand command);
         Task<ISearchResponse<Book>> SuggestAsync(SuggestBookCommand command);
         Task<ISearchResponse<Customer>> SuggestCustomerAsync(SuggestCustomerCommand command);
+        Task<ISearchResponse<Customer>> SearchCustomersByEmail(SearchCustomerCommand command);
     }
 }
