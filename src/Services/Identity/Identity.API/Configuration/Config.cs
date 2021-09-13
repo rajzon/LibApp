@@ -47,6 +47,10 @@ namespace Identity.API.Configuration
                 {
                     UserClaims = {JwtClaimTypes.Role, "delivery_privilege"},
                     Scopes = { "stock_delivery_api" }
+                },
+                new ApiResource("lend_api", "Lend API")
+                {
+                    Scopes = { "lend_api" }
                 }
             };
 
@@ -55,7 +59,8 @@ namespace Identity.API.Configuration
             {
                 new ApiScope("book_api"),
                 new ApiScope("search_api"),
-                new ApiScope("stock_delivery_api")
+                new ApiScope("stock_delivery_api"),
+                new ApiScope("lend_api")
             };
 
         public static IEnumerable<Client> GetClients() => 
@@ -90,8 +95,8 @@ namespace Identity.API.Configuration
                         "delivery_privilege.scope",
                         "book_api",
                         "search_api",
-                        "stock_delivery_api"
-                        
+                        "stock_delivery_api",
+                        "lend_api" 
                     }
                 }
                 // new Client()

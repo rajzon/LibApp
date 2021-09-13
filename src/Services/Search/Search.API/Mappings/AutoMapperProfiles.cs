@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
 using EventBus.Messages.Commands;
+using EventBus.Messages.Results;
 using Search.API.Contracts.Responses;
 using Search.API.Domain;
 using AddressCorrespondenceDto = Search.API.Contracts.Responses.AddressCorrespondenceDto;
@@ -52,6 +53,17 @@ namespace Search.API.Mappings
                 .ForMember(dest => dest.PostCode, opt => opt.MapFrom(src => src.PostCode.Code));
 
             CreateMap<Customer, CustomerResponse>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.EmailAddress))
+                .ForMember(dest => dest.PersonIdCard, opt => opt.MapFrom(src => src.PersonIdCard.Value));
+            
+            
+            CreateMap<Address, AddressBasketBusResponse>()
+                .ForMember(dest => dest.PostCode, opt => opt.MapFrom(src => src.PostCode.Code));
+            CreateMap<AddressCorrespondence, AddressCorrespondenceBasketBusResponse>()
+                .ForMember(dest => dest.PostCode, opt => opt.MapFrom(src => src.PostCode.Code));
+
+            
+            CreateMap<Customer, CustomerBasketBusResponse>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.EmailAddress))
                 .ForMember(dest => dest.PersonIdCard, opt => opt.MapFrom(src => src.PersonIdCard.Value));
 

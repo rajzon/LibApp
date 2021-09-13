@@ -20,6 +20,10 @@ namespace Search.API.Installers
                 x.AddConsumer<CreateBookConsumer>();
                 x.AddConsumer<AddImageToBookConsumer>();
                 x.AddConsumer<CreateSeededCustomersConsumer>();
+                x.AddConsumer<GetCustomerInfoConsumer>();
+                
+                
+                x.AddRequestClient<GetCustomerInfo>();
                 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -37,6 +41,11 @@ namespace Search.API.Installers
                     cfg.ReceiveEndpoint(EventBusConstants.CreateSeededCustomersQueue, c =>
                     {
                         c.ConfigureConsumer<CreateSeededCustomersConsumer>(context);
+                    });
+                    
+                    cfg.ReceiveEndpoint(EventBusConstants.GetCustomerInfo, c =>
+                    {
+                        c.ConfigureConsumer<GetCustomerInfoConsumer>(context);
                     });
                 });
                 

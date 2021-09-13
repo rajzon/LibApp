@@ -1,56 +1,123 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using AutoMapper;
 using Lend.API.Domain.Common;
 
 namespace Lend.API.Domain
 {
     public class Basket
     {
-        public CustomerBasket Customer { get; set; }
-        public IEnumerable<StockWithBooksBasket> StockWithBooks { get; set; }
+        public CustomerBasket Customer { get; private set; }
+        public IEnumerable<StockWithBooksBasket> StockWithBooks { get; private set; }
+
+        public Basket(CustomerBasket customer, IEnumerable<StockWithBooksBasket> stockWithBooks)
+        {
+            Customer = customer;
+            StockWithBooks = stockWithBooks?? new List<StockWithBooksBasket>();
+        }
+
+        public void AssignNewCustomer(CustomerBasket customer)
+        {
+            if (customer is null)
+                throw new ArgumentException("Requested customer cannot be null");
+            
+            Customer = customer;
+        }
+        
+        public int GetNumberOfStocks()
+        {
+            return StockWithBooks.Count();
+        }
     }
 
     public class StockWithBooksBasket
     {
-        public int StockId { get; set; }
-        public string Title { get;  init; }
-        public string Ean13 { get; init; }
-        public string Isbn10 { get; init; }
-        public string Isbn13 { get; init; }
-        public DateTime PublishedDate { get; init; }
+        public int StockId { get; private set; }
+        public string Title { get;  private set; }
+        public string Ean13 { get; private set; }
+        public string Isbn10 { get; private set; }
+        public string Isbn13 { get; private set; }
+        public DateTime PublishedDate { get; private set; }
+        public DateTime ReturnDate { get; private set; }
         
-        public IEnumerable<CategoryBasket> Categories { get; init; }
-        public IEnumerable<AuthorBasket> Authors { get; init; }
-        public PublisherBasket Publisher { get; init; }
-        public ImageBasket Image { get; init; }
+        public IEnumerable<CategoryBasket> Categories { get; private set; }
+        public IEnumerable<AuthorBasket> Authors { get; private set; }
+        public PublisherBasket Publisher { get; private set; }
+        public ImageBasket Image { get; private set; }
+
+        public StockWithBooksBasket(int stockId, string title, string ean13,
+            string isbn10, string isbn13, DateTime publishedDate, DateTime returnDate, 
+            IEnumerable<CategoryBasket> categories, IEnumerable<AuthorBasket> authors, PublisherBasket publisher, ImageBasket image)
+        {
+            StockId = stockId;
+            Title = title;
+            Ean13 = ean13;
+            Isbn10 = isbn10;
+            Isbn13 = isbn13;
+            Categories = categories;
+            Authors = authors;
+            Publisher = publisher;
+            Image = image;
+            
+            PublishedDate = publishedDate;
+            ReturnDate = returnDate;
+        }
     }
     
-    public record CategoryBasket
+    public class CategoryBasket
     {
-        public int Id { get; init; }
-        public string Name { get; init; }
+        public int Id { get; private set; }
+        public string Name { get; private set; }
+
+        public CategoryBasket(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
     }
     
     
-    public record AuthorBasket
+    public class AuthorBasket
     {
-        public int Id { get; init; }
-        public string FirstName { get; init; }
-        public string LastName { get; init; }
-        public string FullName { get; init; }
+        public int Id { get; private set; }
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
+        public string FullName { get; private set; }
+
+        public AuthorBasket(int id, string firstName, string lastName, string fullName)
+        {
+            Id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            FullName = fullName;
+        }
     }
     
     
-    public record ImageBasket
+    public class ImageBasket
     {
-        public string Url { get; init; }
-        public bool IsMain { get; init; }
+        public string Url { get; private set; }
+        public bool IsMain { get; private set; }
+
+        public ImageBasket(string url, bool isMain)
+        {
+            Url = url;
+            IsMain = isMain;
+        }
     }
     
-    public record PublisherBasket
+    public class PublisherBasket
     {
-        public int Id { get; init; }
-        public string Name { get; init; }
+        public int Id { get; private set; }
+        public string Name { get; private set; }
+
+        public PublisherBasket(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
     }
 
     public class CustomerBasket
@@ -65,12 +132,13 @@ namespace Lend.API.Domain
         public DateTime DateOfBirth { get; private set; }
         
         public AddressBasket Address { get; private set; }
-        public AddressCorrespondenceBasket CorrespondenceBasket { get; private set; }
+        public AddressCorrespondenceBasket CorrespondenceAddress { get; private set; }
 
-        public CustomerBasket(string name, string surname, EmailBasket email,
+        public CustomerBasket(int id, string name, string surname, EmailBasket email,
             IdCardBasket personIdCard, IdentityType identityType, string nationality,
-            DateTime dateOfBirth, AddressBasket address, AddressCorrespondenceBasket correspondenceBasket)
+            DateTime dateOfBirth, AddressBasket address, AddressCorrespondenceBasket correspondenceAddress)
         {
+            Id = id;
             Name = name;
             Surname = surname;
             Email = email;
@@ -79,7 +147,7 @@ namespace Lend.API.Domain
             Nationality = nationality;
             DateOfBirth = dateOfBirth;
             Address = address;
-            CorrespondenceBasket = correspondenceBasket;
+            CorrespondenceAddress = correspondenceAddress;
         }    
     }
 
