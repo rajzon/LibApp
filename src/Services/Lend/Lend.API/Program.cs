@@ -56,7 +56,9 @@ namespace Lend.API
 
             var simpleBooleanRulesToSeed = new List<SimpleBooleanRule>()
             {
-                new SimpleBooleanRule("CheckDebtor", "If set to true then debtor cannot borrow book", true, typeof(CheckCustomerDebtorStrategy))
+                new SimpleBooleanRule("CheckDebtor", "If set to true then debtor cannot borrow book", true, typeof(CheckCustomerDebtorStrategy)),
+                new SimpleBooleanRule("CheckBorrowedBooks", "If set to true checks if customer already borrowed requested books", true, typeof(CheckCustomerBorrowedRequestingBooksStrategy)),
+                new SimpleBooleanRule("CheckBorrowedStocks", "If set to true checks if customer already borrowed requested stocks", true, typeof(CheckCustomerBorrowedRequestingStocksStrategy))
             };
             
             dbContext.SimpleIntRules.AddRange(simpleIntRulesToSeed);

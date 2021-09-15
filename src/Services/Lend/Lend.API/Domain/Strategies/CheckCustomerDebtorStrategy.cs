@@ -25,7 +25,7 @@ namespace Lend.API.Domain.Strategies
         public async Task<(bool, StrategyError)> IsBasketMatchStrategy(Basket basket)
         {
             var rule = await GetRuleInfo();
-            if (rule is null)
+            if (rule is null || !rule.RuleValue || basket.Customer is null)
                 return (true, null);
             
             var customerBorrowedBaskets =

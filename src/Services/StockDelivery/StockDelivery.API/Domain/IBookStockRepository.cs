@@ -9,5 +9,6 @@ namespace StockDelivery.API.Domain
         BookStock Add(BookStock stock);
         Task<IEnumerable<BookStock>> GetAllAsync();
         Task<BookStock> GetAsync(int stockId);
+        Task<bool> IsAllExists(List<int> stocksIds);
     }
 }

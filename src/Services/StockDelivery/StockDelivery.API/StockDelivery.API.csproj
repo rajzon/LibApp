@@ -25,6 +25,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\BuildingBlocks\EventBus.Messages\EventBus.Messages.csproj" />
+        <ProjectReference Include="..\..\Book\Book.API\Book.API.csproj" />
     </ItemGroup>
 
     <ItemGroup>

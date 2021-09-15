@@ -1,22 +1,29 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Lend.API.Domain.Repositories;
 
 namespace Lend.API.Domain.Strategies
 {
     public class MaxDaysForLendBookStrategy : IStrategy<SimpleIntRule>
     {
-        private SimpleIntRule _rule;
+        private readonly ISimpleIntRuleRepository _repository;
 
-        public MaxDaysForLendBookStrategy(SimpleIntRule simpleIntRule)
+        public MaxDaysForLendBookStrategy(ISimpleIntRuleRepository repository)
         {
-            if (simpleIntRule.StrategyType != typeof(MaxDaysForLendBookStrategy).ToString())
-                throw new ArgumentException("Passed Rule that is not intended for that strategy");
-            
-            _rule = simpleIntRule;
+            _repository = repository;
         }
-        public Task<(bool, StrategyError)> IsBasketMatchStrategy(Basket basket)
+        public async Task<(bool, StrategyError)> IsBasketMatchStrategy(Basket basket)
         {
-            throw new NotImplementedException();
+            var rule = await GetRuleInfo();
+            if (basket.StockWithBooks.Any(s => s.ReturnDate > DateTime.UtcNow.AddDays(rule.RuleValue)))
+                return (false, new StrategyError()
+                {
+                    ErrorType = ErrorType.Error,
+                    ErrorDescription = $"Return Date cannot be set to more than {rule.RuleValue} days."
+                });
+
+            return (true, null);
         }
 
         public Task<(bool, StrategyError)> IsCustomerMatchStrategy(CustomerBasket basket)
@@ -24,9 +31,10 @@ namespace Lend.API.Domain.Strategies
             throw new NotImplementedException();
         }
 
-        public Task<SimpleIntRule> GetRuleInfo()
+        public async Task<SimpleIntRule> GetRuleInfo()
         {
-            throw new NotImplementedException();
+            var rule = await _repository.GetByStrategyTypeAsync(typeof(MaxDaysForLendBookStrategy));
+            return rule;
         }
     }
 

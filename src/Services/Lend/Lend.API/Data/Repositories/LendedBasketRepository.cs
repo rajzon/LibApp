@@ -23,7 +23,25 @@ namespace Lend.API.Data.Repositories
 
         public async Task<IEnumerable<LendedBasket>> GetAllByCustomerEmail(string email)
         {
-            return await _lendDbContext.LendedBaskets.Where(lb => lb.Email == email).ToListAsync();
+            return await _lendDbContext.LendedBaskets.Include(lb => lb.Stocks)
+                .Where(lb => lb.Email == email).ToListAsync();
+        }
+
+        public async Task<IEnumerable<LendedBasket>> GetAllByStocksIds(List<int> stocksIds)
+        {
+            return await _lendDbContext.LendedBaskets.Include(lb => lb.Stocks)
+                .Where(lb => lb.Stocks.Any(s => stocksIds.Contains(s.StockId))).ToListAsync();
+        }
+        
+        public async Task<IEnumerable<LendedBasket>> GetAllByStockId(int stockId)
+        {
+            return await _lendDbContext.LendedBaskets.Include(lb => lb.Stocks)
+                .Where(lb => lb.Stocks.Any(s => s.StockId == stockId)).ToListAsync();
+        }
+
+        public LendedBasket Add(LendedBasket lendedBasket)
+        {
+            return _lendDbContext.LendedBaskets.Add(lendedBasket).Entity;
         }
     }
 }

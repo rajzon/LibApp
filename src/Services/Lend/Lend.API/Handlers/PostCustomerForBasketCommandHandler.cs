@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,6 +11,7 @@ using Lend.API.Controllers.V1;
 using Lend.API.Domain;
 using Lend.API.Domain.Repositories;
 using Lend.API.Domain.Strategies;
+using Lend.API.Extenstions;
 using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
@@ -40,6 +42,8 @@ namespace Lend.API.Handlers
         
         public async Task<PostBasketCommandResult> Handle(PostCustomerForBasketCommand request, CancellationToken cancellationToken)
         {
+            //TODO check if BOOK is already lended to other customer, return Conflict!!!!!
+            
             //TODO check if customer exist in User service
             var messageResponse = await _client.GetResponse<CustomerInfoResult>(
                 new {Email = request.CustomerEmail}, cancellationToken);
@@ -73,48 +77,45 @@ namespace Lend.API.Handlers
 
             var customer = CreateCustomerBasket(customerResponse, address, correspondenceAddress, identityType);
 
-            if (!_cache.TryGetValue(request.UserName, out Basket basket))
+            Basket newBasket;
+            if (!_cache.TryGetValue(request.EmployeeName, out Basket basket))
             {
-                basket = new Basket(customer, null);
+                newBasket = new Basket(customer, null);
                 //TODO check if user have to many books lended(call strategy), then append error collection
                 //TODO check if user have any books borrowed, then  append warning collection [business requirement]
                 
-                var check= await CheckIfCustomerMatchAllStrategies(basket);
+                var check= await CheckIfCustomerMatchAllStrategies(newBasket);
                 errors.AddRange(check.Item1);
                 warnings.AddRange(check.Item2);
-                _cache.Set(request.UserName, basket);
+                _cache.Set(request.EmployeeName, newBasket);
             }
             else
             {
-                basket.AssignNewCustomer(customer);
-                
-                //TODO check if user have any books already lended and they are placed in basket, then append error collection [domain rule]
-                var customerBaskets =  await _lendedBasketRepository.GetAllByCustomerEmail(request.CustomerEmail);
-                var conflictedStock = new StringBuilder();
-                foreach (var customerBasket in customerBaskets)
+                //TODO Workaround for problem with setting default value for returnDate, after DeepCopy 
+                var originalStocksReturnDate = basket.StockWithBooks.ToDictionary(k => k.StockId, v => v.ReturnDate);
+                newBasket = basket.DeepCopy();
+                foreach (var stock in newBasket.StockWithBooks)
                 {
-                    if (customerBasket.HasAnyBooksInBasketAreAlreadyLendedByCustomer(basket, out List<int> conflictStocks))
-                    {
-                        conflictedStock.Append(string.Join(",", conflictStocks));
-                    }
+                    if (originalStocksReturnDate.TryGetValue(stock.StockId, out DateTime returnDate))
+                        stock.ReturnDate = returnDate;
                 }
-                if (conflictedStock.Length > 0)
-                    errors.Add($"Customer already have borrowed following stocks:{conflictedStock}");
-
+                newBasket.AssignNewCustomer(customer);
+                
                 //TODO check if user have to many books lended(call strategy), then append error collection
                 //TODO check if user have any books borrowed, then  append warning collection [business requirement]
-                var potentialErrors= await CheckIfCustomerMatchAllStrategies(basket);
+                var potentialErrors= await CheckIfCustomerMatchAllStrategies(newBasket);
                 errors.AddRange(potentialErrors.Item1);
                 warnings.AddRange(potentialErrors.Item2);
                 
-                _cache.Set(request.UserName, basket);
+                _cache.Remove(request.EmployeeName);
+                _cache.Set(request.EmployeeName, newBasket);
             }
 
             //var response = _mapper.Map<BasketResponseDto>(basket);
             var response = new BasketResponseDto()
             {
-                Customer = _mapper.Map<CustomerBasketDto>(basket.Customer),
-                StockWithBooks = _mapper.Map<IEnumerable<StockWithBooksBasketDto>>(basket.StockWithBooks),
+                Customer = _mapper.Map<CustomerBasketDto>(newBasket.Customer) ,
+                StockWithBooks = _mapper.Map<IEnumerable<StockWithBooksBasketDto>>(newBasket.StockWithBooks),
                 BusinessErrors = errors,
                 BusinessWarnings = warnings
             };

@@ -11,43 +11,49 @@ namespace Lend.API.Domain
     public class LendedBasket : Entity , IAggregateRoot
     {
         public string Email { get; private set; }
-        public IEnumerable<LendedStock> Stocks { get; private set; }
+        public List<LendedStock> Stocks { get; private set; }
 
-        public LendedBasket(Basket basket, IEnumerable<IBaseStrategy> strategies)
+        public LendedBasket(Basket basket, IEnumerable<IStrategy<SimpleIntRule>> intStrategies,
+            IEnumerable<IStrategy<SimpleBooleanRule>> booleanStrategies)
         {
             if (basket is null)
                 throw new ArgumentException("Basket cannot be null");
-            if (HasAnyBooksInBasketAreAlreadyLendedByCustomer(basket, out List<int> conflictStocks))
-                throw new ArgumentException(
-                    $"Customer already have borrowed following stocks:{string.Join(",", conflictStocks)}");
 
-            var match = IsBasketMatchAllStrategies(basket, strategies).Result;
+            var match = IsBasketMatchAllStrategies(basket, intStrategies, booleanStrategies).Result;
             if (!match.Item1)
                 throw new AggregateException($"Basket do not match strategy: {match.Item2.ErrorDescription}");
                 
             
             Email = basket.Customer.Email.EmailAddress;
-            Stocks = basket.StockWithBooks.Select(s => new LendedStock(s.StockId, s.ReturnDate));
+            Stocks = basket.StockWithBooks.Select(s => new LendedStock(s.StockId, s.Ean13, s.ReturnDate)).ToList();
         }
 
         protected LendedBasket()
         {
         }
 
-        public async Task<(bool, StrategyError)> IsBasketMatchAllStrategies(Basket basket, IEnumerable<IBaseStrategy> strategies)
+        public async Task<(bool, StrategyError)> IsBasketMatchAllStrategies(Basket basket, IEnumerable<IStrategy<SimpleIntRule>> intStrategies,
+            IEnumerable<IStrategy<SimpleBooleanRule>> booleanStrategies)
         {
-            foreach (var strategy in strategies)
+            foreach (var strategy in intStrategies)
             {
                 var match = await strategy.IsBasketMatchStrategy(basket);
                 if (!match.Item1)
                     return match;
             }
 
-            return (false, null);
+            foreach (var booleanStrategy in booleanStrategies)
+            {
+                var match = await booleanStrategy.IsBasketMatchStrategy(basket);
+                if (!match.Item1)
+                    return match;
+            }
+
+            return (true, null);
         }
         
 
-        public bool HasAnyBooksInBasketAreAlreadyLendedByCustomer(Basket basket, out List<int> conflictStocks)
+        public bool HasAnyStocksInBasketAreAlreadyLendedByCustomer(Basket basket, out List<int> conflictStocks)
         {
             if (basket.Customer.Email.EmailAddress != Email)
                 throw new ArgumentException("Customer in basket is different than customer from lended basket");
@@ -60,17 +66,33 @@ namespace Lend.API.Domain
 
             return conflictStocks.Any();
         }
+        
+        public bool HasAnyBooksInBasketAreAlreadyLendedByCustomer(Basket basket, out List<string> conflictEans)
+        {
+            if (basket.Customer.Email.EmailAddress != Email)
+                throw new ArgumentException("Customer in basket is different than customer from lended basket");
+
+            var eansFromBasket = basket.StockWithBooks.Select(s => s.Ean13).ToList();
+            var lendedEans = Stocks.Select(s => s.BookEan).ToList();
+
+            conflictEans = eansFromBasket.Intersect(lendedEans).ToList();
+            
+
+            return conflictEans.Any();
+        }
     }
 
     public class LendedStock : Entity
     {
         public int StockId { get; private set; }
+        public string BookEan { get; private set; }
         public DateTime ReturnDate { get; private set; }
 
-        public LendedStock(int stockId, DateTime returnDate)
+        public LendedStock(int stockId, string bookEan, DateTime returnDate)
         {
             StockId = stockId;
             ReturnDate = returnDate;
+            BookEan = bookEan;
         }
 
         protected LendedStock()

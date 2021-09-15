@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks;
 using AutoMapper;
+using EventBus.Messages.Results;
 using Lend.API.Domain.Common;
+using Lend.API.Domain.Strategies;
+using Newtonsoft.Json;
 
 namespace Lend.API.Domain
 {
     public class Basket
     {
         public CustomerBasket Customer { get; private set; }
-        public IEnumerable<StockWithBooksBasket> StockWithBooks { get; private set; }
+        public List<StockWithBooksBasket> StockWithBooks { get; private set; }
 
-        public Basket(CustomerBasket customer, IEnumerable<StockWithBooksBasket> stockWithBooks)
+        public Basket(CustomerBasket customer, List<StockWithBooksBasket> stockWithBooks)
         {
             Customer = customer;
             StockWithBooks = stockWithBooks?? new List<StockWithBooksBasket>();
@@ -25,10 +29,68 @@ namespace Lend.API.Domain
             
             Customer = customer;
         }
-        
+
+        public void AddNewStock(StockWithBooksBasket stockWithBooksBasket)
+        {
+            if (stockWithBooksBasket is null)
+                throw new ArgumentException("Requested stock cannot be null");
+            if (IsStockDuplicatedInBasket(stockWithBooksBasket))
+                throw new ArgumentException("Trying to add duplicate stock for basket");
+            StockWithBooks.Add(stockWithBooksBasket);
+        }
+
         public int GetNumberOfStocks()
         {
             return StockWithBooks.Count();
+        }
+
+        public bool IsStockDuplicatedInBasket(StockWithBooksBasket stockWithBooksBasket)
+        {
+            if (StockWithBooks.Any(s => s.StockId == stockWithBooksBasket.StockId))
+                return true;
+            
+            return false;
+        }
+        
+        public bool IsBookEanDuplicatedInBasket(StockWithBooksBasket stockWithBooksBasket)
+        {
+            if (StockWithBooks.Any(s => s.Ean13 == stockWithBooksBasket.Ean13))
+                return true;
+            
+            return false;
+        }
+
+
+        public void RemoveStock(int stockId)
+        {
+            var stockToRemove = StockWithBooks.FirstOrDefault(s => s.StockId == stockId);
+            if (stockToRemove is null)
+                throw new ArgumentException("Requested stock id not exist in basket");
+            
+            StockWithBooks.Remove(stockToRemove);
+        }
+
+        public async Task<(bool, StrategyError)> TryEditReturnDateOfStock(int stockId, DateTime newReturnDate,
+            IEnumerable<IStrategy<SimpleIntRule>> intStrategies)
+        {
+            var stockToModifyIndex = StockWithBooks.FindIndex(s => s.StockId == stockId);
+            var originalReturnDate = StockWithBooks[stockToModifyIndex].ReturnDate;
+            StockWithBooks[stockToModifyIndex].EditReturnDate(newReturnDate);
+
+            if (intStrategies is not null)
+            {
+                foreach (var intStrategy in intStrategies)
+                {
+                    var check = await intStrategy.IsBasketMatchStrategy(this);
+                    if (!check.Item1)
+                    {
+                        StockWithBooks[stockToModifyIndex].EditReturnDate(originalReturnDate);
+                        return (false, check.Item2);
+                    }
+                }
+            }
+
+            return (true, null);
         }
     }
 
@@ -40,7 +102,7 @@ namespace Lend.API.Domain
         public string Isbn10 { get; private set; }
         public string Isbn13 { get; private set; }
         public DateTime PublishedDate { get; private set; }
-        public DateTime ReturnDate { get; private set; }
+        public DateTime ReturnDate { get; set; }
         
         public IEnumerable<CategoryBasket> Categories { get; private set; }
         public IEnumerable<AuthorBasket> Authors { get; private set; }
@@ -48,8 +110,9 @@ namespace Lend.API.Domain
         public ImageBasket Image { get; private set; }
 
         public StockWithBooksBasket(int stockId, string title, string ean13,
-            string isbn10, string isbn13, DateTime publishedDate, DateTime returnDate, 
-            IEnumerable<CategoryBasket> categories, IEnumerable<AuthorBasket> authors, PublisherBasket publisher, ImageBasket image)
+            string isbn10, string isbn13, DateTime publishedDate,  
+            IEnumerable<CategoryBasket> categories, IEnumerable<AuthorBasket> authors, PublisherBasket publisher, ImageBasket image,
+            IEnumerable<IStrategy<SimpleIntRule>> intStrategies, DateTime? returnDate = null)
         {
             StockId = stockId;
             Title = title;
@@ -62,7 +125,23 @@ namespace Lend.API.Domain
             Image = image;
             
             PublishedDate = publishedDate;
-            ReturnDate = returnDate;
+            if (intStrategies is not null)
+            {
+                foreach (var intStrategy in intStrategies)
+                {
+                    if (intStrategy is MaxDaysForLendBookStrategy maxDaysForLendBookStrategy)
+                    {
+                        var maxAllowedReturnDateSet = maxDaysForLendBookStrategy.GetRuleInfo().Result;
+                        ReturnDate = returnDate ?? DateTime.UtcNow.AddDays(maxAllowedReturnDateSet.RuleValue);
+                    }
+                } 
+            }
+            
+            
+        }
+        public void EditReturnDate(DateTime newReturnDate)
+        {
+            ReturnDate = newReturnDate;
         }
     }
     
@@ -155,10 +234,10 @@ namespace Lend.API.Domain
     {
         public string EmailAddress { get; private set; }
 
-        public EmailBasket(string email)
+        public EmailBasket(string emailAddress)
         {
             //TODO check if passed email is valid
-            EmailAddress = email;
+            EmailAddress = emailAddress;
         }
         
         protected EmailBasket()
@@ -196,9 +275,9 @@ namespace Lend.API.Domain
         public string Post { get; private set; }
         public string Country { get; private set; }
 
-        public AddressBasket(string address, string city, PostCodeBasket postCode, string post, string country)
+        public AddressBasket(string adres, string city, PostCodeBasket postCode, string post, string country)
         {
-            Adres = address;
+            Adres = adres;
             City = city;
             PostCode = postCode;
             Post = post;
@@ -219,9 +298,9 @@ namespace Lend.API.Domain
         public string Post { get; private set; }
         public string Country { get; private set; }
 
-        public AddressCorrespondenceBasket(string address, string city, PostCodeBasket postCode, string post, string country)
+        public AddressCorrespondenceBasket(string adres, string city, PostCodeBasket postCode, string post, string country)
         {
-            Adres = address;
+            Adres = adres;
             City = city;
             PostCode = postCode;
             Post = post;

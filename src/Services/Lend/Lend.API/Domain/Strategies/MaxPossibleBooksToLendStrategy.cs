@@ -37,14 +37,17 @@ namespace Lend.API.Domain.Strategies
                 return (false,
                     new StrategyError()
                         {ErrorType = ErrorType.Error, ErrorDescription = $"Basket already have {basketStocksCount} books, max possible is {rule.RuleValue}"});
-
             
-            var customerBorrowedBaskets = await _lendedBasketRepository.GetAllByCustomerEmail(basket.Customer.Email.EmailAddress);
             int lendedStocksCount = 0;
-            foreach (var customerBorrowedBasket in customerBorrowedBaskets)
+            if (basket.Customer is not null)
             {
-                lendedStocksCount += customerBorrowedBasket.Stocks.Count();
+                var customerBorrowedBaskets = await _lendedBasketRepository.GetAllByCustomerEmail(basket.Customer.Email.EmailAddress);
+                foreach (var customerBorrowedBasket in customerBorrowedBaskets)
+                {
+                    lendedStocksCount += customerBorrowedBasket.Stocks.Count();
+                }
             }
+            
 
             if (lendedStocksCount >= rule.RuleValue)
                 return (false,
@@ -61,18 +64,22 @@ namespace Lend.API.Domain.Strategies
                     {
                         ErrorType = ErrorType.Error,
                         ErrorDescription =
-                            $"Sum of basket stocks and all already borrowed books by Customer, max possible is {rule.RuleValue}"
+                            $"Sum of basket stocks and all already borrowed books by Customer is {sumOfBasketStockAndBorrowed}, max possible is {rule.RuleValue}"
                     });
 
-            
-            
-            return (true,
-                new StrategyError()
-                {
-                    ErrorType = ErrorType.Warning,
-                    ErrorDescription = $"Customer:({basket.Customer.Email.EmailAddress}) have some books borrowed"
-                });
-            
+
+            if (basket.Customer is not null && lendedStocksCount > 0)
+            {
+                return (true,
+                    new StrategyError()
+                    {
+                        ErrorType = ErrorType.Warning,
+                        ErrorDescription = $"Customer:({basket.Customer.Email.EmailAddress}) have some books borrowed"
+                    });
+
+            }
+
+            return (true, null);
         }
 
         /// <summary>

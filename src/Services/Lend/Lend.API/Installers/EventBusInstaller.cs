@@ -13,7 +13,9 @@ namespace Lend.API.Installers
             services.AddMassTransit(x =>
             {
                 x.AddRequestClient<GetCustomerInfo>();
-                
+                x.AddRequestClient<GetStockWithBookInfo>();
+                x.AddRequestClient<CheckStocksExistance>();
+
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host(configuration["EventBusSettings:HostUrl"]);

@@ -34,9 +34,9 @@ namespace StockDelivery.API.Handlers
                 return null;
 
             var bookInfo = await _client.GetResponse<BookInfoResult>(
-                new {BookId = selectedStock.Id});
+                new {BookId = selectedStock.BookId});
 
-            if (bookInfo.Message is null)
+            if (bookInfo.Message.Result is null)
                 return null;
 
             var result = _mapper.Map<StockWithBookInfoDto>(bookInfo.Message.Result);

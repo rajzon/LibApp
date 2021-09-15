@@ -59,7 +59,10 @@ namespace Lend.API
             services.AddMemoryCache();
 
             services.AddScoped<IStrategy<SimpleIntRule>, MaxPossibleBooksToLendStrategy>();
+            services.AddScoped<IStrategy<SimpleIntRule>, MaxDaysForLendBookStrategy>();
             services.AddScoped<IStrategy<SimpleBooleanRule>, CheckCustomerDebtorStrategy>();
+            services.AddScoped<IStrategy<SimpleBooleanRule>, CheckCustomerBorrowedRequestingBooksStrategy>();
+            services.AddScoped<IStrategy<SimpleBooleanRule>, CheckCustomerBorrowedRequestingStocksStrategy>();
             
             services.AddLendDbContextInstaller();
             

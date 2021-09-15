@@ -26,11 +26,24 @@ namespace Lend.API.Controllers.V1
         }
 
 
+        [HttpGet("basket")]
+        public async Task<IActionResult> GetBasket()
+        {
+            var userNameFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _mediator.Send(new GetBasketQuery() {EmployeeName = userNameFromToken});
+            if (result is null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        
+        //TODO:[HttpGet("rules/max-return-date")]
+        
         [HttpPost("basket/customer/{email}")]
         public async Task<IActionResult> PostCustomerForBasket(string email)
         {
             var userNameFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = await _mediator.Send(new PostCustomerForBasketCommand {UserName = userNameFromToken, CustomerEmail = email});
+            var result = await _mediator.Send(new PostCustomerForBasketCommand {EmployeeName = userNameFromToken, CustomerEmail = email});
             if (! result.Succeeded)
                 return result.Errors.Any()? BadRequest(new ErrorResponse
                 {
@@ -40,24 +53,114 @@ namespace Lend.API.Controllers.V1
             return Ok(result.Basket);
         }
 
-        // [HttpPost("basket/stock/{stockId}")]
-        // public async Task<IActionResult> PostStockForBasket(int stockId)
-        // {
-        //     var userNameFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //     var result = await _mediator.Send(new PostStockForBasketCommand {UserName = userNameFromToken, StockId = stockId});
-        // }
+        [HttpPost("basket/stock/{stockId}")]
+        public async Task<IActionResult> PostStockForBasket(int stockId)
+        {
+            var userNameFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _mediator.Send(new PostStockForBasketCommand {EmployeeName = userNameFromToken, StockId = stockId});
+            
+            if (! result.Succeeded)
+                return result.Errors.Any()? BadRequest(new ErrorResponse
+                {
+                    Errors =  result.Errors
+                }): BadRequest();
+            
+            return Ok(result.Basket);
+        }
+
+        [HttpPost("basket/lend")]
+        public async Task<IActionResult> LendBasket()
+        {
+            var userNameFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _mediator.Send(new LendBasketCommand() {EmployeeName = userNameFromToken});
+            
+            if (! result.Succeeded)
+                return result.Errors.Any()? BadRequest(new ErrorResponse
+                {
+                    Errors =  result.Errors
+                }): BadRequest();
+            
+            return Ok();
+        }
+        
+        [HttpPut("basket/stock/{stockId}/returnDate/{returnDate}")]
+        public async Task<IActionResult> PostReturnDateForBasketStock(int stockId, DateTime returnDate)
+        {
+            var userNameFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _mediator.Send(new PostReturnDateForBasketStockCommand {EmployeeName = userNameFromToken, StockId = stockId, ReturnDate = returnDate});
+            
+            if (! result.Succeeded)
+                return result.Errors.Any()? BadRequest(new ErrorResponse
+                {
+                    Errors =  result.Errors
+                }): BadRequest();
+            
+            return Ok(result.Basket);
+        }
+
+
+        [HttpDelete("basket/stock/{stockId}")]
+        public async Task<IActionResult> DeleteStockFromBasket(int stockId)
+        {
+            var userNameFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _mediator.Send(new DeleteStockFromBasketCommand {EmployeeName = userNameFromToken, StockId = stockId});
+            
+            if (! result.Succeeded)
+                return result.Errors.Any()? BadRequest(new ErrorResponse
+                {
+                    Errors =  result.Errors
+                }): BadRequest();
+            
+            return Ok(result.Basket);
+        }
+
+
+    }
+
+    public class GetBasketQuery : IRequest<BasketResponseDto>
+    {
+        public string EmployeeName { get; set; }
+    }
+
+    public class LendBasketCommand : IRequest<LendBasketCommandResult>
+    {
+        public string EmployeeName { get; set; }
+    }
+
+    public class LendBasketCommandResult : BaseCommandResult
+    {
+        public LendBasketCommandResult(bool succeeded) : base(succeeded)
+        {
+        }
+
+        public LendBasketCommandResult(bool succeeded, IReadOnlyCollection<string> errors = default) : base(succeeded, errors)
+        {
+        }
+    }
+
+    public class  DeleteStockFromBasketCommand : IRequest<PostBasketCommandResult>
+    {
+        public string EmployeeName { get; set; }
+        public int StockId { get; set; }
+    }
+
+    public class PostReturnDateForBasketStockCommand : IRequest<PostBasketCommandResult>
+    {
+        public string EmployeeName { get; set; }
+        public int StockId { get; set; }
+        public DateTime ReturnDate { get; set; }
     }
     
     public class PostStockForBasketCommand : IRequest<PostBasketCommandResult>
     {
-        public string UserName { get; set; }
+        public string EmployeeName { get; set; }
         public int StockId { get; init; }
         //public BasketDto Basket { get; init; }
     }
 
     public class PostCustomerForBasketCommand : IRequest<PostBasketCommandResult>
     {
-        public string UserName { get; init; }
+        public string EmployeeName { get; init; }
         public string CustomerEmail { get; init; }
         //public BasketDto Basket { get; init; }
     }
@@ -148,9 +251,9 @@ namespace Lend.API.Controllers.V1
         public CustomerBasketDto Customer { get; init; }
         public IEnumerable<StockWithBooksBasketDto> StockWithBooks { get; init; }
         //Errors
-        public List<string> BusinessErrors { get; set; }
+        public List<string> BusinessErrors { get; set; } = new List<string>();
         //Warnings
-        public List<string> BusinessWarnings { get; set; }
+        public List<string> BusinessWarnings { get; set; } = new List<string>();
     }
     
     public class PostBasketCommandResult : BaseCommandResult
