@@ -1,0 +1,384 @@
+<ngx-spinner *ngIf="isLoading$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
+
+<ngx-spinner *ngIf="isAdding$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
+
+<ngx-spinner *ngIf="isDeleting$ | async" [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium">
+  <h3 style="color: white">Loading...</h3>
+</ngx-spinner>
+
+
+<div class="mb-5 mt-4 border-bottom">
+  <h1 class="display-4">Create Basket</h1>
+</div>
+<div *ngIf="basket" class="mb-5">
+  <div *ngIf="basket.businessErrors?.length > 0" class="alert alert-danger font-weight-bold mb-3" role="alert">
+    <p>{{basket?.businessErrors}}</p>
+  </div>
+  <div *ngIf="basket.businessWarnings?.length > 0"  class="alert alert-warning font-weight-bold" role="alert">
+    <p>{{basket?.businessWarnings}}</p>
+  </div>
+</div>
+
+<ng-container *ngIf="basket">
+
+  <div class="row">
+
+    <div class="col-4">
+      <div class="row">
+        <div class="col-6">
+          <p class="text-right">Name:</p>
+        </div>
+        <div class="col-6">
+          <input type="text"
+                 [disabled]="true"
+                 ngModel="{{basket.customer?.name}}">
+        </div>
+        <!--      -->
+        <div class="col-6">
+          <p class="text-right">Surname:</p>
+        </div>
+
+        <div class="col-6">
+          <input type="text"
+                 [disabled]="true"
+                 ngModel="{{basket.customer?.surname}}">
+        </div>
+        <!--      -->
+        <div class="col-6">
+          <p class="text-right">Email:</p>
+        </div>
+        <div class="col-6">
+          <input type="text"
+                 [disabled]="true"
+                 ngModel="{{basket.customer?.email}}">
+        </div>
+        <!--      -->
+        <div class="col-6">
+          <p class="text-right">Person Id Card:</p>
+        </div>
+        <div class="col-6 mb-5">
+          <input type="text"
+                 [disabled]="true"
+                 ngModel="{{basket.customer?.personIdCard}}">
+        </div>
+
+        <!--      -->
+        <div class="col-6">
+          <p class="text-right">Phone:</p>
+        </div>
+        <div class="col-6">
+          <input type="text"
+                 [disabled]="true"
+                 ngModel="{{basket.customer?.phone}}">
+        </div>
+
+        <!--      -->
+        <div class="col-6">
+          <p class="text-right">Type of proof of identity:</p>
+        </div>
+        <div class="col-6">
+          <input type="text"
+                 [disabled]="true"
+                 ngModel="{{identityVal}}">
+        </div>
+
+        <!--      -->
+        <div class="col-6">
+          <p class="text-right">Nationality:</p>
+        </div>
+        <div class="col-6">
+          <input type="text"
+                 [disabled]="true"
+                 ngModel="{{basket.customer?.nationality}}">
+        </div>
+
+        <!--      -->
+        <div class="col-6">
+          <p class="text-right">Date of Birth:</p>
+        </div>
+        <div class="col-6">
+          <input type="text"
+                 [disabled]="true"
+                 ngModel="{{basket.customer?.dateOfBirth}}">
+        </div>
+
+
+      </div>
+    </div>
+<!---------------    Address -->
+    <div class="col-4">
+      <div class="row">
+
+        <div class="col-6 mb-2">
+          <h5 class="text-right font-weight-bold">Address</h5>
+        </div>
+        <div class="col-6">
+        </div>
+
+        <div class="col-6">
+          <p class="text-right">Address:</p>
+        </div>
+        <div class="col-6">
+          <input type="text"
+                 [disabled]="true"
+                 ngModel="{{basket.customer?.address.adres}}">
+        </div>
+
+
+      <!--      -->
+
+
+      <div class="col-6">
+        <p class="text-right">City:</p>
+      </div>
+      <div class="col-6">
+        <input type="text"
+               [disabled]="true"
+               ngModel="{{basket.customer?.address.city}}">
+      </div>
+      <!--      -->
+
+      <div class="col-6">
+        <p class="text-right">Post Code:</p>
+      </div>
+      <div class="col-6">
+        <input type="text"
+               [disabled]="true"
+               ngModel="{{basket.customer?.address.postCode}}">
+      </div>
+      <!--      -->
+
+      <div class="col-6">
+        <p class="text-right">Post:</p>
+      </div>
+      <div class="col-6">
+        <input type="text"
+               [disabled]="true"
+               ngModel="{{basket.customer?.address.post}}">
+      </div>
+      <!--      -->
+
+      <div class="col-6">
+        <p class="text-right">Country:</p>
+      </div>
+      <div class="col-6">
+        <input type="text"
+               [disabled]="true"
+               ngModel="{{basket.customer?.address.country}}">
+      </div>
+      <!--      -->
+    </div>
+    </div>
+<!--    Address Coreespondence-->
+
+    <div class="col-4">
+      <div class="row">
+
+      <div class="col-8 mb-2">
+        <h5 class="text-right font-weight-bold">Addres Correspondence</h5>
+      </div>
+      <div class="col-4">
+      </div>
+
+      <div class="col-6">
+        <p class="text-right">Address:</p>
+      </div>
+      <div class="col-6">
+        <input type="text"
+               [disabled]="true"
+               ngModel="{{basket.customer?.address.adres}}">
+      </div>
+      <!--      -->
+
+      <div class="col-6">
+        <p class="text-right">City:</p>
+      </div>
+      <div class="col-6">
+        <input type="text"
+               [disabled]="true"
+               ngModel="{{basket.customer?.address.city}}">
+      </div>
+      <!--      -->
+
+      <div class="col-6">
+        <p class="text-right">Post Code:</p>
+      </div>
+      <div class="col-6">
+        <input type="text"
+               [disabled]="true"
+               ngModel="{{basket.customer?.address.postCode}}">
+      </div>
+      <!--      -->
+
+      <div class="col-6">
+        <p class="text-right">Post:</p>
+      </div>
+      <div class="col-6">
+        <input type="text"
+               [disabled]="true"
+               ngModel="{{basket.customer?.address.post}}">
+      </div>
+      <!--      -->
+
+      <div class="col-6">
+        <p class="text-right">Country:</p>
+      </div>
+      <div class="col-6">
+        <input type="text"
+               [disabled]="true"
+               ngModel="{{basket.customer?.address.country}}">
+      </div>
+      <!--      -->
+    </div>
+  </div>
+  </div>
+</ng-container>
+
+<!------------------------------------------------------------------------------>
+<div class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <form #searchForm="ngForm" (ngSubmit)="addStockForBasket(stockSearchTerm)"
+              class="form-inline justify-content-center mt-5">
+          <div class="form-group search-grp mr-1">
+            <label for="test">
+              <input type="text"
+                     id="test"
+                     class="form-control search-field"
+                     [(ngModel)]="stockSearchTerm"
+                     name="searchValue"
+                     placeholder="Search field..."
+                     [pattern]="lendSettings.stockSearchField.pattern"
+                     [required]="true">
+            </label>
+          </div>
+          <button type="submit"
+                  [disabled]="searchForm.invalid"
+                  class="fa fa-search search"></button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+      <app-customer-search (searchCustomerResultEvent)="addCustomerForBasket($event)"></app-customer-search>
+  </div>
+</div>
+
+  <!---------------------------------------------------------------------------------------------------------------------------------->
+  <ng-container *ngIf="basket">
+    <div class="table-responsive mt-5 container">
+      <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+          <th scope="col">Image</th>
+          <th scope="col">Book Description</th>
+          <th scope="col">EAN Code</th>
+          <th scope="col">Item Id</th>
+          <th scope="col">Return Date</th>
+          <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let item of basket.stockWithBooks">
+          <td class="image-row"><img class="img-fluid"
+                                     [src]="item?.image?.url"
+                                     alt=""></td>
+          <td>
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  <p class="font-weight-bold text-capitalize"> {{item?.title}}</p>
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="col-12 book-description">
+                  Authors:
+                  <div class="d-inline author" *ngFor="let author of item?.authors">
+                    {{author?.fullName}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-6 book-description">
+                  <div class="d-inline font-weight-bold">Category:</div>
+                  <div class="d-inline font-weight-bold" *ngFor="let category of item?.categories">
+                    {{category?.name}}
+                  </div>
+                </div>
+                <!--          -->
+                <div class="col-6 book-description">
+                  <div class="d-inline font-weight-bold ">Publisher: </div>
+                  <div class="d-inline">{{item.publisher?.name}}</div>
+                </div>
+                <!--          -->
+                <div class="col-6 book-description">
+                  <div class="d-inline font-weight-bold">ISBN10: </div>
+                  <div class="d-inline">{{item?.isbn10}}</div>
+                </div>
+                <div class="col-6 book-description">
+                  <div class="d-inline font-weight-bold ">Published Date: </div>
+                  <div class="d-inline">{{item.publishedDate | date}}</div>
+                </div>
+                <div class="col-6 book-description">
+                  <div class="d-inline font-weight-bold">ISBN13: </div>
+                  <div class="d-inline">{{item.isbn13}}</div>
+                </div>
+
+              </div>
+
+            </div>
+          </td>
+          <td class="font-weight-bold ean">{{item?.ean13}}</td>
+          <td class="font-weight-bold"> {{item?.stockId}}</td>
+          <td class="font-weight-bold dates"> {{item?.returnDate | date}}</td>
+          <td>
+            <button type="button"
+                    class="fa fa-trash ml-1 mr-2" (click)="deleteStockInBasket(item?.stockId)"></button>
+
+<!--            <div class="row">-->
+<!--              <div class="col-xs-12 col-12 col-md-4 form-group mb-3">-->
+<!--                <input type="text"-->
+<!--                       class="form-control"-->
+<!--                       #dp="bsDatepicker"-->
+<!--                       bsDatepicker-->
+<!--                       [hidden]="true"-->
+<!--                       [(ngModel)]="item.returnDate">-->
+<!--              </div>-->
+<!--              <div class="col-xs-12 col-12 col-md-3 form-group mb-3">-->
+<!--                <button class="fa fa-calendar-plus ml-1 mr-2" (click)="dp.show()" [attr.aria-expanded]="dp.isOpen" type="button"></button>-->
+<!--              </div>-->
+<!--            </div>-->
+
+            <!-- Button to open calendar -->
+            <button type="button" class="fa fa-calendar-plus ml-1 mr-2" (click)="d.toggle()">
+            </button>
+            <!-- Calendar -->
+            <span bsDatepicker
+                  #d="bsDatepicker"
+                  placement="right"
+                  [minDate]="today"
+            (bsValueChange)="onShown($event, item?.stockId)"></span>
+          </td>
+
+        </tr>
+        </tbody>
+      </table>
+      <div class="mt-5 text-right action-btn">
+        <button class="btn btn-success"
+                [disabled]="isBasketInvalid()"
+                (click)="lendBasket()">Lend</button>
+      </div>
+    </div>
+  </ng-container>
+<!--</div>-->

@@ -15,6 +15,7 @@ namespace EventBus.Messages.Results
         public string Email { get; init; }
         public string PersonIdCard { get; init; }
         public IdentityType IdentityType { get; init; }
+        public long Phone { get; init; }
         public string Nationality { get; init; }
         public DateTime DateOfBirth { get; init; }
         

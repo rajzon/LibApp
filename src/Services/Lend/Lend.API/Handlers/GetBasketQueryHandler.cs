@@ -53,7 +53,7 @@ namespace Lend.API.Handlers
             foreach (var intStrategy in _intStrategies)
             {
                 var match = await intStrategy.IsBasketMatchStrategy(basket);
-                if (!match.Item1)
+                if (match.Item2 is not null)
                 {
                     if (match.Item2.ErrorType == ErrorType.Error)
                         errors.Add(match.Item2.ErrorDescription);
@@ -64,7 +64,7 @@ namespace Lend.API.Handlers
             foreach (var booleanStrategy in _booleanStrategies)
             {
                 var match = await booleanStrategy.IsBasketMatchStrategy(basket);
-                if (!match.Item1)
+                if (match.Item2 is not null)
                 {
                     if (match.Item2.ErrorType == ErrorType.Error)
                         errors.Add(match.Item2.ErrorDescription);

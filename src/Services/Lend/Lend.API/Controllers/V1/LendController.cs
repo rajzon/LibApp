@@ -222,6 +222,7 @@ namespace Lend.API.Controllers.V1
         public string PersonIdCard { get; init; }
         public IdentityType IdentityType { get; init; }
         public string Nationality { get; init; }
+        public long Phone { get; init; }
         public DateTime DateOfBirth { get; init; }
         
         public AddressBasketDto Address { get; init; }

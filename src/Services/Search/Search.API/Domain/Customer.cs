@@ -11,6 +11,7 @@ namespace Search.API.Domain
         public IdCard PersonIdCard { get; set; }
         public IdentityType IdentityType { get; set; }
         public string Nationality { get; set; }
+        public long Phone { get; set; }
         public DateTime DateOfBirth { get; set; }
         
         public Address Address { get; set; }

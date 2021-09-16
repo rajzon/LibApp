@@ -13,6 +13,10 @@ export const routes: Routes = [
     path: 'delivery',
     loadChildren: './features/delivery/delivery.module#DeliveryModule'
   },
+  {
+    path: 'lend',
+    loadChildren: './features/lend/lend.module#LendModule'
+  },
   { path: '**', redirectTo: 'home'},
 ]
 

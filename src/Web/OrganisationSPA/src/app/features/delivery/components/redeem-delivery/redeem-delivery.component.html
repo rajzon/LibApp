@@ -67,6 +67,7 @@
   <button class="btn btn-light action-btn"
           [routerLink]="['/delivery']">Close</button>
 </div>
+</div>
 <!---------------------------------------------------------------------------------------------------------------------------------->
 <ng-container *ngIf="(deliveryInfo$ | async) as deliveryInfo">
   <div class="table-responsive mt-5 container">
@@ -149,4 +150,5 @@
       (click)="redeemDelivery()">Redeem Delivery</button>
     </div>
   </div>
+
 </ng-container>

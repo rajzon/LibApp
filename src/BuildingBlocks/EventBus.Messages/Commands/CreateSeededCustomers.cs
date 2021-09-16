@@ -16,6 +16,7 @@ namespace EventBus.Messages.Commands
         public EmailDto Email { get; set; }
         public IdCardDto PersonIdCard { get; set; }
         public IdentityTypeDto IdentityType { get; set; }
+        public long Phone { get; set; }
         public string Nationality { get; set; }
         public DateTime DateOfBirth { get; set; }
         

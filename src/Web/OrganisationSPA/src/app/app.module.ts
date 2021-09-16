@@ -9,6 +9,7 @@ import { routing } from "./app.routing";
 import {BookModule} from "./features/book/book.module";
 import {HttpClientModule} from "@angular/common/http";
 import {DeliveryModule} from "./features/delivery/delivery.module";
+import {LendModule} from "./features/lend/lend.module";
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import {DeliveryModule} from "./features/delivery/delivery.module";
     routing,
     BookModule,
     DeliveryModule,
+    LendModule,
     HttpClientModule
   ],
   providers: [],

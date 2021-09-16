@@ -131,7 +131,7 @@ namespace Lend.API.Handlers
             foreach (var intStrategy in _intStrategies)
             {
                 var match = await intStrategy.IsBasketMatchStrategy(basket);
-                if (!match.Item1)
+                if (match.Item2 is not null)
                 {
                     if (match.Item2.ErrorType == ErrorType.Error)
                         errors.Add(match.Item2.ErrorDescription);
@@ -139,10 +139,11 @@ namespace Lend.API.Handlers
                         warnings.Add(match.Item2.ErrorDescription);
                 }
             }
+
             foreach (var booleanStrategy in _booleanStrategies)
             {
                 var match = await booleanStrategy.IsBasketMatchStrategy(basket);
-                if (!match.Item1)
+                if (match.Item2 is not null)
                 {
                     if (match.Item2.ErrorType == ErrorType.Error)
                         errors.Add(match.Item2.ErrorDescription);
@@ -150,7 +151,6 @@ namespace Lend.API.Handlers
                         warnings.Add(match.Item2.ErrorDescription);
                 }
             }
-            
 
             return (errors, warnings);
         }
@@ -174,7 +174,7 @@ namespace Lend.API.Handlers
             AddressCorrespondenceBasket correspondenceAddress, IdentityType identityType)
         {
             return new CustomerBasket(customerResponse.Id, customerResponse.Name, customerResponse.Surname, new EmailBasket(customerResponse.Email),
-                new IdCardBasket(customerResponse.PersonIdCard, identityType), identityType, customerResponse.Nationality,
+                new IdCardBasket(customerResponse.PersonIdCard, identityType), identityType, customerResponse.Nationality, customerResponse.Phone,
                 customerResponse.DateOfBirth, address, correspondenceAddress);
         }
     }

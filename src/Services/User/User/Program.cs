@@ -63,7 +63,7 @@ namespace User
             {
                 new Customer("Ala", "Kot", new Email("ala@kot.pl"), new IdCard("11111", IdentityType.PersonIdCard),
                     IdentityType.PersonIdCard
-                    , "Polish", DateTime.UtcNow,
+                    , "Polish", 111222333, DateTime.UtcNow,
                     new Address("Akacjowa 12", "Cracow", new PostCode("29-012"), "Cracow", "Poland"),
                     new AddressCorrespondence("Akacjowa 12 Correspondence", "Cracow Correspondence",
                         new PostCode("29-012"),
@@ -71,7 +71,7 @@ namespace User
                 new Customer("Jan", "Kowalski", new Email("jan@kowalski.pl"),
                     new IdCard("22222", IdentityType.Passport),
                     IdentityType.Passport
-                    , "English", DateTime.Now,
+                    , "English", 999333222, DateTime.Now,
                     new Address("Glowna 3", "Warsaw", new PostCode("12-012"), "Warsaw", "Poland"),
                     new AddressCorrespondence("Glowna 3 Correspondence", "Warsaw Correspondence",
                         new PostCode("12-012"),

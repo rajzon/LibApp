@@ -139,6 +139,26 @@ namespace Lend.API.Domain
             
             
         }
+        
+        [JsonConstructor]
+        public StockWithBooksBasket(int stockId, string title, string ean13,
+            string isbn10, string isbn13, DateTime publishedDate,  
+            IEnumerable<CategoryBasket> categories, IEnumerable<AuthorBasket> authors, PublisherBasket publisher, ImageBasket image)
+        {
+            StockId = stockId;
+            Title = title;
+            Ean13 = ean13;
+            Isbn10 = isbn10;
+            Isbn13 = isbn13;
+            Categories = categories;
+            Authors = authors;
+            Publisher = publisher;
+            Image = image;
+            
+            PublishedDate = publishedDate;
+
+        }
+        
         public void EditReturnDate(DateTime newReturnDate)
         {
             ReturnDate = newReturnDate;
@@ -209,12 +229,13 @@ namespace Lend.API.Domain
         public IdentityType IdentityType { get; private set; }
         public string Nationality { get; private set; }
         public DateTime DateOfBirth { get; private set; }
+        public long Phone { get; private set; }
         
         public AddressBasket Address { get; private set; }
         public AddressCorrespondenceBasket CorrespondenceAddress { get; private set; }
 
         public CustomerBasket(int id, string name, string surname, EmailBasket email,
-            IdCardBasket personIdCard, IdentityType identityType, string nationality,
+            IdCardBasket personIdCard, IdentityType identityType, string nationality, long phone,
             DateTime dateOfBirth, AddressBasket address, AddressCorrespondenceBasket correspondenceAddress)
         {
             Id = id;
@@ -224,6 +245,7 @@ namespace Lend.API.Domain
             PersonIdCard = personIdCard;
             IdentityType = identityType;
             Nationality = nationality;
+            Phone = phone;
             DateOfBirth = dateOfBirth;
             Address = address;
             CorrespondenceAddress = correspondenceAddress;

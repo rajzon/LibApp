@@ -9,6 +9,7 @@ export const environment = {
   bookApiUrl: 'https://localhost:5001/',
   searchApiUrl: 'https://localhost:6001/',
   stockDeliveryApiUrl: 'https://localhost:7001/',
+  lendApiUrl: 'https://localhost:11001/',
   googleApiUrl: 'https://www.googleapis.com/',
   timeFormat: 'dd-MM-yyyy',
   defaultSortingField: 'modificationDate:desc',
@@ -18,6 +19,14 @@ export const environment = {
   pagination: {
     itemsPerPageDefault: 10,
     itemsPerPageOpts: [10,20,40]
+  },
+  lend: {
+    emailSearchField: {
+      pattern: '[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\\\.[a-z]{2,3}'
+    },
+    stockSearchField: {
+      pattern: '^[0-9]+$'
+    }
   },
   delivery: {
     name: {

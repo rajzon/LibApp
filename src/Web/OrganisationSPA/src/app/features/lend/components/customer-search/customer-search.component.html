@@ -1,0 +1,49 @@
+<div class="container">
+  <form #searchForm="ngForm" (ngSubmit)="search(searchTerm)"
+        class="form-inline justify-content-end mt-5">
+    <div class="form-group mr-1">
+      <input type="text"
+             class="form-control search-field"
+             [required]="true"
+             [(ngModel)]="searchTerm"
+             [typeahead]="suggestions$"
+             [typeaheadAsync]="true"
+             (typeaheadLoading)="changeTypeaheadLoading($event)"
+             (typeaheadNoResults)="changeTypeaheadHasSuggestions($event)"
+             (typeaheadOnSelect)="onSelectOpt($event)"
+             [optionsListTemplate]="customerSuggestionTemplate"
+             [typeaheadOptionsLimit]="10"
+             typeaheadWaitMs="500"
+             name="searchValue"
+             placeholder="Search field..."
+             autocomplete="off"
+      >
+    </div>
+    <button type="submit" [disabled]="searchForm.invalid"
+            class="fa fa-search ml-1 search"></button>
+
+  </form>
+  <p class="text-right font-weight-bold customer-info">Insert: name, surname or email</p>
+
+  <ng-template #customerSuggestionTemplate  let-matches="matches" let-query="query"
+               let-typeaheadTemplateMethods>
+    <div *ngIf="hasSuggestions" class="list-group w-100">
+      <a [routerLink]=""
+         routerLinkActive="active" skipLocationChange="true"
+         *ngFor="let match of matches"
+         class="list-group-item list-group-item-action"
+         [class.active]="typeaheadTemplateMethods.isActive(match)"
+         (click)="typeaheadTemplateMethods.selectMatch(match, $event)"
+         (mouseenter)="typeaheadTemplateMethods.selectActive(match)"
+      >
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{match.item.name}}</h5>
+        </div>
+        <p class="mb-1">{{match.item.surname}}</p>
+        <p class="mb-1">{{match.item.email}}</p>
+      </a>
+    </div>
+  </ng-template>
+</div>
+
+
