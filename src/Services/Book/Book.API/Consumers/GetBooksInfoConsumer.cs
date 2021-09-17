@@ -15,12 +15,12 @@ namespace Book.API.Consumers
     {
         private readonly IBookRepository _bookRepository;
         private readonly IPublisherRepository _publisherRepository;
-        private readonly ILogger<CheckBooksExistanceConsumer> _logger;
+        private readonly ILogger<GetBooksInfoConsumer> _logger;
         private readonly IMapper _mapper;
 
         public GetBooksInfoConsumer(IBookRepository bookRepository,
             IPublisherRepository publisherRepository,
-            ILogger<CheckBooksExistanceConsumer> logger,
+            ILogger<GetBooksInfoConsumer> logger,
             IMapper mapper)
         {
             _bookRepository = bookRepository;
@@ -49,7 +49,7 @@ namespace Book.API.Consumers
                 }
             }
             
-            _logger.LogInformation("GetBooksInfoConsumer: TEST {MessageId} : {@A}",context.MessageId, results);
+            _logger.LogInformation("GetBooksInfoConsumer: Message: {MessageId} Ended with value : {@Value}",context.MessageId, results);
             
             await context.RespondAsync<BooksInfoResult>(new
             {

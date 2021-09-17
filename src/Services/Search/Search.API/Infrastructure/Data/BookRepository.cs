@@ -105,6 +105,65 @@ namespace Search.API.Infrastructure.Data
             _logger.LogInformation("BookRepository: SearchAsync successfully requested data from Elasticsearch");
             return result;
         }
+        
+        public async Task<ISearchResponse<Customer>> SearchCustomersByEmail(SearchCustomerCommand command)
+        {
+            _logger.LogInformation("BookRepository: SearchCustomersByEmail - Method started with values {@MethodValues}", command);
+
+            var result = await _client.SearchAsync<Customer>(s => s
+                .Index(_configuration["elasticsearch:customerIndexName"])
+                .Query(q => q
+                    .Terms(t => t
+                        .Field(f => f.Email.EmailAddress.Suffix("keyword"))
+                        .Terms(command.SearchTerm)))
+            );
+            
+            if (!result.IsValid)
+            {
+                _logger.LogError("BookRepository: SearchCustomersByEmail error occured during analyzing query by Elasticsearch, {@MethodValues}", command);
+                return result;
+            }
+            
+            _logger.LogInformation("BookRepository: SearchCustomersByEmail successfully requested data from Elasticsearch");
+            return result;
+        }
+
+        public async Task<ISearchResponse<Customer>> SuggestCustomerAsync(SuggestCustomerCommand command)
+        {
+            _logger.LogInformation("BookRepository: SuggestCustomerAsync - Method started with values {@MethodValues}", command);
+            
+            var result = await _client.SearchAsync<Customer>(s => s
+                .Index(_configuration["elasticsearch:customerIndexName"])
+                .Suggest(ss => ss
+                    .Completion("name-completion", c => c
+                        .Field(f => f.NameSuggest)
+                        .Prefix(command.SuggestValue)
+                        .Size(1000)
+                        .Fuzzy(f => f
+                            .Fuzziness(Fuzziness.Auto)
+                            .UnicodeAware()))
+                    .Completion("surname-completion", c => c
+                        .Field(f => f.SurnameSuggest)
+                        .Prefix(command.SuggestValue)
+                        .Size(1000)
+                        .Fuzzy(f => f
+                            .Fuzziness(Fuzziness.Auto)
+                            .UnicodeAware()))
+                    .Completion("email-completion", c => c
+                        .Field(f => f.EmailSuggest)
+                        .Prefix(command.SuggestValue)
+                        .Size(1000)
+                    )));
+
+            if (!result.IsValid)
+            {
+                _logger.LogError("BookRepository: SuggestCustomerAsync error occured during analyzing suggest query by Elasticsearch, {@MethodValues}", command);
+                return result;
+            }
+                
+            _logger.LogInformation("BookRepository: SuggestCustomerAsync successfully requested data from Elasticsearch");   
+            return result;
+        }
 
         public async Task<ISearchResponse<Book>> SearchByEanAsync(SearchBookByEanCommand command)
         {

@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,7 @@ using Search.API.Application.Services;
 using Search.API.Commands;
 using Search.API.Commands.V1;
 using Search.API.Contracts.Responses;
+using Search.API.Helpers.EqualityComparers;
 
 namespace Search.API.Controllers.V1
 {
@@ -101,6 +103,40 @@ namespace Search.API.Controllers.V1
                 select new SuggestBookManagementResult(option)).ToList();
             
             return Ok(response);
+        }
+
+        [HttpGet("customer/{searchTerm}")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<CustomerResponse>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> CustomerSearch(string searchTerm)
+        {
+            var result = await _bookRepository.SearchCustomersByEmail(new SearchCustomerCommand() {SearchTerm = searchTerm});
+            
+            if (!result.Documents.Any())
+                return NotFound();
+
+            var response = _mapper.Map<CustomerResponse>(result.Documents.FirstOrDefault());
+
+            return Ok(response);
+        }
+
+        [HttpGet("suggest/customer/{suggestValue}")]
+        [ProducesResponseType(typeof(List<SuggestCustomerResult>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> CustomersSuggest(string suggestValue)
+        {
+            var result = await _bookRepository.SuggestCustomerAsync(new SuggestCustomerCommand()
+                {SuggestValue = suggestValue});
+            
+            if (!result.IsValid)
+                return NotFound();
+            
+            var response = (from suggests in result.Suggest.Values 
+                from suggest in suggests 
+                from option in suggest.Options 
+                select new SuggestCustomerResult(option)).ToList();
+
+            return Ok(response.Distinct(new SuggestCustomerResultEqualityComparer()));
         }
     }
     

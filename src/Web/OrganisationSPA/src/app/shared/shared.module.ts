@@ -16,10 +16,11 @@ import {ModalModule} from "ngx-bootstrap/modal";
 import {PaginationModule} from "ngx-bootstrap/pagination";
 import {EmptyToNullDirective} from "@shared/directives/empty-to-null/empty-to-null.directive";
 import {TypeaheadModule} from "ngx-bootstrap/typeahead";
+import { DumbInputTextComponent } from './forms/dumb-input-text/dumb-input-text.component';
 
 
 @NgModule({
-  declarations: [TextInputComponent, NumberInputComponent, DigitsOnlyDirective, FileUploaderComponent, EmptyToNullDirective],
+  declarations: [TextInputComponent, NumberInputComponent, DigitsOnlyDirective, FileUploaderComponent, EmptyToNullDirective, DumbInputTextComponent, DumbInputTextComponent],
   exports: [
     TextInputComponent,
     NumberInputComponent,
@@ -34,7 +35,8 @@ import {TypeaheadModule} from "ngx-bootstrap/typeahead";
     NgxSpinnerModule,
     ToastrModule,
     ModalModule,
-    PaginationModule
+    PaginationModule,
+    DumbInputTextComponent
   ],
   imports: [
     CommonModule,

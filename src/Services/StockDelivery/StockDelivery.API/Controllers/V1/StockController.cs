@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StockDelivery.API.Queries.V1;
+using StockDelivery.API.Queries.V1.Dtos;
 
 namespace StockDelivery.API.Controllers.V1
 {
@@ -32,16 +34,18 @@ namespace StockDelivery.API.Controllers.V1
 
             return Ok(result);
         }
-    }
 
-    public class GetAllStocksQuery : IRequest<IEnumerable<StockDto>>
-    {
-    }
+        [HttpGet("{stockId}/with-book-info")]
+        [ProducesResponseType(typeof(StockWithBookInfoDto), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetWithBookInfo(int stockId)
+        {
+            var result = await _mediator.Send(new GetStockWithBookInfoQuery() {StockId = stockId});
 
-    public class StockDto
-    {
-        public int Id { get; init; }
-        public int BookId { get; init; }
-        public string Ean { get; init; }
+            if (result is null)
+                return NotFound();
+
+            return Ok(result);
+        }
     }
 }

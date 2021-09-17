@@ -46,6 +46,15 @@ namespace StockDelivery.API.Mappings
                 //     opt => opt.MapFrom(src => src.Items.Aggregate(0, (total, next) => total + next.ItemsCount)))
                 .ForMember(dest => dest.ItemsCount,
                     opt => opt.MapFrom(src => src.Items.Sum(i => i.ItemsCount)));
+            CreateMap<BookInfoDto, StockWithBookInfoDto>();
+            
+            CreateMap<CategoryResponseDto, CategoryBusResponseDto>();
+            CreateMap<PublisherResponseDto, PublisherBusResponseDto>();
+            CreateMap<ImageResponseDto, ImageBusResponseDto>();
+            CreateMap<AuthorResponseDto, AuthorBusResponseDto>();
+            CreateMap<StockWithBookInfoDto, StockWithBookInfoBusResponse>();
+
+
         }
     }
 }

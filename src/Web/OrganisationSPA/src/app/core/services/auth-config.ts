@@ -27,7 +27,7 @@ export const authConfig: AuthConfig = {
     // The first four are defined by OIDC.
     // Important: Request offline_access to get a refresh token
     // The api scope is a usecase specific one
-    scope: 'openid profile offline_access book_api search_api stock_delivery_api role.scope book_privilege.scope delivery_privilege.scope',
+    scope: 'openid profile offline_access book_api search_api stock_delivery_api lend_api role.scope book_privilege.scope delivery_privilege.scope',
 
     showDebugInformation: true,
 }

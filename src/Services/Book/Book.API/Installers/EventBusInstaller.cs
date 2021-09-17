@@ -15,9 +15,11 @@ namespace Book.API.Installers
             {
                 x.AddConsumer<CheckBooksExistanceConsumer>();
                 x.AddConsumer<GetBooksInfoConsumer>();
+                x.AddConsumer<GetBookInfoConsumer>();
                 
                 x.AddRequestClient<CheckBooksExsitance>();
                 x.AddRequestClient<GetBooksInfo>();
+                x.AddRequestClient<GetBookInfo>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -31,6 +33,11 @@ namespace Book.API.Installers
                     {
                         e.ConfigureConsumer<GetBooksInfoConsumer>(context);
                     });
+                    cfg.ReceiveEndpoint(EventBusConstants.GetBookInfo, e =>
+                    {
+                        e.ConfigureConsumer<GetBookInfoConsumer>(context);
+                    });
+                    
                     cfg.Host(configuration["EventBusSettings:HostUrl"]);
                 });
             });

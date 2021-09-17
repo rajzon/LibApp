@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
 using Search.API.Domain;
+using Customer = Search.API.Domain.Customer;
 
 namespace Search.API.Installers
 {
@@ -24,6 +25,13 @@ namespace Search.API.Installers
             var a =client.Indices.Create(defaultIndex, index => index.Map(x => x.AutoMap(0)));
             client.Indices.Create(configuration["elasticsearch:bookIndexName"], c => c
                 .Map<Book>(m => m.AutoMap(0)));
+            client.Indices.Create(configuration["elasticsearch:customerIndexName"], c => c
+                .Map<Customer>(m => m.AutoMap(0)));
+            // client.Indices.Create(configuration["elasticsearch:customerIndexName"], c => c
+            //     .Map<Customer>(m => m.AutoMap(0).Properties(ps => ps
+            //         .Completion(s => s.Name(n => n.NameSuggest))
+            //         .Completion(s => s.Name(n => n.SurnameSuggest))
+            //         .Completion(s => s.Name(n => n.EmailSuggest)))));
             services.AddSingleton<IElasticClient>(client);
             return services;
         }

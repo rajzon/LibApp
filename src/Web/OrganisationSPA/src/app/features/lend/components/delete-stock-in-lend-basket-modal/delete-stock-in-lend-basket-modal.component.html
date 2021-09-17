@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h4 class="modal-title">Delete Book from Basket</h4>
+</div>
+<div class="modal-body">
+  <form #editForm="ngForm">
+    <div class="form-group">
+      <label
+        class="text-capitalize font-weight-bold">Canncellation Reason: </label>
+      <input
+        type="text"
+        [(ngModel)]="insertedStockId"
+        name="cancellationReason"
+        class="form-control"
+        placeholder="Insert Stock Id">
+    </div>
+  </form>
+  <div *ngIf="insertedStockId != requiredConfirmId">
+    <p class="text-danger">Inserted wrong stock Id</p>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button"
+          class="btn btn-default"
+          (click)="bsModalRef.hide()">Cancel</button>
+  <button type="submit"
+          class="btn btn-primary"
+          (click)="delete()"
+          [disabled]="editForm.invalid || insertedStockId != requiredConfirmId">Confirm</button>
+</div>

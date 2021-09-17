@@ -27,5 +27,16 @@ namespace StockDelivery.API.Data.Repositories
         {
             return await _context.BookStocks.ToListAsync();
         }
+
+        public async Task<BookStock> GetAsync(int stockId)
+        {
+            return await _context.BookStocks.FirstOrDefaultAsync(s => s.Id == stockId);
+        }
+
+        public async Task<bool> IsAllExists(List<int> stocksIds)
+        {
+            var res = await _context.BookStocks.Where(s => stocksIds.Contains(s.Id)).ToListAsync();
+            return res.Count == stocksIds.Count;
+        }
     }
 }

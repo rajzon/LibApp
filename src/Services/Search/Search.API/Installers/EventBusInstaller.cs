@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MassTransit;
 using Search.API.Consumers;
+using CreateSeededCustomersConsumer = Search.API.Consumers.CreateSeededCustomersConsumer;
 
 namespace Search.API.Installers
 {
@@ -13,10 +14,16 @@ namespace Search.API.Installers
             IConfiguration configuration)
         {
             services.AddScoped<CreateBookConsumer>();
+            services.AddScoped<CreateSeededCustomersConsumer>();
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<CreateBookConsumer>();
                 x.AddConsumer<AddImageToBookConsumer>();
+                x.AddConsumer<CreateSeededCustomersConsumer>();
+                x.AddConsumer<GetCustomerInfoConsumer>();
+                
+                
+                x.AddRequestClient<GetCustomerInfo>();
                 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -29,6 +36,16 @@ namespace Search.API.Installers
                     cfg.ReceiveEndpoint(EventBusConstants.AddImageToBookQueue, c =>
                     {
                         c.ConfigureConsumer<AddImageToBookConsumer>(context);
+                    });
+                    
+                    cfg.ReceiveEndpoint(EventBusConstants.CreateSeededCustomersQueue, c =>
+                    {
+                        c.ConfigureConsumer<CreateSeededCustomersConsumer>(context);
+                    });
+                    
+                    cfg.ReceiveEndpoint(EventBusConstants.GetCustomerInfo, c =>
+                    {
+                        c.ConfigureConsumer<GetCustomerInfoConsumer>(context);
                     });
                 });
                 
