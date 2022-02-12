@@ -16,12 +16,12 @@ namespace Book.API.Extensions
             return ruleBuilder.Must((rootObject, list, context) =>
                 {
                     var sourceResult = source.GetAwaiter().GetResult()
-                        .Where(element => list.Contains((TElement)element.GetType().GetProperty(sourcePropToCompare).GetValue(element)) );
+                        .Where(element => list.Contains((TElement)element.GetType().GetProperty(sourcePropToCompare)?.GetValue(element)) );
                     
                     var available = new List<TElement>();
                     foreach (var resultElement in sourceResult)
                     {
-                        var availableEl = (TElement) resultElement.GetType().GetProperty(sourcePropToCompare).GetValue(resultElement);
+                        var availableEl = (TElement) resultElement.GetType().GetProperty(sourcePropToCompare)?.GetValue(resultElement);
                         available.Add(availableEl);
                     }
                     

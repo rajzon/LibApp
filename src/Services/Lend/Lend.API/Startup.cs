@@ -64,7 +64,7 @@ namespace Lend.API
             services.AddScoped<IStrategy<SimpleBooleanRule>, CheckCustomerBorrowedRequestingBooksStrategy>();
             services.AddScoped<IStrategy<SimpleBooleanRule>, CheckCustomerBorrowedRequestingStocksStrategy>();
             
-            services.AddLendDbContextInstaller();
+            services.AddLendDbContextInstaller(Configuration);
             
             services.AddEventBusInitializer(Configuration);
             services.AddApiVersioningInitializer();

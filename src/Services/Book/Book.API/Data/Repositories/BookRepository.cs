@@ -46,11 +46,25 @@ namespace Book.API.Data.Repositories
 
         public async Task<bool> IsAllExistsAsync(Dictionary<int, string> booksIdsWithEans)
         {
-            var result = await _bookContext.Books.AnyAsync(b => 
-                booksIdsWithEans.ContainsKey(b.Id) &&
-                booksIdsWithEans.ContainsValue(b.Ean13.Code));
+            var booksIds = booksIdsWithEans.Keys.ToList();
+            var books = await _bookContext.Books
+                .Include(b => b.Ean13)
+                .Where(b => booksIds.Contains(b.Id)).ToListAsync();
 
-            return result;
+            if (books.Count != booksIdsWithEans.Count)
+                return false;
+
+            foreach (var book in books)
+            {
+                if (booksIdsWithEans.TryGetValue(book.Id, out string ean))
+                {
+                    if (book.Ean13.Code != ean)
+                        return false;
+                }
+                else
+                    return false;
+            }
+            return true;
         }
 
         public async Task<IEnumerable<Domain.Book>> GetAllByIds(List<int> booksIds)

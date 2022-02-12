@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.API.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class AuthController : Controller
     {
         private readonly SignInManager<AppUser> _signInManager;
@@ -23,7 +25,7 @@ namespace Identity.API.Controllers
             _interactionService = interactionService;
         }
 
-        [HttpGet]
+        [HttpGet("logout")]
         public async Task<IActionResult> Logout(string logoutId)
         {
             await _signInManager.SignOutAsync();
@@ -33,16 +35,16 @@ namespace Identity.API.Controllers
             return Redirect(logoutRequest.PostLogoutRedirectUri);
         }
         
-        [HttpGet]
+        [HttpGet("login")]
         public IActionResult Login(string returnUrl)
         {
             returnUrl ??= "http://localhost:4200";
             
             return View(new LoginViewModel {ReturnUrl = returnUrl});
         }
-        
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel vm)
+        //Name loginform
+        [HttpPost("login-form", Name = "login-form")]
+        public async Task<IActionResult> Login([FromForm] LoginViewModel vm)
         {
             if (!ModelState.IsValid)
             {

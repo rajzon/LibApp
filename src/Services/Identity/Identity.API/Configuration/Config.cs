@@ -80,6 +80,7 @@ namespace Identity.API.Configuration
                     AbsoluteRefreshTokenLifetime = 360,
                     AccessTokenLifetime = 340,
                     RedirectUris = { "http://localhost:4200" },
+                    //PostLogoutRedirectUris = { "https://localhost:8001/v1/auth/login" },
                     PostLogoutRedirectUris = { "https://localhost:8001/auth/login" },
                     AllowedCorsOrigins = { "http://localhost:4200" },
                     RequireConsent = false,

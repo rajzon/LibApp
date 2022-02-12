@@ -76,7 +76,7 @@ namespace StockDelivery.API
             services.AddSwaggerInitializer();
             services.AddEventBusInitializer(Configuration);
             services.AddMediatR(typeof(Startup));
-            services.AddDeliveryStockContextInitializer();
+            services.AddDeliveryStockContextInitializer(Configuration);
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             
             services.AddControllers();

@@ -18,6 +18,7 @@ services:
     volumes:
       - ~/.aspnet/https:/https:ro
     depends_on:
+      - bookdb
       - rabbitmq
       - identity-service
     restart: unless-stopped
@@ -60,6 +61,8 @@ services:
       - 8001:443
     volumes:
       - ~/.aspnet/https:/https:ro
+    depends_on:
+      - sqldata
         
   stock-delivery-service:
     image: ${DOCKER_REGISTRY-}stockdeliveryservice
@@ -78,6 +81,7 @@ services:
     volumes:
       - ~/.aspnet/https:/https:ro
     depends_on:
+      - stockdeliverydb
       - rabbitmq
     restart: unless-stopped
 
@@ -99,6 +103,7 @@ services:
     volumes:
       - ~/.aspnet/https:/https:ro
     depends_on:
+      - userdb
       - rabbitmq
       - search-service
     restart: unless-stopped
@@ -120,6 +125,7 @@ services:
     volumes:
       - ~/.aspnet/https:/https:ro
     depends_on:
+      - lenddb
       - rabbitmq
     restart: unless-stopped
   
@@ -136,6 +142,46 @@ services:
 #  esdata:
 #    driver: local
 
+  sqldata:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - SA_PASSWORD=Password1!
+      - ACCEPT_EULA=Y
+    ports:
+      - 5434:1433
+        
+  bookdb:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - SA_PASSWORD=Password1!
+      - ACCEPT_EULA=Y
+    ports:
+      - 5444:1443
+
+  lenddb:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - SA_PASSWORD=Password1!
+      - ACCEPT_EULA=Y
+    ports:
+      - 5454:1453
+        
+  stockdeliverydb:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - SA_PASSWORD=Password1!
+      - ACCEPT_EULA=Y
+    ports:
+      - 5464:1463
+        
+  userdb:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - SA_PASSWORD=Password1!
+      - ACCEPT_EULA=Y
+    ports:
+      - 5474:1473
+  
   rabbitmq:
     image: rabbitmq:3.8.16-management
     hostname: rabbitmq

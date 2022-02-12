@@ -19,10 +19,11 @@
     </div>
     <div class="row h-75 align-items-center justify-content-center mt-5">
         <div class="col-6">
+            
             <h1 class="d-block text-center mb-5">Sign in</h1>
-
-            <form id="loginForm" asp-controller="Auth"
-                  asp-action="Login"
+            <!-- asp-route = loginform-->
+            <form id="loginForm"
+                  asp-route="login-form"
                   method="post">
                 <input hidden
                        type="text"

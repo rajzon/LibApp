@@ -73,7 +73,7 @@ namespace Book.API
             
             
             
-            services.AddBookDbContextInitializer();
+            services.AddBookDbContextInitializer(Configuration);
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
             services.AddMediatR(typeof(Startup));

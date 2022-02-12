@@ -10,6 +10,7 @@ using Lend.API.Domain;
 using Lend.API.Domain.Strategies;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +23,9 @@ namespace Lend.API
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-
+            var lendDbContext = host.Services.GetRequiredService<LendDbContext>();
+            lendDbContext.Database.Migrate();
+            
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;

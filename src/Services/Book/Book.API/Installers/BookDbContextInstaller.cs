@@ -3,6 +3,7 @@ using Book.API.Data.Decorators;
 using Book.API.Data.Repositories;
 using Book.API.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -10,9 +11,14 @@ namespace Book.API.Installers
 {
     public static class BookDbContextInstaller
     {
-        public static IServiceCollection AddBookDbContextInitializer(this IServiceCollection services)
+        public static IServiceCollection AddBookDbContextInitializer(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDbContext<BookDbContext>(config => config.UseInMemoryDatabase("BookService"));
+            var connectionString = config.GetConnectionString("DefaultConnection");
+            services.AddDbContext<BookDbContext>(config =>
+            {
+                //config.UseInMemoryDatabase("BookService");
+                config.UseSqlServer(connectionString);
+            });
             services.AddScoped<ILanguageRepository>(sp =>
             {
                 var dbContext = sp.GetRequiredService<BookDbContext>();

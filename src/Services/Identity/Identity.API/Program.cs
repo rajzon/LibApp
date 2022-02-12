@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Identity.API.Configuration;
 using Identity.API.Data;
 using Identity.API.Models;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +26,7 @@ namespace Identity.API
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                SeedDbContexts(services);
                 try
                 {
                     var userManager = services.GetRequiredService<UserManager<AppUser>>();
@@ -32,7 +35,7 @@ namespace Identity.API
                     //SeedDbContexts(services);
                     CreateAdmin(userManager, roleManager);
                     CreateTestEmployee(userManager, roleManager);
-
+                    SeedConfigDbContext(services);
                 }
                 catch (Exception e)
                 {
@@ -127,19 +130,56 @@ namespace Identity.API
         }
         
         
-        private static void SeedDbContexts(IServiceProvider services)
+        
+        private static void SeedConfigDbContext(IServiceProvider services)
         {
             var configDbContext = services.GetRequiredService<ConfigurationDbContext>();
             configDbContext.Database.Migrate();
-            configDbContext.Database.EnsureCreated();
+            //configDbContext.Database.EnsureCreated();
+            if (!configDbContext.IdentityResources.Any())
+            {
+                foreach (var identityResource in Config.GetIdentityResources())
+                {
+                    configDbContext.IdentityResources.Add(identityResource.ToEntity());
+                }
+            }
 
+            if (!configDbContext.ApiResources.Any())
+            {
+                foreach (var apiResource in Config.GetResources())
+                {
+                    configDbContext.ApiResources.Add(apiResource.ToEntity());
+                }
+            }
+            
+            if (!configDbContext.ApiScopes.Any())
+            {
+                foreach (var scope in Config.GetScopes())
+                {
+                    configDbContext.ApiScopes.Add(scope.ToEntity());
+                }
+            }
+            
+            if (!configDbContext.Clients.Any())
+            {
+                foreach (var client in Config.GetClients())
+                {
+                    configDbContext.Clients.Add(client.ToEntity());
+                }
+            }
+
+            configDbContext.SaveChanges();
+        }
+        
+        private static void SeedDbContexts(IServiceProvider services)
+        {
             var appDbContext = services.GetRequiredService<ApplicationDbContext>();
             appDbContext.Database.Migrate();
-            appDbContext.Database.EnsureCreated();
-
+            //appDbContext.Database.EnsureCreated();
+            
             var persistedGrantDbContext = services.GetRequiredService<PersistedGrantDbContext>();
             persistedGrantDbContext.Database.Migrate();
-            persistedGrantDbContext.Database.EnsureCreated();
+            //persistedGrantDbContext.Database.EnsureCreated();
         }
     }
 }

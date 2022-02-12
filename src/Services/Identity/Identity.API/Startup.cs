@@ -3,10 +3,14 @@ using System.Net;
 using FluentValidation.AspNetCore;
 using Identity.API.Configuration;
 using Identity.API.Data;
+using Identity.API.Installers;
 using Identity.API.Models;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,8 +39,8 @@ namespace Identity.API
             services.AddDbContext<ApplicationDbContext>(config =>
             {
                 //SQL Server connection
-                // config.UseSqlServer(connectionString);
-                config.UseInMemoryDatabase("Memory");
+                config.UseSqlServer(connectionString);
+                //config.UseInMemoryDatabase("Memory");
             });
             
             services.AddIdentity<AppUser, IdentityRole<int>>(config =>
@@ -58,36 +62,39 @@ namespace Identity.API
             });
             
             
-            /////IdentityServer - EF Core + SQLServer
-            // services.AddIdentityServer()
+            ///IdentityServer - EF Core + SQLServer
+             services.AddIdentityServer(opt =>
+                 {
+                     opt.IssuerUri = "http://identity-service:80";
+                 })
+                 .AddAspNetIdentity<AppUser>()
+                 // this adds the config data from DB (clients, resources)
+                 .AddConfigurationStore(options =>
+                 {
+                     options.ConfigureDbContext = builder =>
+                         builder.UseSqlServer(connectionString, 
+                             sql => sql.MigrationsAssembly(migrationAssembly));
+                 })
+                 // this adds the operational data from DB (codes, tokens, consents)
+                 .AddOperationalStore(options =>
+                 {
+                     options.ConfigureDbContext = builder =>
+                         builder.UseSqlServer(connectionString, 
+                             sql => sql.MigrationsAssembly(migrationAssembly));
+                 })
+                 .AddDeveloperSigningCredential();
+
+
+            // services.AddIdentityServer(opt =>
+            //     {
+            //         opt.IssuerUri = "http://identity-service:80";
+            //     })
             //     .AddAspNetIdentity<AppUser>()
-            //     // this adds the config data from DB (clients, resources)
-            //     .AddConfigurationStore(options =>
-            //     {
-            //         options.ConfigureDbContext = builder =>
-            //             builder.UseSqlServer(connectionString, 
-            //                 sql => sql.MigrationsAssembly(migrationAssembly));
-            //     })
-            //     // this adds the operational data from DB (codes, tokens, consents)
-            //     .AddOperationalStore(options =>
-            //     {
-            //         options.ConfigureDbContext = builder =>
-            //             builder.UseSqlServer(connectionString, 
-            //                 sql => sql.MigrationsAssembly(migrationAssembly));
-            //     })
+            //     .AddInMemoryIdentityResources(Config.GetIdentityResources())
+            //     .AddInMemoryApiResources(Config.GetResources())
+            //     .AddInMemoryApiScopes(Config.GetScopes())
+            //     .AddInMemoryClients(Config.GetClients())
             //     .AddDeveloperSigningCredential();
-
-
-            services.AddIdentityServer(opt =>
-                {
-                    opt.IssuerUri = "http://identity-service:80";
-                })
-                .AddAspNetIdentity<AppUser>()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetResources())
-                .AddInMemoryApiScopes(Config.GetScopes())
-                .AddInMemoryClients(Config.GetClients())
-                .AddDeveloperSigningCredential();
             
             
             
@@ -123,6 +130,8 @@ namespace Identity.API
                 });
                 
             });
+            //services.AddApiVersioningInitializer();
+            services.AddSwaggerInitializer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -134,6 +143,18 @@ namespace Identity.API
             }
             app.UseStaticFiles();
             app.UseIdentityServer();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"Identity.API v1");
+                c.RoutePrefix = "swagger";
+                //var provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
+                // foreach (var description in provider.ApiVersionDescriptions)
+                // {
+                //     c.SwaggerEndpoint($"/swagger/{description.ApiVersion}/swagger.json", $"Identity.API {description.ApiVersion}");
+                //     c.RoutePrefix = "swagger";
+                // }
+            });
             
             
             app.UseRouting();

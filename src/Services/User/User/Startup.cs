@@ -28,7 +28,7 @@ namespace User
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBookDbContextInitializer();
+            services.AddBookDbContextInitializer(Configuration);
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             services.AddEventBusInitializer(Configuration);
             services.AddControllers();

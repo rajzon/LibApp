@@ -8,6 +8,7 @@ using EventBus.Messages.Common;
 using GreenPipes.Internals.Mapping;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,7 +24,8 @@ namespace User
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-
+            var userDbContext = host.Services.GetRequiredService<UserDbContext>();
+            userDbContext.Database.Migrate();
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
