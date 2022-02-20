@@ -109,6 +109,11 @@ namespace Identity.API
                 {
                     UserName = "employee3",
                     Email = "employee3@example.com"
+                },
+                new ()
+                {
+                    UserName = "employee4",
+                    Email = "employee4@example.com"
                 } 
             };
 
@@ -126,7 +131,8 @@ namespace Identity.API
                 new Claim("delivery_privilege", "edit") }).GetAwaiter().GetResult();
             userManager.AddClaimsAsync(users.ElementAt(2), new []{ new Claim("book_privilege", "write"),
                 new Claim("delivery_privilege", "full") }).GetAwaiter().GetResult();
-               
+            userManager.AddClaimsAsync(users.ElementAt(3), new[] {new Claim("book_privilege", "write")});
+
         }
         
         
