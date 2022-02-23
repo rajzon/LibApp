@@ -147,6 +147,7 @@ services:
     environment:
       - SA_PASSWORD=Password1!
       - ACCEPT_EULA=Y
+      - MSSQL_AGENT_ENABLED=true
     ports:
       - 5434:1433
         
@@ -155,6 +156,7 @@ services:
     environment:
       - SA_PASSWORD=Password1!
       - ACCEPT_EULA=Y
+      - MSSQL_AGENT_ENABLED=true
     ports:
       - 5444:1443
 
@@ -163,6 +165,7 @@ services:
     environment:
       - SA_PASSWORD=Password1!
       - ACCEPT_EULA=Y
+      - MSSQL_AGENT_ENABLED=true
     ports:
       - 5454:1453
         
@@ -171,6 +174,7 @@ services:
     environment:
       - SA_PASSWORD=Password1!
       - ACCEPT_EULA=Y
+      - MSSQL_AGENT_ENABLED=true
     ports:
       - 5464:1463
         
@@ -179,6 +183,7 @@ services:
     environment:
       - SA_PASSWORD=Password1!
       - ACCEPT_EULA=Y
+      - MSSQL_AGENT_ENABLED=true
     ports:
       - 5474:1473
   
