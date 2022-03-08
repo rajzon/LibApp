@@ -14,7 +14,8 @@ namespace Lend.API.Installers
             {
                 x.AddRequestClient<GetCustomerInfo>();
                 x.AddRequestClient<GetStockWithBookInfo>();
-                x.AddRequestClient<CheckStocksExistance>();
+                x.AddRequestClient<DeleteStocks>();
+                x.AddRequestClient<RestoreCachedStock>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {

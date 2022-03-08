@@ -78,7 +78,7 @@ namespace StockDelivery.API
             services.AddMediatR(typeof(Startup));
             services.AddDeliveryStockContextInitializer(Configuration);
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-            
+            services.AddMemoryCache();
             services.AddControllers();
         }
 

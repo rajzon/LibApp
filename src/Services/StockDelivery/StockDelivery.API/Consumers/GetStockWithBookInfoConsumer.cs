@@ -26,11 +26,11 @@ namespace StockDelivery.API.Consumers
         {
             _logger.LogInformation("GetStockWithBookInfoConsumer: Started Consuming Message {MessageId} : {@Message}",context.MessageId, context.Message);
             
-            var result = await _mediator.Send(new GetStockWithBookInfoQuery() {StockId = context.Message.StockId});
+            var result = await _mediator.Send(new GetStockWithBookInfoQuery() {BookEan = context.Message.BookEan});
             
             if (result is null)
             {
-                _logger.LogError("GetStockWithBookInfoConsumer: Message {MessageId} failed to get Stock: {StockId}", context.MessageId, context.Message.StockId);
+                _logger.LogError("GetStockWithBookInfoConsumer: Message {MessageId} failed to get Stock for Ean: {BookEan}", context.MessageId, context.Message.BookEan);
                 await context.RespondAsync<StockWithBookInfoResult>(new
                 {
                     StockWithBookInfo = (StockWithBookInfoBusResponse)null

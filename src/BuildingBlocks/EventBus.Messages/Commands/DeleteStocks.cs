@@ -2,8 +2,9 @@
 
 namespace EventBus.Messages.Commands
 {
-    public class CheckStocksExistance
+    public class DeleteStocks
     {
         public List<int> StocksIds { get; set; }
+        public Dictionary<string, List<int>> EanWithStocks { get; set; }
     }
 }

@@ -5,6 +5,8 @@ using Lend.API.Domain.Repositories;
 
 namespace Lend.API.Domain.Strategies
 {
+    
+    //TODO TO REMOVE, because we are now operating only on EANs during posting books for basket!!!
     public class CheckCustomerBorrowedRequestingStocksStrategy : IStrategy<SimpleBooleanRule>
     {
         private readonly ISimpleBooleanRuleRepository _repository;

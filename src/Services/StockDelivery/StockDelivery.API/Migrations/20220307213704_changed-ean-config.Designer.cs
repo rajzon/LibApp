@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockDelivery.API.Data;
 
 namespace StockDelivery.API.Migrations
 {
     [DbContext(typeof(DeliveryStockDbContext))]
-    partial class DeliveryStockDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220307213704_changed-ean-config")]
+    partial class changedeanconfig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

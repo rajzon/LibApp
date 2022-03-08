@@ -2,6 +2,6 @@
 {
     public class GetStockWithBookInfo
     {
-        public int StockId { get; init; }
+        public string BookEan { get; init; }
     }
 }

@@ -97,15 +97,14 @@ export class LendBasketComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-  deleteStockInBasket(stockId: number) : void {
+  deleteStockInBasket(stockId: number, ean: string) : void {
     const initialState = {
-      requiredConfirmId: stockId,
-      passedStockId: -1
+      requiredConfirmEan: ean,
     }
 
     this.modalRef = this.modalService.show(DeleteStockInLendBasketModalComponent, {initialState})
     this.modalRef.content.onDelete$.subscribe(() => {
-      this.deleteStockInBasketSubs = this.lendFacade.deleteStockInBasket$(stockId).subscribe((res:LendBasket) => {
+      this.deleteStockInBasketSubs = this.lendFacade.deleteStockInBasket$(stockId, ean).subscribe((res:LendBasket) => {
         this.identityVal = IdentityType[res.customer?.identityType]
         this.basket = res;
       })

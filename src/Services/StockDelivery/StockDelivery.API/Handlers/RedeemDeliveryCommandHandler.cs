@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using StockDelivery.API.Commands.V1;
 using StockDelivery.API.Controllers.V1;
@@ -16,15 +18,17 @@ namespace StockDelivery.API.Handlers
         private readonly IBookStockRepository _bookStockRepository;
         private readonly ICompletedDeliveryRepository _completedDeliveryRepository;
         private readonly ILogger<RedeemDeliveryCommandHandler> _logger;
+        private readonly IMemoryCache _cache;
 
         public RedeemDeliveryCommandHandler(IActiveDeliveryRepository activeDeliveryRepository,
             IBookStockRepository bookStockRepository, ICompletedDeliveryRepository completedDeliveryRepository,
-            ILogger<RedeemDeliveryCommandHandler> logger)
+            ILogger<RedeemDeliveryCommandHandler> logger, IMemoryCache cache)
         {
             _activeDeliveryRepository = activeDeliveryRepository;
             _bookStockRepository = bookStockRepository;
             _completedDeliveryRepository = completedDeliveryRepository;
             _logger = logger;
+            _cache = cache;
         }
         
         public async Task<RedeemDeliveryCommandResult> Handle(RedeemDeliveryCommand request, CancellationToken cancellationToken)
@@ -59,6 +63,14 @@ namespace StockDelivery.API.Handlers
             
             if (await _activeDeliveryRepository.UnitOfWork.SaveChangesAsync() < 1)
                 return new RedeemDeliveryCommandResult(false, new List<string>() {"Error occured during saving to DB"});
+
+            foreach (var stock in createdStocks)
+            {
+                if (_cache.TryGetValue(stock.BookEan13.Code, out ConcurrentQueue<int> queuedStock))
+                    queuedStock.Enqueue(stock.Id);
+                else
+                    _cache.Set(stock.BookEan13.Code, new ConcurrentQueue<int>(new[] {stock.Id}));
+            }
             
             return new RedeemDeliveryCommandResult(true);
         }

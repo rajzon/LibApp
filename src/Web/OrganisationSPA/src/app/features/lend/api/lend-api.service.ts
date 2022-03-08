@@ -112,7 +112,7 @@ export class LendApiService {
     return this.httpClient.put<LendBasket>(this.API + `basket/stock/${stockId}/returnDate/${returnDate}`, { });
   }
 
-  deleteStockInBasket(stockId: number): Observable<LendBasket> {
-    return this.httpClient.delete<LendBasket>(this.API + `basket/stock/${stockId}`);
+  deleteStockInBasket(stockId: number, ean: string): Observable<LendBasket> {
+    return this.httpClient.delete<LendBasket>(this.API + `basket/stock/${stockId}/ean/${ean}`);
   }
 }

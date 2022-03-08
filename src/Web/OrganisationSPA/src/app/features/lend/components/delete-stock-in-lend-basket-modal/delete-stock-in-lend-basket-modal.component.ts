@@ -11,8 +11,8 @@ export class DeleteStockInLendBasketModalComponent implements OnInit {
 
   private onDelete$ = new Subject<string>();
 
-  requiredConfirmId: number
-  insertedStockId: number
+  requiredConfirmEan: string
+  insertedEan: string
 
   constructor(public bsModalRef: BsModalRef) { }
 

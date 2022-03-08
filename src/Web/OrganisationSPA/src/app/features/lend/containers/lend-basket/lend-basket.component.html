@@ -344,7 +344,7 @@
           <td class="font-weight-bold dates"> {{item?.returnDate | date}}</td>
           <td>
             <button type="button"
-                    class="fa fa-trash ml-1 mr-2" (click)="deleteStockInBasket(item?.stockId)"></button>
+                    class="fa fa-trash ml-1 mr-2" (click)="deleteStockInBasket(item?.stockId, item.ean13)"></button>
 
 <!--            <div class="row">-->
 <!--              <div class="col-xs-12 col-12 col-md-4 form-group mb-3">-->

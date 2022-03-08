@@ -6,6 +6,6 @@ namespace StockDelivery.API.Queries.V1
 {
     public class GetStockWithBookInfoQuery : IRequest<StockWithBookInfoDto>
     {
-        public int StockId { get; set; }
+        public string BookEan { get; set; }
     }
 }

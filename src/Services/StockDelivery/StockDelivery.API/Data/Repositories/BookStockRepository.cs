@@ -17,6 +17,16 @@ namespace StockDelivery.API.Data.Repositories
         {
             _context = context;
         }
+
+        public void Remove(BookStock stock)
+        {
+            _context.BookStocks.Remove(stock);
+        }
+        
+        public void Remove(List<BookStock> stocks)
+        {
+            _context.BookStocks.RemoveRange(stocks);
+        }
         
         public BookStock Add(BookStock stock)
         {
@@ -25,7 +35,8 @@ namespace StockDelivery.API.Data.Repositories
 
         public async Task<IEnumerable<BookStock>> GetAllAsync()
         {
-            return await _context.BookStocks.ToListAsync();
+            return await _context.BookStocks
+                .Include(s => s.BookEan13).ToListAsync();
         }
 
         public async Task<BookStock> GetAsync(int stockId)
@@ -38,5 +49,12 @@ namespace StockDelivery.API.Data.Repositories
             var res = await _context.BookStocks.Where(s => stocksIds.Contains(s.Id)).ToListAsync();
             return res.Count == stocksIds.Count;
         }
+
+        public async Task<bool> IsExist(int stockId)
+        {
+            return await _context.BookStocks.FirstOrDefaultAsync(s => s.Id == stockId) is not null;
+        }
+
+        
     }
 }

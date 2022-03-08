@@ -35,17 +35,19 @@ namespace StockDelivery.API.Controllers.V1
             return Ok(result);
         }
 
-        [HttpGet("{stockId}/with-book-info")]
-        [ProducesResponseType(typeof(StockWithBookInfoDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType((int) HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetWithBookInfo(int stockId)
-        {
-            var result = await _mediator.Send(new GetStockWithBookInfoQuery() {StockId = stockId});
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
-        }
+        
+        //TODO TO REMOVE, stockId now is not assessible to know because front operating now only on EANs
+        // [HttpGet("{stockId}/with-book-info")]
+        // [ProducesResponseType(typeof(StockWithBookInfoDto), (int) HttpStatusCode.OK)]
+        // [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        // public async Task<IActionResult> GetWithBookInfo(int stockId)
+        // {
+        //     var result = await _mediator.Send(new GetStockWithBookInfoQuery() {StockId = stockId});
+        //
+        //     if (result is null)
+        //         return NotFound();
+        //
+        //     return Ok(result);
+        // }
     }
 }

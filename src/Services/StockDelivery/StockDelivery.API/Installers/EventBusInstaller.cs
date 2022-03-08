@@ -13,28 +13,33 @@ namespace StockDelivery.API.Installers
         {
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<CheckStocksExistanceConsumer>();
+                x.AddConsumer<DeleteStocksConsumer>();
+                x.AddConsumer<RestoreCachedStockConsumer>();
                 x.AddConsumer<GetStockWithBookInfoConsumer>();
                 
                 x.AddRequestClient<CheckBooksExsitance>();
                 x.AddRequestClient<GetBooksInfo>();
                 x.AddRequestClient<GetBookInfo>();
                 
-                x.AddRequestClient<CheckStocksExistance>();
+                x.AddRequestClient<DeleteStocks>();
+                x.AddRequestClient<RestoreCachedStock>();
                 x.AddRequestClient<GetStockWithBookInfo>();
                 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.ReceiveEndpoint(EventBusConstants.CheckStocksExistance, e =>
+                    cfg.ReceiveEndpoint(EventBusConstants.DeleteStocks, e =>
                     {
-                        e.ConfigureConsumer<CheckStocksExistanceConsumer>(context);
-                        
+                        e.ConfigureConsumer<DeleteStocksConsumer>(context);
                     });
                     
+                    cfg.ReceiveEndpoint(EventBusConstants.RestoreCachedStock, e =>
+                    {
+                        e.ConfigureConsumer<RestoreCachedStockConsumer>(context);
+                    });
+            
                     cfg.ReceiveEndpoint(EventBusConstants.GetStockWithBookInfo, e =>
                     {
                         e.ConfigureConsumer<GetStockWithBookInfoConsumer>(context);
-                        
                     });
 
                     

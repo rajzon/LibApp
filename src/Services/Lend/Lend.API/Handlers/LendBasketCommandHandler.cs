@@ -18,13 +18,13 @@ namespace Lend.API.Handlers
     {
         private readonly IMemoryCache _cache;
         private readonly IRequestClient<GetCustomerInfo> _customerClient;
-        private readonly IRequestClient<CheckStocksExistance> _stockClient;
+        private readonly IRequestClient<DeleteStocks> _stockClient;
         private readonly ILendedBasketRepository _lendedBasketRepository;
         private readonly IEnumerable<IStrategy<SimpleIntRule>> _intStrategies;
         private readonly IEnumerable<IStrategy<SimpleBooleanRule>> _booleanStrategies;
 
         public LendBasketCommandHandler(IMemoryCache cache, IRequestClient<GetCustomerInfo> customerClient,
-            IRequestClient<CheckStocksExistance> stockClient, ILendedBasketRepository lendedBasketRepository, IEnumerable<IStrategy<SimpleIntRule>> intStrategies,
+            IRequestClient<DeleteStocks> stockClient, ILendedBasketRepository lendedBasketRepository, IEnumerable<IStrategy<SimpleIntRule>> intStrategies,
             IEnumerable<IStrategy<SimpleBooleanRule>> booleanStrategies)
         {
             _cache = cache;
@@ -55,25 +55,32 @@ namespace Lend.API.Handlers
                     new List<string>() {$"Customer with email {basket.Customer.Email.EmailAddress} not exist"});
             
             //TODO check if all stocks exists
-            var stockMessageResponse = await _stockClient.GetResponse<StocksExistanceResult>(new
-            {
-                StocksIds = basket.StockWithBooks.Select(s => s.StockId).ToList()
-            });
+            // var stockMessageResponse = await _stockClient.GetResponse<StocksExistanceResult>(new
+            // {
+            //     StocksIds = basket.StockWithBooks.Select(s => s.StockId).ToList()
+            // });
 
-            if (!stockMessageResponse.Message.IsAllExists)
-                return new LendBasketCommandResult(false, new List<string>() {"Not all Stocks exists in system"});
-
-            var stocksInBasket = basket.StockWithBooks.Select(s => s.StockId).ToList();
-            var borrowedStocks  = (await _lendedBasketRepository.GetAllByStocksIds(stocksInBasket)).ToList();
-            if (borrowedStocks.Any())
-                return new LendBasketCommandResult(false,
-                    new List<string>() {$"Stocks:{string.Join(",", borrowedStocks.Select(s => s.Stocks))} are already borrowed by someone"});
+            // if (!stockMessageResponse.Message.IsAllExists)
+            //     return new LendBasketCommandResult(false, new List<string>() {"Not all Stocks exists in system"});
+            
+            //TODO this code is unnecasery because based on next call we are removing stock for this basket, so we know if it was successful then it wasnt lended by someone
+            // var stocksInBasket = basket.StockWithBooks.Select(s => s.StockId).ToList();
+            // var borrowedStocks  = (await _lendedBasketRepository.GetAllByStocksIds(stocksInBasket)).ToList();
+            // if (borrowedStocks.Any())
+            //     return new LendBasketCommandResult(false,
+            //         new List<string>() {$"Stocks:{string.Join(",", borrowedStocks.Select(s => s.Stocks))} are already borrowed by someone"});
 
             var check = await CheckIfCustomerAndBasketMatchAllStrategies(basket);
             if (!check.Item1)
                 return new LendBasketCommandResult(false, new List<string>() {check.Item2.FirstOrDefault()});
 
             var lendedBasket = new LendedBasket(basket, _intStrategies, _booleanStrategies);
+            
+            //TODO check if all stocks exists and remove them!
+            var stockMessageResponse = await _stockClient.GetResponse<DeleteStocksResult>(new
+            {
+                StocksIds = basket.StockWithBooks.Select(s => s.StockId).ToList()
+            });
             
             _lendedBasketRepository.Add(lendedBasket);
             if (await _lendedBasketRepository.UnitOfWork.SaveChangesAsync(cancellationToken) < 0)

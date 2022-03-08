@@ -53,11 +53,11 @@ namespace Lend.API.Controllers.V1
             return Ok(result.Basket);
         }
 
-        [HttpPost("basket/stock/{stockId}")]
-        public async Task<IActionResult> PostStockForBasket(int stockId)
+        [HttpPost("basket/stock/{bookEan}")]
+        public async Task<IActionResult> PostStockForBasket(string bookEan)
         {
             var userNameFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = await _mediator.Send(new PostStockForBasketCommand {EmployeeName = userNameFromToken, StockId = stockId});
+            var result = await _mediator.Send(new PostStockForBasketCommand {EmployeeName = userNameFromToken, BookEan = bookEan});
             
             if (! result.Succeeded)
                 return result.Errors.Any()? BadRequest(new ErrorResponse
@@ -99,11 +99,11 @@ namespace Lend.API.Controllers.V1
         }
 
 
-        [HttpDelete("basket/stock/{stockId}")]
-        public async Task<IActionResult> DeleteStockFromBasket(int stockId)
+        [HttpDelete("basket/stock/{stockId}/ean/{ean}")]
+        public async Task<IActionResult> DeleteStockFromBasket(int stockId, string ean)
         {
             var userNameFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = await _mediator.Send(new DeleteStockFromBasketCommand {EmployeeName = userNameFromToken, StockId = stockId});
+            var result = await _mediator.Send(new DeleteStockFromBasketCommand {EmployeeName = userNameFromToken, StockId = stockId, Ean = ean});
             
             if (! result.Succeeded)
                 return result.Errors.Any()? BadRequest(new ErrorResponse
@@ -142,6 +142,7 @@ namespace Lend.API.Controllers.V1
     {
         public string EmployeeName { get; set; }
         public int StockId { get; set; }
+        public string Ean { get; set; }
     }
 
     public class PostReturnDateForBasketStockCommand : IRequest<PostBasketCommandResult>
@@ -154,7 +155,7 @@ namespace Lend.API.Controllers.V1
     public class PostStockForBasketCommand : IRequest<PostBasketCommandResult>
     {
         public string EmployeeName { get; set; }
-        public int StockId { get; init; }
+        public string BookEan { get; init; }
         //public BasketDto Basket { get; init; }
     }
 

@@ -21,8 +21,7 @@ namespace StockDelivery.API.Data.Configurations
                         {
                             ean13.Property(e => e.Code)
                                 .HasMaxLength(13);
-                            ean13.HasIndex(e => e.Code)
-                                .IsUnique();
+                            ean13.HasIndex(e => e.Code);
                         })
                         .Property<string>("_code")
                         .UsePropertyAccessMode(PropertyAccessMode.Field);

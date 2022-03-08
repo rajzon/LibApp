@@ -5,17 +5,17 @@
   <form #editForm="ngForm">
     <div class="form-group">
       <label
-        class="text-capitalize font-weight-bold">Canncellation Reason: </label>
+        class="text-capitalize font-weight-bold">Confirm Removal: </label>
       <input
         type="text"
-        [(ngModel)]="insertedStockId"
-        name="cancellationReason"
+        [(ngModel)]="insertedEan"
+        name="confirmRemoval"
         class="form-control"
-        placeholder="Insert Stock Id">
+        placeholder="Insert Book EAN">
     </div>
   </form>
-  <div *ngIf="insertedStockId != requiredConfirmId">
-    <p class="text-danger">Inserted wrong stock Id</p>
+  <div *ngIf="insertedEan != requiredConfirmEan">
+    <p class="text-danger">Inserted wrong Ean</p>
   </div>
 </div>
 
@@ -26,5 +26,5 @@
   <button type="submit"
           class="btn btn-primary"
           (click)="delete()"
-          [disabled]="editForm.invalid || insertedStockId != requiredConfirmId">Confirm</button>
+          [disabled]="editForm.invalid || insertedEan != requiredConfirmEan">Confirm</button>
 </div>

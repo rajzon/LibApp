@@ -128,9 +128,9 @@ export class LendFacade {
     })));
   }
 
-  deleteStockInBasket$(stockId: number) : Observable<LendBasket> {
+  deleteStockInBasket$(stockId: number, ean: string) : Observable<LendBasket> {
     this.lendState.setDeleting(true)
-    return this.lendApi.deleteStockInBasket(stockId).pipe(map(result => {
+    return this.lendApi.deleteStockInBasket(stockId, ean).pipe(map(result => {
       this.lendState.setDeleting(false);
       var date = new Date(result.customer.dateOfBirth)
       result.customer.dateOfBirth= date.toLocaleDateString()

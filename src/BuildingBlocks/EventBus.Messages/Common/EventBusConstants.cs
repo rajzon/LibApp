@@ -12,7 +12,8 @@
         public const string GetBookInfo = "getbookinfo-queue";
         public const string GetCustomerInfo = "getcustomerinfo-queue";
         public const string GetStockWithBookInfo = "getstockwithbookinfo-queue";
-        public const string CheckStocksExistance = "checkstocksexistance-queue";
+        public const string DeleteStocks = "deletestocks-queue";
+        public const string RestoreCachedStock = "restorecachedstock-queue";
         
     }
 }

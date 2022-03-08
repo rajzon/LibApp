@@ -25,9 +25,10 @@ namespace Lend.API.Handlers
         private readonly IMapper _mapper;
         private readonly IEnumerable<IStrategy<SimpleIntRule>> _intStrategies;
         private readonly IEnumerable<IStrategy<SimpleBooleanRule>> _booleanStrategies;
+        private readonly IRequestClient<RestoreCachedStock> _restoreCachedStockClient;
 
         public PostStockForBasketCommandHandler(IRequestClient<GetStockWithBookInfo> client, ILendedBasketRepository lendedBasketRepository,
-            IMemoryCache cache, IMapper mapper, IEnumerable<IStrategy<SimpleIntRule>> intStrategies, IEnumerable<IStrategy<SimpleBooleanRule>> booleanStrategies)
+            IMemoryCache cache, IMapper mapper, IEnumerable<IStrategy<SimpleIntRule>> intStrategies, IEnumerable<IStrategy<SimpleBooleanRule>> booleanStrategies, IRequestClient<RestoreCachedStock> restoreCachedStockClient)
         {
             _client = client;
             _lendedBasketRepository = lendedBasketRepository;
@@ -35,6 +36,7 @@ namespace Lend.API.Handlers
             _mapper = mapper;
             _intStrategies = intStrategies;
             _booleanStrategies = booleanStrategies;
+            _restoreCachedStockClient = restoreCachedStockClient;
         }
         
         public async Task<PostBasketCommandResult> Handle(PostStockForBasketCommand request, CancellationToken cancellationToken)
@@ -43,19 +45,19 @@ namespace Lend.API.Handlers
             var warnings = new List<string>();
             var messageResponse = await _client.GetResponse<StockWithBookInfoResult>(new
             {
-                StockId = request.StockId
+                BookEan = request.BookEan
             }, cancellationToken);
 
             var stockWithBookInfo =  messageResponse.Message.StockWithBookInfo;
             //TODO check if requested stock exists, return NotFound
             if (stockWithBookInfo is null)
-                return new PostBasketCommandResult(false, new List<string>() {$"Stock {request.StockId} not found"});
+                return new PostBasketCommandResult(false, new List<string>() {$"Do not found any stock for EAN: {request.BookEan}"});
 
             //TODO check if stockId is already lended to other customer, return Conflict
-            var borrowedStocks  = await _lendedBasketRepository.GetAllByStockId(stockWithBookInfo.StockId);
-            if (borrowedStocks.Any())
-                return new PostBasketCommandResult(false,
-                    new List<string>() {$"Stock {request.StockId} are already borrowed by someone"});
+            // var borrowedStocks  = await _lendedBasketRepository.GetAllByStockId(stockWithBookInfo.StockId);
+            // if (borrowedStocks.Any())
+            //     return new PostBasketCommandResult(false,
+            //         new List<string>() {$"Stock {request.StockId} are already borrowed by someone"});
             
             
             //TODO FOR NEW Stocks: set default return date to max allowed by organization( call strategy/rule)
@@ -67,7 +69,10 @@ namespace Lend.API.Handlers
                 
                 var check = await CheckIfCustomerAndBasketMatchAllStrategies(newBasket);
                 if (!check.Item1)
+                {
+                    RestoreCachedStockRequest(request.BookEan, stockWithBookInfo.StockId);
                     return new PostBasketCommandResult(false, new List<string>() {check.Item2.FirstOrDefault()});
+                }
                 warnings.AddRange(check.Item3);
                 
                 _cache.Set(request.EmployeeName, newBasket);
@@ -86,15 +91,25 @@ namespace Lend.API.Handlers
                 }
                 var newStock = CreateStockWithBooksBasket(stockWithBookInfo);
                 if (newBasket.IsStockDuplicatedInBasket(newStock))
+                {
+                    RestoreCachedStockRequest(request.BookEan, newStock.StockId);
                     return new PostBasketCommandResult(false, new List<string>() {"Trying to add duplicate stock"});
+                }
+
                 if (newBasket.IsBookEanDuplicatedInBasket(newStock))
+                {
+                    RestoreCachedStockRequest(request.BookEan, newStock.StockId);
                     return new PostBasketCommandResult(false, new List<string>() {"Trying to add duplicate book"});
+                }
                 
                 newBasket.AddNewStock(newStock);
 
                 var check = await CheckIfCustomerAndBasketMatchAllStrategies(newBasket);
                 if (!check.Item1)
+                {
+                    RestoreCachedStockRequest(request.BookEan, newStock.StockId);
                     return new PostBasketCommandResult(false, new List<string>() {check.Item2.FirstOrDefault()});
+                }
                 warnings.AddRange(check.Item3);
                 
                 _cache.Remove(request.EmployeeName);
@@ -111,7 +126,16 @@ namespace Lend.API.Handlers
                 BusinessWarnings = warnings,
             });
         }
-        
+
+        private Task<Response<RestoreCachedStockResult>> RestoreCachedStockRequest(string ean, int stockId)
+        {
+            return _restoreCachedStockClient.GetResponse<RestoreCachedStockResult>(new
+            {
+                Ean = ean,
+                StockToRestore = stockId
+            });
+        }
+
         private async Task<(bool, List<string>, List<string>)> CheckIfCustomerAndBasketMatchAllStrategies(Basket basket)
         {
             var errors = new List<string>();
