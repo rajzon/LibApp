@@ -72,7 +72,8 @@ export class BookApiSearchResultComponent implements OnInit, OnChanges, AfterVie
         isHTML5: true,
         allowedFileType: ['image'],
         removeAfterUpload: true,
-        autoUpload: false
+        autoUpload: false,
+        queueLimit: 1
       };
 
       let uploaders = new Array<FileUploader>();

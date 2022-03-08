@@ -23,6 +23,7 @@ export class FileUploaderComponent implements AfterViewInit{
 
   @Input() uploaderStyle: IFileUploaderStyle
   @Input() uploader: FileUploader;
+  @Input() isMultipleBtnEnabled: boolean = true;
   hasBaseDropZoneOver: boolean;
 
   constructor(private uploaderState: UploaderState) {

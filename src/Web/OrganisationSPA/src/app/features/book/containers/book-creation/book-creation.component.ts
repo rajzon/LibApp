@@ -74,7 +74,8 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
       isHTML5: true,
       allowedFileType: ['image'],
       removeAfterUpload: true,
-      autoUpload: false
+      autoUpload: false,
+      queueLimit: 1,
     };
 
     this.bookFacade.setManualBookImgUploader(new FileUploader(uploaderOptions));
