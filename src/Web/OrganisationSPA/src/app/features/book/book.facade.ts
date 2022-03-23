@@ -52,13 +52,10 @@ export class BookFacade {
     this.bookApi.createBook(book)
       .subscribe((res:Book) => {
         this.bookState.setBook(res);
-          console.log(res);
         this.uploaderState.getManualBookImgUploader$().subscribe((upl:FileUploader) => {
-          console.log(upl);
           this.uploadPhoto(res.id, upl)
         });
       }, (error: any) => {
-          console.log(error);
           this.messagePopup.displayError(error);
           this.bookState.setAdding(false);
         },
@@ -72,6 +69,51 @@ export class BookFacade {
 
   getNewlyAddedBook$(): Observable<Book> {
     return this.bookState.getNewlyAddedBook$();
+  }
+
+  addBookWithPhotoUsingApi(addCommand: CreateBookUsingApiDto): void {
+    this.bookState.setAdding(true)
+    console.log(addCommand.book);
+    this.bookApi.createBookUsingApi(addCommand.book).subscribe((res:Book) => {
+        this.bookState.setBook(res);
+        console.log(res);
+        this.uploadPhoto(res.id, addCommand.uploader);
+      }, (error: any) => {
+        console.log(error);
+        this.messagePopup.displayError(error);
+        this.bookState.setAdding(false);
+      },
+      () => {
+        this.bookState.setAdding(false);
+        this.messagePopup.displaySuccess('Successfully added new book');
+        this.router.navigateByUrl('/book');
+      })
+  }
+
+  //Categories
+  getCategories$(): Observable<Category[]> {
+    return this.bookState.getCategories$();
+  }
+
+  loadCategories$(): Observable<Category[]> {
+    return this.categoriesApi.getCategories$().pipe(map(categories => {
+      this.bookState.setCategories(categories);
+      return categories
+    }));
+
+  }
+
+  //Languages
+  getLanguages$(): Observable<Language[]> {
+    return this.bookState.getLanguages$();
+  }
+
+  loadLanguages$(): Observable<Language[]> {
+    return this.languagesApi.getLanguages$().pipe(map(languages => {
+      this.bookState.setLanguages(languages);
+      return languages
+    }));
+
   }
 
 
@@ -94,24 +136,7 @@ export class BookFacade {
   }
 
 
-  addBookWithPhotoUsingApi(addCommand: CreateBookUsingApiDto): void {
-    this.bookState.setAdding(true)
-    console.log(addCommand.book);
-    this.bookApi.createBookUsingApi(addCommand.book).subscribe((res:Book) => {
-      this.bookState.setBook(res);
-      console.log(res);
-      this.uploadPhoto(res.id, addCommand.uploader);
-    }, (error: any) => {
-        console.log(error);
-        this.messagePopup.displayError(error);
-        this.bookState.setAdding(false);
-    },
-      () => {
-        this.bookState.setAdding(false);
-        this.messagePopup.displaySuccess('Successfully added new book');
-        this.router.navigateByUrl('/book');
-      })
-  }
+
 
   //Uploader
   private uploadPhoto(bookId: number, uploader: FileUploader): void {
@@ -158,31 +183,7 @@ export class BookFacade {
 
 
 
-  //Categories
-  getCategories$(): Observable<Category[]> {
-    return this.bookState.getCategories$();
-  }
 
-  loadCategories$(): Observable<Category[]> {
-    return this.categoriesApi.getCategories$().pipe(map(categories => {
-      this.bookState.setCategories(categories);
-      return categories
-    }));
-
-  }
-
-  //Languages
-  getLanguages$(): Observable<Language[]> {
-    return this.bookState.getLanguages$();
-  }
-
-  loadLanguages$(): Observable<Language[]> {
-    return this.languagesApi.getLanguages$().pipe(map(languages => {
-      this.bookState.setLanguages(languages);
-      return languages
-    }));
-
-  }
 
   //Authors
   getAuthors$(): Observable<Author[]> {

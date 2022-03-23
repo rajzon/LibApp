@@ -27,9 +27,9 @@
       <th scope="col">Publisher</th>
       <th scope="col">EAN Code</th>
       <!--    TODO not in MVP currently-->
-      <th scope="col">Localization</th>
-      <th scope="col">Visibility & Availability</th>
-      <th scope="col">Actions</th>
+<!--      <th scope="col">Localization</th>-->
+<!--      <th scope="col">Visibility & Availability</th>-->
+<!--      <th scope="col">Actions</th>-->
       <th scope="col">Modification Date</th>
     </tr>
     </thead>
@@ -97,17 +97,17 @@
       <td class="font-weight-bold publisher align-items-center"><div>{{book.publisher?.name}}</div></td>
       <td class="font-weight-bold ean">{{book.ean13}}</td>
       <!--    TODO not in MVP currently-->
-      <td></td>
-      <td>
-        <div [class.bg-success]="book.visibility"
-             [class.bg-danger]="! book.visibility"
-             class="badge">
-          {{visibilityAsMeaningfulText(book.visibility)}}
-        </div>
-      </td>
-      <td><button type="button"
-                  [disabled]="true"
-                  class="fa fa-edit ml-1 mr-2"></button></td>
+<!--      <td></td>-->
+<!--      <td>-->
+<!--        <div [class.bg-success]="book.visibility"-->
+<!--             [class.bg-danger]="! book.visibility"-->
+<!--             class="badge">-->
+<!--          {{visibilityAsMeaningfulText(book.visibility)}}-->
+<!--        </div>-->
+<!--      </td>-->
+<!--      <td><button type="button"-->
+<!--                  [disabled]="true"-->
+<!--                  class="fa fa-edit ml-1 mr-2"></button></td>-->
       <td class="font-weight-bold modificationDate">{{book.modificationDate}}</td>
 
     </tr>

@@ -25,6 +25,8 @@ export const environment = {
       pattern: '[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\\\.[a-z]{2,3}'
     },
     stockSearchField: {
+      minLength: 13,
+      maxLength: 13,
       pattern: '^[0-9]+$'
     }
   },

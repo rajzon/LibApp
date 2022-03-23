@@ -9,7 +9,7 @@ import {Author} from "../models/author";
 })
 export class AuthorsApiService {
 
-  readonly API: string = environment.bookApiUrl + 'v1/author'
+  private readonly API: string = environment.bookApiUrl + 'v1/author'
 
   constructor(private http: HttpClient) { }
 

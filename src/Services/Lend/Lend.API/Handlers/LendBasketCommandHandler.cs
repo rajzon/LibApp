@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventBus.Messages.Commands;
+using EventBus.Messages.Common;
 using EventBus.Messages.Results;
 using Lend.API.Controllers.V1;
 using Lend.API.Domain;
@@ -18,21 +20,20 @@ namespace Lend.API.Handlers
     {
         private readonly IMemoryCache _cache;
         private readonly IRequestClient<GetCustomerInfo> _customerClient;
-        private readonly IRequestClient<DeleteStocks> _stockClient;
         private readonly ILendedBasketRepository _lendedBasketRepository;
         private readonly IEnumerable<IStrategy<SimpleIntRule>> _intStrategies;
         private readonly IEnumerable<IStrategy<SimpleBooleanRule>> _booleanStrategies;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
 
-        public LendBasketCommandHandler(IMemoryCache cache, IRequestClient<GetCustomerInfo> customerClient,
-            IRequestClient<DeleteStocks> stockClient, ILendedBasketRepository lendedBasketRepository, IEnumerable<IStrategy<SimpleIntRule>> intStrategies,
-            IEnumerable<IStrategy<SimpleBooleanRule>> booleanStrategies)
+        public LendBasketCommandHandler(IMemoryCache cache, IRequestClient<GetCustomerInfo> customerClient, ILendedBasketRepository lendedBasketRepository, IEnumerable<IStrategy<SimpleIntRule>> intStrategies,
+            IEnumerable<IStrategy<SimpleBooleanRule>> booleanStrategies, ISendEndpointProvider sendEndpointProvider)
         {
             _cache = cache;
             _customerClient = customerClient;
-            _stockClient = stockClient;
             _lendedBasketRepository = lendedBasketRepository;
             _intStrategies = intStrategies;
             _booleanStrategies = booleanStrategies;
+            _sendEndpointProvider = sendEndpointProvider;
         }
         
         public async Task<LendBasketCommandResult> Handle(LendBasketCommand request, CancellationToken cancellationToken)
@@ -77,10 +78,15 @@ namespace Lend.API.Handlers
             var lendedBasket = new LendedBasket(basket, _intStrategies, _booleanStrategies);
             
             //TODO check if all stocks exists and remove them!
-            var stockMessageResponse = await _stockClient.GetResponse<DeleteStocksResult>(new
-            {
-                StocksIds = basket.StockWithBooks.Select(s => s.StockId).ToList()
-            });
+            // var stockMessageResponse = await _stockClient.GetResponse<DeleteStocksResult>(new
+            // {
+            //     StocksIds = basket.StockWithBooks.Select(s => s.StockId).ToList()
+            // });
+            var stocksIdsToRemove = basket.StockWithBooks.Select(s => s.StockId).ToList();
+            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{EventBusConstants.DeleteStocks}"));
+            
+            await endpoint.Send(new DeleteStocks() {StocksIds = stocksIdsToRemove}, cancellationToken);
+
             
             _lendedBasketRepository.Add(lendedBasket);
             if (await _lendedBasketRepository.UnitOfWork.SaveChangesAsync(cancellationToken) < 0)

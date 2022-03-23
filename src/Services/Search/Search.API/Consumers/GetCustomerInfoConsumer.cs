@@ -14,13 +14,13 @@ namespace Search.API.Consumers
 {
     public class GetCustomerInfoConsumer : IConsumer<GetCustomerInfo>
     {
-        private readonly IBookRepository _bookRepository;
+        private readonly ISearchRepository _searchRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<GetCustomerInfoConsumer> _logger;
 
-        public GetCustomerInfoConsumer(IBookRepository bookRepository, IMapper mapper, ILogger<GetCustomerInfoConsumer> logger)
+        public GetCustomerInfoConsumer(ISearchRepository searchRepository, IMapper mapper, ILogger<GetCustomerInfoConsumer> logger)
         {
-            _bookRepository = bookRepository;
+            _searchRepository = searchRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -29,7 +29,7 @@ namespace Search.API.Consumers
         {
             _logger.LogInformation("GetCustomerInfoConsumer: Started Consuming Message {MessageId} : {@Message}",context.MessageId, context.Message);
             
-            var result = await _bookRepository.SearchCustomersByEmail(new SearchCustomerCommand() {SearchTerm = context.Message.Email});
+            var result = await _searchRepository.SearchCustomersByEmail(new SearchCustomerCommand() {SearchTerm = context.Message.Email});
 
             if (!result.Documents.Any())
             {

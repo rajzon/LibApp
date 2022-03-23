@@ -53,7 +53,7 @@ namespace Search.API
             
             services.AddElasticsearchInitializer(Configuration);
             
-            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<ISearchRepository, SearchRepository>();
             
             services.AddEventBusInitializer(Configuration);
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);

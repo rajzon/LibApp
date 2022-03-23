@@ -11,7 +11,7 @@ import {BookToCreateDto} from "../models/create-book-using-api-dto";
 })
 export class BookApiService {
 
-  readonly API: string = environment.bookApiUrl + 'v1/book';
+  private readonly API: string = environment.bookApiUrl + 'v1/book';
 
   constructor(private http: HttpClient) { }
 

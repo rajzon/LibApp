@@ -254,6 +254,8 @@
                      name="searchValue"
                      placeholder="Search field..."
                      [pattern]="lendSettings.stockSearchField.pattern"
+                     [minlength]="lendSettings.stockSearchField.minLength"
+                     [maxlength]="lendSettings.stockSearchField.maxLength"
                      [required]="true">
             </label>
           </div>

@@ -24,7 +24,7 @@ namespace Book.API.Domain
             ModificationDate = DateTime.UtcNow;
             CreationDate = DateTime.UtcNow;
         }
-        
+
         protected Author() { }
     }
 
@@ -54,7 +54,7 @@ namespace Book.API.Domain
             FirstName = firstName.TrimWithMultipleBetweens();
             LastName = lastName.TrimWithMultipleBetweens();
         }
-
+        
         public AuthorName(string fullName)
         {
             if (string.IsNullOrWhiteSpace(fullName))

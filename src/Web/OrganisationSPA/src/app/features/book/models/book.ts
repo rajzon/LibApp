@@ -15,7 +15,6 @@ export class Book {
   publisher: Publisher;
   publishedDate: Date | string;
   visibility: boolean;
-  publicSiteLink: string;
   description: string;
   images: Image[];
   categories: Category[]

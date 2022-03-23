@@ -24,13 +24,13 @@ namespace Search.API.Controllers.V1
     [Route("v{version:apiVersion}/[controller]")]
     public class SearchController : ControllerBase
     {
-        private readonly IBookRepository _bookRepository;
+        private readonly ISearchRepository _searchRepository;
         private readonly IMapper _mapper;
 
-        public SearchController(IBookRepository bookRepository,
+        public SearchController(ISearchRepository searchRepository,
             IMapper mapper)
         {
-            _bookRepository = bookRepository;
+            _searchRepository = searchRepository;
             _mapper = mapper;
         }
     
@@ -43,7 +43,7 @@ namespace Search.API.Controllers.V1
             [FromQuery] bool?[] visibility, string sortBy, short fromPage, short pageSize,
             DateTime modificationDateFrom, DateTime modificationDateTo)
         {
-            var response = await _bookRepository.SearchAsync(new SearchBookCommand()
+            var response = await _searchRepository.SearchAsync(new SearchBookCommand()
             {
                 SearchTerm = searchTerm,
                 Categories = categories,
@@ -76,7 +76,7 @@ namespace Search.API.Controllers.V1
         public async Task<IActionResult> BookEanSearch(string searchTerm)
         {
             var result =
-                await _bookRepository.SearchByEanAsync(new SearchBookByEanCommand() {SearchTerm = searchTerm});
+                await _searchRepository.SearchByEanAsync(new SearchBookByEanCommand() {SearchTerm = searchTerm});
 
             if (! result.Documents.Any())
                 return NotFound();
@@ -91,7 +91,7 @@ namespace Search.API.Controllers.V1
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         public async Task<IActionResult> BookManagementSuggest(string searchSuggestValue)
         {
-            var result = await _bookRepository.SuggestAsync(new SuggestBookCommand
+            var result = await _searchRepository.SuggestAsync(new SuggestBookCommand
                 {SearchSuggestValue = searchSuggestValue});
 
             if (!result.IsValid)
@@ -110,7 +110,7 @@ namespace Search.API.Controllers.V1
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         public async Task<IActionResult> CustomerSearch(string searchTerm)
         {
-            var result = await _bookRepository.SearchCustomersByEmail(new SearchCustomerCommand() {SearchTerm = searchTerm});
+            var result = await _searchRepository.SearchCustomersByEmail(new SearchCustomerCommand() {SearchTerm = searchTerm});
             
             if (!result.Documents.Any())
                 return NotFound();
@@ -125,7 +125,7 @@ namespace Search.API.Controllers.V1
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         public async Task<IActionResult> CustomersSuggest(string suggestValue)
         {
-            var result = await _bookRepository.SuggestCustomerAsync(new SuggestCustomerCommand()
+            var result = await _searchRepository.SuggestCustomerAsync(new SuggestCustomerCommand()
                 {SuggestValue = suggestValue});
             
             if (!result.IsValid)

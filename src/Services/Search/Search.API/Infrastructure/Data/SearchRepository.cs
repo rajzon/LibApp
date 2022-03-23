@@ -15,14 +15,14 @@ using FieldType = Search.API.Application.Services.Common.FieldType;
 
 namespace Search.API.Infrastructure.Data
 {
-    public class BookRepository : IBookRepository
+    public class SearchRepository : ISearchRepository
     {
         private readonly IElasticClient _client;
-        private readonly ILogger<IBookRepository> _logger;
+        private readonly ILogger<ISearchRepository> _logger;
         private readonly IConfiguration _configuration;
         private Dictionary<string, FieldType> _bookManagementSortAllowedValues => BookRepositorySettings.BOOK_MANAGEMENT_SORT_ALLOWED_VALUES;
         
-        public BookRepository(IElasticClient client, ILogger<IBookRepository> logger, IConfiguration configuration)
+        public SearchRepository(IElasticClient client, ILogger<ISearchRepository> logger, IConfiguration configuration)
         {
             _client = client;
             _logger = logger;

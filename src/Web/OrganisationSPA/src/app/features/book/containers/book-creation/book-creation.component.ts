@@ -13,7 +13,6 @@ import {environment} from "@env";
 import {Book} from "../../models/book";
 import {Router} from "@angular/router";
 import {CreateBookUsingApiDto} from "../../models/create-book-using-api-dto";
-import {PaginationDto} from "../../models/pagination-dto";
 import {AuthService} from "@core/services/auth.service";
 
 @Component({
@@ -81,7 +80,7 @@ export class BookCreationComponent implements OnInit, AfterViewInit {
     this.bookFacade.setManualBookImgUploader(new FileUploader(uploaderOptions));
   }
 
-  addBook(book: CreateManualBookDto): void {
+   addBook(book: CreateManualBookDto): void {
     this.bookFacade.addBookWithPhotos(book);
   }
 

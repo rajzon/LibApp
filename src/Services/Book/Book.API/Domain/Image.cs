@@ -28,7 +28,7 @@ namespace Book.API.Domain
             CreationDate = DateTime.UtcNow;
         }
 
-         static bool IsValidUrl(string url)
+         private static bool IsValidUrl(string url)
          {
              return Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var uriResult);
          }
