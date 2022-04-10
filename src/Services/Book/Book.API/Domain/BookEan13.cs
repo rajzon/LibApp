@@ -5,7 +5,7 @@ using Book.API.Domain.Common;
 
 namespace Book.API.Domain
 {
-    public class BookEan13 : ValueObject
+    public class BookEan13 : Entity
     {
 
         private readonly string _code;
@@ -25,11 +25,6 @@ namespace Book.API.Domain
             const int length = 13;
             return new string(Enumerable.Repeat(digits, length)
                 .Select(s => s[rnd.Next(s.Length)]).ToArray());
-        }
-
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return Code;
         }
     }
 }

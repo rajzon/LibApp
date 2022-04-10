@@ -26,6 +26,9 @@ namespace Book.API.Data
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new PublisherConfiguration());
             modelBuilder.ApplyConfiguration(new AuthorConfiguration());
+            modelBuilder.ApplyConfiguration(new Ean13Configuration());
+            modelBuilder.ApplyConfiguration(new Isbn10Configuration());
+            modelBuilder.ApplyConfiguration(new Isbn13Configuration());
 
             base.OnModelCreating(modelBuilder);
         }

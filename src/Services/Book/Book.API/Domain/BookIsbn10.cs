@@ -5,7 +5,7 @@ using Book.API.Domain.Common;
 
 namespace Book.API.Domain
 {
-    public class BookIsbn10 : ValueObject
+    public class BookIsbn10 : Entity
     {
         public string Code { get; private set; }
         
@@ -17,11 +17,6 @@ namespace Book.API.Domain
 
 
             Code = code;
-        }
-
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return Code;
         }
     }
 }

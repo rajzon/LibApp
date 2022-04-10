@@ -4,7 +4,7 @@ using Book.API.Domain.Common;
 
 namespace Book.API.Domain
 {
-    public class Image : Entity
+    public class Image : ValueObject
     {
         public string Url { get; private set; }
         public string PublicId { get; private set; }
@@ -31,6 +31,11 @@ namespace Book.API.Domain
          private static bool IsValidUrl(string url)
          {
              return Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var uriResult);
+         }
+
+         protected override IEnumerable<object> GetEqualityComponents()
+         {
+             yield return Url;
          }
     }
 }

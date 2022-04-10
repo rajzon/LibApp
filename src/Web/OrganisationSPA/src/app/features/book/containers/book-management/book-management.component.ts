@@ -53,7 +53,6 @@ export class BookManagementComponent implements OnInit, AfterViewInit {
       JSON.parse(this.route.snapshot.queryParamMap.get('pageSize')),
       this.route.snapshot.queryParamMap.get('modificationDateFrom')? new Date (this.route.snapshot.queryParamMap.get('modificationDateFrom')): null,
       this.route.snapshot.queryParamMap.get('modificationDateTo')? new Date (this.route.snapshot.queryParamMap.get('modificationDateTo')): null);
-
     this.searchBook();
   }
 
